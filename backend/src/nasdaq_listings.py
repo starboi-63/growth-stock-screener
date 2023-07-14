@@ -19,7 +19,7 @@ df = df["symbol"]
 # serialize data in JSON format and save on machine
 serialized_json = df.to_json()
 outfile_name = "nasdaq_listings.json"
-outfile_dir = os.path.join(os.getcwd(), "backend", "json")
+outfile_path = os.path.join(os.getcwd(), "backend", "json", outfile_name)
 
-with open(os.path.join(outfile_dir, outfile_name), "w") as outfile:
+with open(outfile_path, "w") as outfile:
     outfile.write(serialized_json)
