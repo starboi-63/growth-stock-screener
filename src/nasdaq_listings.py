@@ -1,5 +1,6 @@
 import requests
 import pandas as pd
+import json
 
 url = "https://api.nasdaq.com/api/screener/stocks?tableonly=true&limit=25&offset=0&download=true"
 headers = {
@@ -7,5 +8,9 @@ headers = {
 }
 
 response = requests.get(url, headers=headers, timeout=15)
+response_dict = json.loads(response.content.decode())
 
-print(response.content)
+rows = response_dict["data"]["rows"]
+df = pd.DataFrame.from_dict(rows)
+
+print(df["symbol"])
