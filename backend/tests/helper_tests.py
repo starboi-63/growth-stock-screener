@@ -35,3 +35,29 @@ class TestPercentChange(unittest.TestCase):
     def test_percent_change_nan_input(self):
         self.assertRaises(ValueError, percent_change, math.nan, 5)
         self.assertRaises(ValueError, percent_change, 5, math.nan)
+
+
+class TestRelativeStrength(unittest.TestCase):
+    def test_relative_strength_simple(self):
+        result = relative_strength(1, 2, 3, 4, 5, 6, 7, 8)
+        expected = 36.38095238
+        self.assertAlmostEqual(result, expected, places=3)
+
+    def test_relative_strength_nan_inputs(self):
+        self.assertRaises(ValueError, relative_strength, math.nan, 2, 3, 4, 5, 6, 7, 8)
+        self.assertRaises(ValueError, relative_strength, 1, math.nan, 3, 4, 5, 6, 7, 8)
+        self.assertRaises(ValueError, relative_strength, 1, 2, 3, 4, 5, 6, 7, math.nan)
+
+    def test_relative_strength_zero_div(self):
+        self.assertRaises(ZeroDivisionError, relative_strength, 0, 2, 3, 4, 5, 6, 7, 8)
+        self.assertRaises(ZeroDivisionError, relative_strength, 1, 2, 0, 4, 5, 6, 7, 8)
+        self.assertRaises(ZeroDivisionError, relative_strength, 1, 2, 3, 4, 0, 6, 7, 8)
+        self.assertRaises(ZeroDivisionError, relative_strength, 1, 2, 3, 4, 5, 6, 0, 8)
+
+    def test_relative_strength_negatives(self):
+        result = relative_strength(100, 50, 25, 20, 15, 10, 5, 0)
+        expected = -60.66666666
+
+    def test_relative_strength_pos_and_neg(self):
+        result = relative_strength(100, 50, 25, 30, 15, 20, 5, 0)
+        expected = -39.33333333
