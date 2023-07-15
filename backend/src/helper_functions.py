@@ -1,6 +1,15 @@
-# calculate the percent change between two numbers
+import pandas as pd
+
+
+# calculate the percent change between two positive numbers
 def percent_change(initial: float, final: float) -> float:
-    return (final - initial) / initial
+    if initial == 0:
+        raise ZeroDivisionError("Initial value of zero is undefined!")
+
+    if pd.isna(initial) or pd.isna(final):
+        raise ValueError("NaN inputs are undefined!")
+
+    return 100 * (final - initial) / initial
 
 
 # calculate the raw relative strength of a stock given its price at the starts and ends of four trading quarters
@@ -19,4 +28,4 @@ def relative_strength(
     q3_change = percent_change(q3_start, q3_end)
     q4_change = percent_change(q4_start, q4_end)
 
-    return 0.2(q1_change) + 0.2(q2_change) + 0.2(q3_change) + 0.4(q4_change)
+    return 0.2 * (q1_change) + 0.2 * (q2_change) + 0.2 * (q3_change) + 0.4 * (q4_change)
