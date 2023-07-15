@@ -22,9 +22,8 @@ df.columns = ["Symbol"]
 # extract symbols from dataframe
 symbol_list = df["Symbol"].values.tolist()
 
-test = ["NVDA", "SDGR", "CDEX", "FTNT", "PLTR", "ACMU", "SLTR"]
 # download all historical price data at once
-tickers = yf.download(test, period="2y", timeout=10)
+tickers = yf.download(symbol_list, period="2y", timeout=10)
 price_df = tickers["Adj Close"]
 
 # populate these lists while iterating through symbols
@@ -117,6 +116,11 @@ with open(outfile_path, "w") as outfile:
     outfile.write(serialized_json)
 
 # print footer message to terminal
+print("{} symbols failed (insufficient data).".format(len(failed_symbols)))
+print(
+    "{} symbols filtered (RS below {}).".format(
+        len(symbol_list) - len(rs_df) - len(failed_symbols), min_rs
+    )
+)
 print("{} symbols passed.".format(len(rs_df)))
-print("Failed Symbols (insufficient data): {}".format(", ".join(failed_symbols)))
 print_status(process_name, process_stage, False)
