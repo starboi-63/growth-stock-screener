@@ -42,7 +42,7 @@ $$
 ### Iteration 4: Revenue Growth
 
 Only the most rapidly growing stocks with _high sales growth_ are allowed to pass this iteration of the screen. Specifically,
-the percent increase in the most recent reported quarterly revnue versus a year ago must be at least $25\\%$; the percent increase in the prior period versus the same quarter a year ago must also be at least $25\\%$.
+the percent increase in the most recent reported quarterly revenue versus a year ago must be at least $25\\%$; the percent increase in the prior period versus the same quarter a year ago must also be at least $25\\%$.
 
 ### Iteration 5: Institutional Accumulation
 
