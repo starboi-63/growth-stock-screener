@@ -21,27 +21,9 @@ df.columns = ["Symbol"]
 
 # extract symbols from dataframe
 symbol_list = df["Symbol"].values.tolist()
-temp_symbol_list = [
-    "NVDA",
-    "PLTR",
-    "AI",
-    "SLRN",
-    "ATMU",
-    "BAD/TKR",
-    "MDB",
-    "INTC",
-    "IBM",
-    "CRWD",
-    "ELF",
-    "SNOW",
-    "TWLO",
-    "SDGR",
-    "ASML",
-    "ACLS",
-]
 
 # download all historical price data at once
-tickers = yf.download(temp_symbol_list, period="1y", interval="1d", timeout=10)
+tickers = yf.download(symbol_list, period="1y", interval="1d", timeout=10)
 price_df = tickers["Adj Close"]
 
 # populate these lists while iterating through symbols
@@ -51,11 +33,6 @@ failed_symbols = []
 
 for symbol in price_df:
     col = price_df[symbol]
-
-    # eliminate ticker if stock has not traded for at least 1yr
-    if pd.isna(col.iloc[0]) or pd.isna(col.iloc[len(price_df) - 1]):
-        failed_symbols.append(symbol)
-        continue
 
     # calculate raw relative strength using the following formula:
     # RS = 0.2(Q1 %Δ) + 0.2(Q2 %Δ) + 0.2(Q3 %Δ) + 0.4(Q4 %Δ)
@@ -70,6 +47,20 @@ for symbol in price_df:
 
     q4_start = col.iloc[189]
     q4_end = col.iloc[250]
+
+    # eliminate ticker if stock has not traded for at least 1yr or nan values are present
+    if (
+        pd.isna(q1_start)
+        or pd.isna(q1_end)
+        or pd.isna(q2_start)
+        or pd.isna(q2_end)
+        or pd.isna(q3_start)
+        or pd.isna(q3_end)
+        or pd.isna(q4_start)
+        or pd.isna(q4_end)
+    ):
+        failed_symbols.append(symbol)
+        continue
 
     rs_raw = relative_strength(
         q1_start, q1_end, q2_start, q2_end, q3_start, q3_end, q4_start, q4_end
