@@ -4,7 +4,7 @@ An automated stock screening system which isolates and ranks top-tier growth com
 
 ## Screen Iterations
 
-An initial list of stocks from which to screen is sourced from **NASDAQ**. Then, the following screen iterations are executed sequentially:
+An initial list of stocks from which to screen is sourced from _NASDAQ_. Then, the following screen iterations are executed sequentially:
 
 ### Iteration 1: Relative Strength
 
@@ -12,11 +12,11 @@ The market's strongest stocks are determined by calculating a raw weighted avera
 
 $$\text{RS (raw)} = 0.2(Q_1\ \\%\Delta) + 0.2(Q_2\ \\%\Delta) + 0.2(Q_3\ \\%\Delta) + 0.4(Q_4\ \\%\Delta)$$
 
-These raw values are then assigned a **percentile rank** from $0\to 100$ and turned into **RS ratings**. By default, only stocks with a relative strength rating greater than or equal to $90$ make it through this stage of screening.
+These raw values are then assigned a _percentile rank_ from $0\to 100$ and turned into _RS ratings_. By default, only stocks with a relative strength rating greater than or equal to $90$ make it through this stage of screening.
 
 ### Iteration 2: Liquidity
 
-All **micro-cap** companies and **thinly traded** stocks are filtered out based on the following criteria:
+All _micro-cap_ companies and _thinly traded_ stocks are filtered out based on the following criteria:
 
 $$
 \begin{aligned}
@@ -28,7 +28,7 @@ $$
 
 ### Iteration 3: Trend
 
-All stocks which are not in a **stage-two** uptrend are filtered out. A stage-two uptrend is defined as follows:
+All stocks which are not in a _stage-two_ uptrend are filtered out. A stage-two uptrend is defined as follows:
 
 $$
 \begin{aligned}
@@ -41,4 +41,4 @@ $$
 
 ### Iteration 4: Institutional Accumulation
 
-Any stocks with a **decrease** in fund-ownership are excluded at this point. Changes in institutional holdings are sourced from **NASDAQ**.
+Any stocks with a _decrease_ in fund-ownership are excluded at this point. Changes in institutional holdings are sourced from _NASDAQ_.
