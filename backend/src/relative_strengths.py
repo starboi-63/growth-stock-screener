@@ -5,10 +5,14 @@ import pandas as pd
 import datetime as dt
 from helper_functions import relative_strength, print_status
 
+# minimum RS required to pass this screen
+min_rs = 90
+
 # print header message to terminal
 process_name = "Relative Strength"
 process_stage = 1
 print_status(process_name, process_stage, True)
+print("Minimum Relative Strength to Pass: {}".format(min_rs))
 
 # open json data extracted from nasdaq as pandas dataframe
 json_path = os.path.join(os.getcwd(), "backend", "json", "nasdaq_listings.json")
@@ -101,9 +105,17 @@ rs_df = pd.DataFrame(
 rs_df["RS"] = rs_df["RS (raw)"].rank(pct=True)
 rs_df["RS"] = rs_df["RS"].map(lambda rs: round(100 * rs))
 rs_df = rs_df.drop(columns=["RS (raw)"])
-rs_df = rs_df[rs_df["RS"] >= 90]
+rs_df = rs_df[rs_df["RS"] >= min_rs]
+
+# serialize data in JSON format and save on machine
+serialized_json = rs_df.to_json()
+outfile_name = "relative_strengths.json"
+outfile_path = os.path.join(os.getcwd(), "backend", "json", outfile_name)
+
+with open(outfile_path, "w") as outfile:
+    outfile.write(serialized_json)
 
 # print footer message to terminal
 print("{} symbols passed.".format(len(rs_df)))
-print("Failed Symbols: {}".format(", ".join(failed_symbols)))
+print("Failed Symbols (insufficient data): {}".format(", ".join(failed_symbols)))
 print_status(process_name, process_stage, False)
