@@ -10,7 +10,7 @@ An initial list of stocks from which to screen is sourced from NASDAQ. Then, the
 
 The market's strongest stocks are determined by calculating a raw weighted average percentage price change over the last 12 months of trading. A 40% weight is attributed to the most recent quarter, while the previous three quarters each receive a weight of 20%.
 
-$$ RS (raw) = 0.2(Q_1 \%\delta) + 0.2(Q_2 \%\delta) + 0.2(Q_3 \%\delta) + 0.4(Q_4 \%\delta) $$
+$$\text{RS (raw)} = 0.2(Q_1 \%\delta) + 0.2(Q_2 \%\delta) + 0.2(Q_3 \%\delta) + 0.4(Q_4 \%\delta)$$
 
 These raw values are then assigned a percentile rank from 0-100 and turned into RS ratings. By default, only stocks with a relative strength rating greater than or equal to 90 make it through this stage of screening.
 
@@ -20,9 +20,9 @@ All micro-cap companies and penny stocks are filtered out based on the following
 
 $$
 \begin{aligned}
-Market Cap &>= \$1B
-Price &>= \$10
-Volume 50 Day SMA &>= 100,000 shares
+\text{Market Cap} &>= \$1B\\
+\text{Price} &>= \$10\\
+\text{Volume}\ 50\ \text{day SMA} &>= 100,000\ \text{shares}
 \end{aligned}
 $$
 
@@ -34,10 +34,10 @@ A stage two uptrend is defined as follows:
 
 $$
 \begin{aligned}
-Price >= 50 Day SMA
-Price >= 200 Day SMA
-10 Day SMA >= 21 Day EMA >= 50 Day SMA
-Price within 50% of YTD High
+\text{Price} >= 50\ \text{day SMA}\\
+\text{Price} >= 200\ \text{day SMA}\\
+10\ \text{day SMA} >= 21\ \text{day EMA} >= 50\ \text{day SMA}\\
+\text{Price within}\ 50\%\ \text{of YTD High}
 \end{aligned}
 $$
 
