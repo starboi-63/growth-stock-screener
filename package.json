@@ -2,7 +2,7 @@
   "name": "growth-stock-screener",
   "version": "1.0.0",
   "description": "An automated stock screening system which isolates and ranks top-tier growth companies based on relative strength, liquidity, trend, revenue growth, and institutional demand.",
-  "main": "main.js",
+  "main": "main.ts",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
