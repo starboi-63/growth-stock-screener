@@ -29,3 +29,11 @@ def relative_strength(
     q4_change = percent_change(q4_start, q4_end)
 
     return 0.2 * (q1_change) + 0.2 * (q2_change) + 0.2 * (q3_change) + 0.4 * (q4_change)
+
+
+# print a header or footer for each screen iteration
+def print_status(process: str, stage: int, starting: bool):
+    if starting:
+        print("\n****** Begin Stage {} [{}] ******\n".format(stage, process))
+    else:
+        print("\n****** Stage {} [{}] Finished ******\n".format(stage, process))

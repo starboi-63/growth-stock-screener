@@ -3,7 +3,12 @@ import os
 import json
 import pandas as pd
 import datetime as dt
-from helper_functions import relative_strength
+from helper_functions import relative_strength, print_status
+
+# print header message to terminal
+process_name = "Relative Strength"
+process_stage = 1
+print_status(process_name, process_stage, True)
 
 # open json data extracted from nasdaq as pandas dataframe
 json_path = os.path.join(os.getcwd(), "backend", "json", "nasdaq_listings.json")
@@ -85,4 +90,7 @@ for symbol in price_df:
     symbols.append(symbol)
     rs_raws.append(rs_raw)
 
+# print footer message to terminal
+print("x symbols passed")
 print("Failed Symbols: {}".format(", ".join(failed)))
+print_status(process_name, process_stage, False)
