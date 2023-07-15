@@ -1,6 +1,6 @@
 # Growth-Stock-Screener
 
-An automated stock screening system which isolates and ranks top-tier growth companies based on relative strength, price action, quarterly revenue, liquidity, and institutional demand.
+An automated stock screening system which isolates and ranks top-tier growth companies based on relative strength, liquidity, trend, revenue growth, and institutional demand.
 
 ## Screen Iterations
 
@@ -39,6 +39,11 @@ $$
 \end{aligned}
 $$
 
-### Iteration 4: Institutional Accumulation
+### Iteration 4: Revenue Growth
+
+Only the most rapidly growing stocks with _high sales growth_ are allowed to pass this iteration of the screen. Specifically,
+the percent increase in the most recent reported quarterly revnue versus a year ago must be at least $25\\%$; the percent increase in the prior period versus the same quarter a year ago must also be at least $25\\%$.
+
+### Iteration 5: Institutional Accumulation
 
 Any stocks with a _decrease_ in fund-ownership are excluded at this point. Changes in institutional holdings are sourced from _NASDAQ_.
