@@ -15,6 +15,7 @@ json_path = os.path.join(os.getcwd(), "backend", "json", "nasdaq_listings.json")
 df = pd.read_json(json_path, orient="index")
 df.columns = ["Symbol"]
 
+# extract symbols from dataframe
 symbol_list = df["Symbol"].values.tolist()
 temp_symbol_list = [
     "NVDA",
@@ -35,19 +36,21 @@ temp_symbol_list = [
     "ACLS",
 ]
 
+# download all historical price data at once
 tickers = yf.download(temp_symbol_list, period="1y", interval="1d", timeout=10)
 price_df = tickers["Adj Close"]
 
-symbols = []
+# populate these lists while iterating through symbols
+successful_symbols = []
 rs_raws = []
-failed = []
+failed_symbols = []
 
 for symbol in price_df:
     col = price_df[symbol]
 
     # eliminate ticker if stock has not traded for at least 1yr
     if pd.isna(col.iloc[0]) or pd.isna(col.iloc[len(price_df) - 1]):
-        failed.append(symbol)
+        failed_symbols.append(symbol)
         continue
 
     # calculate raw relative strength using the following formula:
@@ -87,10 +90,20 @@ for symbol in price_df:
         )
     )
 
-    symbols.append(symbol)
+    successful_symbols.append(symbol)
     rs_raws.append(rs_raw)
 
+# create a new dataframe with symbols whose relative strengths were successfully calculated
+rs_df = pd.DataFrame(
+    list(zip(successful_symbols, rs_raws)), columns=["Symbol", "RS (raw)"]
+)
+
+rs_df["RS"] = rs_df["RS (raw)"].rank(pct=True)
+rs_df["RS"] = rs_df["RS"].map(lambda rs: round(100 * rs))
+rs_df = rs_df.drop(columns=["RS (raw)"])
+rs_df = rs_df[rs_df["RS"] >= 90]
+
 # print footer message to terminal
-print("x symbols passed")
-print("Failed Symbols: {}".format(", ".join(failed)))
+print("{} symbols passed.".format(len(rs_df)))
+print("Failed Symbols: {}".format(", ".join(failed_symbols)))
 print_status(process_name, process_stage, False)
