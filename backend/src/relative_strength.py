@@ -3,6 +3,7 @@ import os
 import json
 import pandas as pd
 import datetime as dt
+from helper_functions import relative_strength
 
 # open json data extracted from nasdaq as pandas dataframe
 json_path = os.path.join(os.getcwd(), "backend", "json", "nasdaq_listings.json")
@@ -29,7 +30,7 @@ temp_symbol_list = [
     "ACLS",
 ]
 
-tickers = yf.download(temp_symbol_list, period="1y")
+tickers = yf.download(temp_symbol_list, period="1y", interval="1d", timeout=10)
 price_df = tickers["Adj Close"]
 
 symbols = []
@@ -44,20 +45,45 @@ for symbol in price_df:
         failed.append(symbol)
         continue
 
-    # calculate raw relative strength
-    price_12mo = col.iloc[0]
-    price_9mo = col.iloc[62]
-    price_6mo = col.iloc[125]
-    price_3mo = col.iloc[188]
-    price_cur = col.iloc[250]
+    # calculate raw relative strength using the following formula:
+    # RS = 0.2(Q1 %Δ) + 0.2(Q2 %Δ) + 0.2(Q3 %Δ) + 0.4(Q4 %Δ)
+    q1_start = col.iloc[0]
+    q1_end = col.iloc[62]
+
+    q2_start = col.iloc[63]
+    q2_end = col.iloc[125]
+
+    q3_start = col.iloc[126]
+    q3_end = col.iloc[188]
+
+    q4_start = col.iloc[189]
+    q4_end = col.iloc[250]
+
+    rs_raw = relative_strength(
+        q1_start, q1_end, q2_start, q2_end, q3_start, q3_end, q4_start, q4_end
+    )
 
     print(
-        "Symbol:{} | 12mo:{} 9mo:{} 6mo:{} 3mo:{} cur:{}".format(
-            symbol, price_12mo, price_9mo, price_6mo, price_3mo, price_cur
+        """Symbol: {} | Relative Strength (raw): {:.3f}
+        q1_start: {:.2f}, q1_end: {:.2f}
+        q2_start: {:.2f}, q2_end: {:.2f}
+        q3_start: {:.2f}, q3_end: {:.2f}
+        q4_start: {:.2f}, q4_end: {:.2f}\n""".format(
+            symbol,
+            rs_raw,
+            q1_start,
+            q1_end,
+            q2_start,
+            q2_end,
+            q3_start,
+            q3_end,
+            q4_start,
+            q4_end,
         )
     )
 
     symbols.append(symbol)
+    rs_raws.append(rs_raw)
 
 print(failed)
 print(symbols)
