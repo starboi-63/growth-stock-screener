@@ -22,8 +22,9 @@ df.columns = ["Symbol"]
 # extract symbols from dataframe
 symbol_list = df["Symbol"].values.tolist()
 
+test = ["NVDA", "SDGR", "CDEX", "FTNT", "PLTR", "ACMU", "SLTR"]
 # download all historical price data at once
-tickers = yf.download(symbol_list, period="1y", interval="1d", timeout=10)
+tickers = yf.download(test, period="2y", timeout=10)
 price_df = tickers["Adj Close"]
 
 # populate these lists while iterating through symbols
@@ -31,24 +32,33 @@ successful_symbols = []
 rs_raws = []
 failed_symbols = []
 
+# add empty line
+print()
+
 for symbol in price_df:
     col = price_df[symbol]
+    end_index = len(col) - 1
+
+    # eliminate symbol if it has not traded for 1yr
+    if end_index < 251:
+        failed_symbols.append(symbol)
+        continue
 
     # calculate raw relative strength using the following formula:
     # RS = 0.2(Q1 %Δ) + 0.2(Q2 %Δ) + 0.2(Q3 %Δ) + 0.4(Q4 %Δ)
-    q1_start = col.iloc[0]
-    q1_end = col.iloc[62]
+    q1_start = col.iloc[end_index - 251]  # day 1
+    q1_end = col.iloc[end_index - 189]  # day 63
 
-    q2_start = col.iloc[63]
-    q2_end = col.iloc[125]
+    q2_start = col.iloc[end_index - 188]  # day 64
+    q2_end = col.iloc[end_index - 126]  # day 126
 
-    q3_start = col.iloc[126]
-    q3_end = col.iloc[188]
+    q3_start = col.iloc[end_index - 125]  # day 127
+    q3_end = col.iloc[end_index - 63]  # day 189
 
-    q4_start = col.iloc[189]
-    q4_end = col.iloc[250]
+    q4_start = col.iloc[end_index - 62]  # day 190
+    q4_end = col.iloc[end_index]  # day 252
 
-    # eliminate ticker if stock has not traded for at least 1yr or nan values are present
+    # eliminate symbol if nan values are present
     if (
         pd.isna(q1_start)
         or pd.isna(q1_end)
