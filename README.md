@@ -12,10 +12,10 @@ The market's strongest stocks are determined by calculating a raw weighted avera
 
 $$
 \begin{aligned}
-\text{RS (raw)} &= 0.2(Q_1 \%\delta)\\
-    &+ 0.2(Q_2 \%\delta)\\
-    &+ 0.2(Q_3 \%\delta)\\
-    &+ 0.4(Q_4 \%\delta)
+\text{RS (raw)} &= 0.2(Q_1 \\text{\%}\delta)\\
+    &+ 0.2(Q_2 \\text{\%}\delta)\\
+    &+ 0.2(Q_3 \\text{\%}\delta)\\
+    &+ 0.4(Q_4 \\text{\%}\delta)
 \end{aligned}
 $$
 
@@ -44,7 +44,7 @@ $$
 \text{Price} &>= 50\ \text{day SMA}\\
 \text{Price} &>= 200\ \text{day SMA}\\
 10\ \text{day SMA} &>= 21\ \text{day EMA} >= 50\ \text{day SMA}\\
-\text{Price} >= 50\%\ \text{of YTD High}
+\text{Price} &>= 50\text{\%}\ \text{of YTD High}
 \end{aligned}
 $$
 
