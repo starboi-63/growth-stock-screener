@@ -65,10 +65,10 @@ for symbol in price_df:
 
     print(
         """Symbol: {} | Relative Strength (raw): {:.3f}
-        q1_start: {:.2f}, q1_end: {:.2f}
-        q2_start: {:.2f}, q2_end: {:.2f}
-        q3_start: {:.2f}, q3_end: {:.2f}
-        q4_start: {:.2f}, q4_end: {:.2f}\n""".format(
+        Q1 : start: ${:.2f}, end: ${:.2f}
+        Q2 : start: ${:.2f}, end: ${:.2f}
+        Q3 : start: ${:.2f}, end: ${:.2f}
+        Q4 : start: ${:.2f}, end: ${:.2f}\n""".format(
             symbol,
             rs_raw,
             q1_start,
@@ -85,5 +85,4 @@ for symbol in price_df:
     symbols.append(symbol)
     rs_raws.append(rs_raw)
 
-print(failed)
-print(symbols)
+print("Failed Symbols: {}".format(", ".join(failed)))
