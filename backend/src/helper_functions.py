@@ -34,6 +34,6 @@ def relative_strength(
 # print a header or footer for each screen iteration
 def print_status(process: str, stage: int, starting: bool):
     if starting:
-        print("\n****** Begin Stage {} [{}] ******\n".format(stage, process))
+        print(f"\n****** Begin Stage {stage} [{process}] ******\n")
     else:
-        print("\n****** Stage {} [{}] Finished ******\n".format(stage, process))
+        print(f"\n****** Stage {stage} [{process}] Finished ******\n")

@@ -12,7 +12,7 @@ min_rs = 90
 process_name = "Relative Strength"
 process_stage = 1
 print_status(process_name, process_stage, True)
-print("Minimum Relative Strength to Pass: {}".format(min_rs))
+print(f"Minimum Relative Strength to Pass: {min_rs}")
 
 # open json data extracted from nasdaq as pandas dataframe
 json_path = os.path.join(os.getcwd(), "backend", "json", "nasdaq_listings.json")
@@ -76,22 +76,11 @@ for symbol in price_df:
     )
 
     print(
-        """Symbol: {} | Relative Strength (raw): {:.3f}
-        Q1 : start: ${:.2f}, end: ${:.2f}
-        Q2 : start: ${:.2f}, end: ${:.2f}
-        Q3 : start: ${:.2f}, end: ${:.2f}
-        Q4 : start: ${:.2f}, end: ${:.2f}\n""".format(
-            symbol,
-            rs_raw,
-            q1_start,
-            q1_end,
-            q2_start,
-            q2_end,
-            q3_start,
-            q3_end,
-            q4_start,
-            q4_end,
-        )
+        f"""Symbol: {symbol} | Relative Strength (raw): {rs_raw:.3f}
+        Q1 : start: ${q1_start:.2f}, end: ${q1_end:.2f}
+        Q2 : start: ${q2_start:.2f}, end: ${q2_end:.2f}
+        Q3 : start: ${q3_start:.2f}, end: ${q3_end:.2f}
+        Q4 : start: ${q4_start:.2f}, end: ${q4_end:.2f}\n"""
     )
 
     successful_symbols.append(symbol)
@@ -116,11 +105,9 @@ with open(outfile_path, "w") as outfile:
     outfile.write(serialized_json)
 
 # print footer message to terminal
-print("{} symbols failed (insufficient data).".format(len(failed_symbols)))
+print(f"{len(failed_symbols)} symbols failed (insufficient data).")
 print(
-    "{} symbols filtered (RS below {}).".format(
-        len(symbol_list) - len(rs_df) - len(failed_symbols), min_rs
-    )
+    f"{len(symbol_list) - len(rs_df) - len(failed_symbols)} symbols filtered (RS below {min_rs})."
 )
-print("{} symbols passed.".format(len(rs_df)))
+print(f"{len(rs_df)} symbols passed.")
 print_status(process_name, process_stage, False)
