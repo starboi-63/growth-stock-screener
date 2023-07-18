@@ -14,11 +14,13 @@ user_agent = (
 options = webdriver.ChromeOptions()
 options.add_argument("headless")
 options.add_argument("disable-gpu")
+options.add_argument("--log-level=OFF")
 options.add_argument(f"user-agent={user_agent}")
 
 driver = webdriver.Chrome(options=options)
 driver.set_page_load_timeout(30)
 
+# perform get request
 try:
     driver.get(url)
 except Exception as ex:
@@ -33,8 +35,7 @@ active_positions_table = holdings_tables[1]
 
 # extract the number of institutions that have increased or decreased positions
 table_rows = active_positions_table.children
-increased_positions = table_rows[0].contents
-decreased_positions = table_rows[1].contents
+print(table_rows)
 
-print(increased_positions)
-print(decreased_positions)
+# print(increased_positions)
+# print(decreased_positions)
