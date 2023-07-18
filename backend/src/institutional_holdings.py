@@ -14,7 +14,7 @@ user_agent = (
 options = webdriver.ChromeOptions()
 options.add_argument("headless")
 options.add_argument("disable-gpu")
-options.add_argument("--log-level=OFF")
+options.add_argument("log-level=0")
 options.add_argument(f"user-agent={user_agent}")
 
 driver = webdriver.Chrome(options=options)
