@@ -22,7 +22,14 @@ driver.get(url)
 # extract institutional holdings information from site HTML
 soup = BeautifulSoup(driver.page_source, "html.parser")
 
-holdings_table_rows = soup.find_all("tr", class_="institutional-holdings__row")
+# the second table on the "institutional-holdings" page has position data
+holdings_tables = soup.find_all("tbody", class_="institutional-holdings__body")
+active_positions_table = holdings_tables[1]
 
-for row in holdings_table_rows:
-    print(row)
+# extract the number of institutions that have increased or decreased positions
+table_rows = active_positions_table.children
+increased_positions = table_rows[0].contents
+decreased_positions = table_rows[1].contents
+
+print(increased_positions)
+print(decreased_positions)
