@@ -17,7 +17,12 @@ options.add_argument("disable-gpu")
 options.add_argument(f"user-agent={user_agent}")
 
 driver = webdriver.Chrome(options=options)
-driver.get(url)
+driver.set_page_load_timeout(30)
+
+try:
+    driver.get(url)
+except Exception as ex:
+    print(f"Skipping {symbol} ({ex})")
 
 # extract institutional holdings information from site HTML
 soup = BeautifulSoup(driver.page_source, "html.parser")
