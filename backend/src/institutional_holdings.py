@@ -55,10 +55,12 @@ increased_shares = increased_row[2].contents[0]
 decreased_positions = decreased_row[1].contents[0]
 decreased_shares = decreased_row[2].contents[0]
 
+# print extracted data to terminal
 print(
     f"""Symbol: {symbol}
     Increased Positions: {increased_positions} | Increased Shares: {increased_shares}
     Decreased Positions: {decreased_positions} | Decreased Shares: {decreased_shares}"""
 )
 
+# close all chrome browser instances
 driver.quit()
