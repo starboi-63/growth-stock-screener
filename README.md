@@ -2,6 +2,11 @@
 
 An automated stock screening system which isolates and ranks top-tier growth companies based on relative strength, liquidity, trend, revenue growth, and institutional demand.
 
+## Prerequisites
+
+Internet Access
+Google Chrome Installation
+
 ## Screen Iterations
 
 An initial list of stocks from which to screen is sourced from _NASDAQ_. Then, the following screen iterations are executed sequentially:

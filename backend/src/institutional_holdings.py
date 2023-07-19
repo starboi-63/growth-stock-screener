@@ -11,7 +11,7 @@ timeout = 10
 holdings_data_xpath = "/html/body/div[2]/div/main/div[2]/div[4]/div[3]/div/div[1]/div/div[1]/div[2]/div/div[2]/div/table/tbody"
 
 # construct the url and headers for the request
-symbol = "IONQ"
+symbol = "NVDA"
 url = f"https://www.nasdaq.com/market-activity/stocks/{symbol}/institutional-holdings"
 user_agent = (
     "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:109.0) Gecko/20100101 Firefox/115.0"
