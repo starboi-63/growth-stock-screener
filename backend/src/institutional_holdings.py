@@ -23,6 +23,7 @@ options.add_argument("headless")
 options.add_argument("disable-gpu")
 options.add_argument(f"user-agent={user_agent}")
 options.page_load_strategy = "none"
+options.add_experimental_option("excludeSwitches", ["enable-logging"])
 driver = webdriver.Chrome(options=options)
 
 # perform GET request
