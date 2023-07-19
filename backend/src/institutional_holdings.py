@@ -1,10 +1,17 @@
 from selenium import webdriver
 from selenium.webdriver.chrome.service import Service as ChromeService
-from webdriver_manager.chrome import ChromeDriverManager
+from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver.common.by import By
+from selenium.webdriver.support import expected_conditions as EC
+from selenium.common.exceptions import TimeoutException
 from bs4 import BeautifulSoup
 
+# constants
+timeout = 10
+holdings_data_xpath = "/html/body/div[2]/div/main/div[2]/div[4]/div[3]/div/div[1]/div/div[1]/div[2]/div/div[2]/div/table/tbody"
+
 # construct the url and headers for the request
-symbol = "AAPL"
+symbol = "IONQ"
 url = f"https://www.nasdaq.com/market-activity/stocks/{symbol}/institutional-holdings"
 user_agent = (
     "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:109.0) Gecko/20100101 Firefox/115.0"
@@ -14,17 +21,21 @@ user_agent = (
 options = webdriver.ChromeOptions()
 options.add_argument("headless")
 options.add_argument("disable-gpu")
-options.add_argument("log-level=0")
 options.add_argument(f"user-agent={user_agent}")
-
+options.page_load_strategy = "none"
 driver = webdriver.Chrome(options=options)
-driver.set_page_load_timeout(30)
 
-# perform get request
+# perform GET request
+driver.get(url)
+
+# load page until holdings table is present in the DOM
 try:
-    driver.get(url)
-except Exception as ex:
-    print(f"Skipping {symbol} ({ex})")
+    data_present = EC.presence_of_element_located((By.XPATH, holdings_data_xpath))
+    WebDriverWait(driver, timeout).until(data_present)
+    driver.execute_script("window.stop();")
+except TimeoutException:
+    print(f"Skipping {symbol} (request timed out)")
+    # continue
 
 # extract institutional holdings information from site HTML
 soup = BeautifulSoup(driver.page_source, "html.parser")
@@ -34,8 +45,19 @@ holdings_tables = soup.find_all("tbody", class_="institutional-holdings__body")
 active_positions_table = holdings_tables[1]
 
 # extract the number of institutions that have increased or decreased positions
-table_rows = active_positions_table.children
-print(table_rows)
+table_rows = list(active_positions_table.children)
+increased_row = list(table_rows[0].contents)
+decreased_row = list(table_rows[1].contents)
 
-# print(increased_positions)
-# print(decreased_positions)
+increased_positions = increased_row[1].contents[0]
+increased_shares = increased_row[2].contents[0]
+decreased_positions = decreased_row[1].contents[0]
+decreased_shares = decreased_row[2].contents[0]
+
+print(
+    f"""Symbol: {symbol}
+    Increased Positions: {increased_positions} | Increased Shares: {increased_shares}
+    Decreased Positions: {decreased_positions} | Decreased Shares: {decreased_shares}"""
+)
+
+driver.quit()
