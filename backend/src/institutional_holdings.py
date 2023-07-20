@@ -1,5 +1,5 @@
 from selenium import webdriver
-from selenium.webdriver.chrome.service import Service as ChromeService
+from selenium.webdriver.firefox.service import Service as FirefoxService
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as EC
@@ -7,24 +7,19 @@ from selenium.common.exceptions import TimeoutException
 from bs4 import BeautifulSoup
 
 # constants
-timeout = 10
-holdings_data_xpath = "/html/body/div[2]/div/main/div[2]/div[4]/div[3]/div/div[1]/div/div[1]/div[2]/div/div[2]/div/table/tbody"
+timeout = 30
+holdings_data_xpath = "/html/body/div[3]/div/main/div[2]/div[4]/div[3]/div/div[1]/div/div[1]/div[2]/div/div[2]/div/table/tbody"
 
 # construct the url and headers for the request
 symbol = "NVDA"
 url = f"https://www.nasdaq.com/market-activity/stocks/{symbol}/institutional-holdings"
-user_agent = (
-    "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:109.0) Gecko/20100101 Firefox/115.0"
-)
 
-# configure selenium to use a headless chrome browser instance to request data
-options = webdriver.ChromeOptions()
-options.add_argument("headless")
-options.add_argument("disable-gpu")
-options.add_argument(f"user-agent={user_agent}")
+# configure selenium to use a headless Firefox browser instance to request data
+options = webdriver.FirefoxOptions()
+options.add_argument("--headless")
+options.add_argument("--disable-gpu")
 options.page_load_strategy = "none"
-options.add_experimental_option("excludeSwitches", ["enable-logging"])
-driver = webdriver.Chrome(options=options)
+driver = webdriver.Firefox(options=options)
 
 # perform GET request
 driver.get(url)
@@ -62,5 +57,5 @@ print(
     Decreased Positions: {decreased_positions} | Decreased Shares: {decreased_shares}"""
 )
 
-# close all chrome browser instances
+# close all Firefox browser instances
 driver.quit()
