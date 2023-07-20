@@ -4,8 +4,8 @@ An automated stock screening system which isolates and ranks top-tier growth com
 
 ## Prerequisites
 
-Internet Access.
-Google Chrome Installation
+1. Internet Access
+2. Firefox Installation
 
 ## Screen Iterations
 
