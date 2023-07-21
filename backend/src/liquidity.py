@@ -1,4 +1,5 @@
 import requests
+from requests.exceptions import Timeout
 import pandas
 
 symbol = "NVDA"
@@ -9,7 +10,7 @@ headers = {
 
 try:
     response = requests.get(url, headers=headers, timeout=15)
-except TimeoutError:
+except Timeout:
     print(f"Skipping {symbol} (request timed out) . . .")
 
 print(response.content)
