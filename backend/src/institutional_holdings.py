@@ -30,7 +30,7 @@ try:
     WebDriverWait(driver, timeout).until(data_present)
     driver.execute_script("window.stop();")
 except TimeoutException:
-    print(f"Skipping {symbol} (request timed out)")
+    print(f"Skipping {symbol} (request timed out) . . .")
     # continue
 
 # extract institutional holdings information from site HTML
