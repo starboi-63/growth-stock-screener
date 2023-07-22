@@ -1,16 +1,19 @@
 import requests
 from requests.exceptions import Timeout
-import pandas
+import pandas as pd
+import json
+import os
+import asyncio
 
-symbol = "NVDA"
-url = f"https://www.barchart.com/stocks/quotes/{symbol}/technical-analysis"
-headers = {
-    "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:109.0) Gecko/20100101 Firefox/115.0"
-}
+# retreive JSON data from previous screen iteration
+json_path = os.path.join(os.getcwd(), "backend", "json", "relative_strengths.json")
+df = pd.read_json(json_path)
 
-try:
-    response = requests.get(url, headers=headers, timeout=15)
-except Timeout:
-    print(f"Skipping {symbol} (request timed out) . . .")
+# symbol = "NVDA"
+# url = f"https://www.barchart.com/stocks/quotes/{symbol}/technical-analysis"
+# headers = {
+#     "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:109.0) Gecko/20100101 Firefox/115.0"
+# }
 
-print(response.content)
+
+# print(f"Skipping {symbol} (request timed out) . . .")
