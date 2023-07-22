@@ -22,7 +22,22 @@ except Timeout:
 response_dict = json.loads(response.content.decode())
 rows = response_dict["data"]["rows"]
 df = pd.DataFrame.from_dict(rows)
-df = df["symbol"]
+df = df.drop(
+    columns=[
+        "sector",
+        "url",
+        "lastsale",
+        "netchange",
+        "pctchange",
+        "volume",
+        "country",
+        "ipoyear",
+    ]
+)
+df.columns = ["Symbol", "Company Name", "Market Cap", "Industry"]
+
+# remove any symbols containing a '/' or '^'
+df = df[~(df["Symbol"].str.contains("/") | df["Symbol"].str.contains("\^"))]
 
 # serialize data in JSON format and save on machine
 serialized_json = df.to_json()

@@ -16,8 +16,7 @@ print(f"Minimum Relative Strength to Pass: {min_rs}")
 
 # open json data extracted from nasdaq as pandas dataframe
 json_path = os.path.join(os.getcwd(), "backend", "json", "nasdaq_listings.json")
-df = pd.read_json(json_path, orient="index")
-df.columns = ["Symbol"]
+df = pd.read_json(json_path)
 
 # extract symbols from dataframe
 symbol_list = df["Symbol"].values.tolist()
