@@ -9,8 +9,17 @@ import asyncio
 json_path = os.path.join(os.getcwd(), "backend", "json", "relative_strengths.json")
 df = pd.read_json(json_path)
 
-# extract columns from dataframe
-symbol_list = df["Symbol"].values.tolist()
+successful_symbols = []
+rs_list = []
+market_caps = []
+avg_volumes = []
+failed_symbols = []
+
+#
+for i in range(0, len(df)):
+    row = df.iloc[i]
+    symbol = row["Symbol"]
+    rs = row["RS"]
 
 
 # symbol = "NVDA"
