@@ -15,12 +15,12 @@ market_caps = []
 avg_volumes = []
 failed_symbols = []
 
-#
 for i in range(0, len(df)):
     row = df.iloc[i]
     symbol = row["Symbol"]
     rs = row["RS"]
 
+print(df)
 
 # symbol = "NVDA"
 # url = f"https://www.barchart.com/stocks/quotes/{symbol}/technical-analysis"
