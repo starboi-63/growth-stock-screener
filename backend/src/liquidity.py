@@ -9,6 +9,10 @@ import asyncio
 json_path = os.path.join(os.getcwd(), "backend", "json", "relative_strengths.json")
 df = pd.read_json(json_path)
 
+# extract columns from dataframe
+symbol_list = df["Symbol"].values.tolist()
+
+
 # symbol = "NVDA"
 # url = f"https://www.barchart.com/stocks/quotes/{symbol}/technical-analysis"
 # headers = {
