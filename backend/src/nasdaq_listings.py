@@ -3,6 +3,12 @@ import pandas as pd
 import json
 import os
 from requests.exceptions import Timeout
+from helper_functions import print_status
+
+# print header message to terminal
+process_name = "NASDAQ Listings"
+process_stage = 0
+print_status(process_name, process_stage, True)
 
 # request nasdaq listing data
 url = "https://api.nasdaq.com/api/screener/stocks?tableonly=true&limit=25&offset=0&download=true"
@@ -46,3 +52,7 @@ outfile_path = os.path.join(os.getcwd(), "backend", "json", outfile_name)
 
 with open(outfile_path, "w") as outfile:
     outfile.write(serialized_json)
+
+# print footer message to terminal
+print(f"{len(df)} symbols extracted.")
+print_status(process_name, process_stage, False)
