@@ -17,6 +17,7 @@ print(f"Minimum Relative Strength to Pass: {min_rs}")
 # open json data extracted from nasdaq as pandas dataframe
 json_path = os.path.join(os.getcwd(), "backend", "json", "nasdaq_listings.json")
 df = pd.read_json(json_path)
+df_pos = 0
 
 # extract symbols from dataframe
 symbol_list = df["Symbol"].values.tolist()
@@ -27,8 +28,11 @@ price_df = tickers["Adj Close"]
 
 # populate these lists while iterating through symbols
 successful_symbols = []
-rs_raws = []
+names = []
+mkt_caps = []
+industries = []
 prices = []
+rs_raws = []
 failed_symbols = []
 
 # add empty line
@@ -83,14 +87,22 @@ for symbol in price_df:
         Q4 : start: ${q4_start:.2f}, end: ${q4_end:.2f}\n"""
     )
 
+    while df.iloc[[df_pos]]["Symbol"].item() != symbol:
+        df_pos += 1
+
+    df_row = df.iloc[[df_pos]]
+
     successful_symbols.append(symbol)
-    rs_raws.append(rs_raw)
+    names.append(df_row["Company Name"].item())
+    mkt_caps.append(df_row["Market Cap"].item())
+    industries.append(df_row["Industry"].item())
     prices.append(q4_end)
+    rs_raws.append(rs_raw)
 
 # create a new dataframe with symbols whose relative strengths were successfully calculated
 rs_df = pd.DataFrame(
-    list(zip(successful_symbols, rs_raws, prices)),
-    columns=["Symbol", "RS (raw)", "Price"],
+    list(zip(successful_symbols, names, mkt_caps, industries, prices, rs_raws)),
+    columns=["Symbol", "Company Name", "Market Cap", "Industry", "Price", "RS (raw)"],
 )
 
 # calculate RS rankings and filter out any symbols with an RS below the specified minimum
