@@ -8,19 +8,23 @@ import asyncio
 # retreive JSON data from previous screen iteration
 json_path = os.path.join(os.getcwd(), "backend", "json", "relative_strengths.json")
 df = pd.read_json(json_path)
+df_pos = 0
 
 successful_symbols = []
-rs_list = []
-market_caps = []
+names = []
+mkt_caps = []
+industries = []
+prices = []
 avg_volumes = []
+rs_list = []
 failed_symbols = []
 
 for i in range(0, len(df)):
     row = df.iloc[i]
-    symbol = row["Symbol"]
-    rs = row["RS"]
+    # symbol = row["Symbol"]
+    # rs = row["RS"]
 
-print(df)
+    print(row)
 
 # symbol = "NVDA"
 # url = f"https://www.barchart.com/stocks/quotes/{symbol}/technical-analysis"

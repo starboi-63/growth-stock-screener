@@ -87,15 +87,15 @@ for symbol in price_df:
         Q4 : start: ${q4_start:.2f}, end: ${q4_end:.2f}\n"""
     )
 
-    while df.iloc[[df_pos]]["Symbol"].item() != symbol:
+    while df.iloc[df_pos]["Symbol"] != symbol:
         df_pos += 1
 
-    df_row = df.iloc[[df_pos]]
+    df_row = df.iloc[df_pos]
 
     successful_symbols.append(symbol)
-    names.append(df_row["Company Name"].item())
-    mkt_caps.append(df_row["Market Cap"].item())
-    industries.append(df_row["Industry"].item())
+    names.append(df_row["Company Name"])
+    mkt_caps.append(df_row["Market Cap"])
+    industries.append(df_row["Industry"])
     prices.append(q4_end)
     rs_raws.append(rs_raw)
 
