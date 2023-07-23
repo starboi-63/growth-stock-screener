@@ -6,11 +6,6 @@ import os
 import asyncio
 import aiohttp
 
-# request constants
-timeout = 30
-headers = {
-    "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:109.0) Gecko/20100101 Firefox/115.0"
-}
 
 # retreive JSON data from previous screen iteration
 json_path = os.path.join(os.getcwd(), "backend", "json", "relative_strengths.json")
@@ -18,12 +13,12 @@ df = pd.read_json(json_path)
 
 # populate these lists while iterating through symbols
 successful_symbols = []
-names = []
-mkt_caps = []
-industries = []
-prices = []
-avg_volumes = []
-rs_list = []
+# names = []
+# mkt_caps = []
+# industries = []
+# prices = []
+# avg_volumes = []
+# rs_list = []
 failed_symbols = []
 
 
@@ -44,28 +39,36 @@ def extract_avg_volume(response):
     print(response)
 
 
-async def screen_liquidity(df_index, session):
-    """Consumes a row index of the stock dataframe and populates data
-    lists if the row satisfies liquidity criteria"""
-    row = df.iloc[df_index]
-
-    symbol = row["Symbol"]
-    name = row["Company Name"]
-    mkt_cap = row["Market Cap"]
-    industry = row["Industry"]
-    price = row["Price"]
-    rs = row["RS"]
-
-    if pd.isna(mkt_cap):
-        failed_symbols.append(symbol)
-        return None
-
-    if mkt_cap < 1000000000 or price < 10:
-        return None
-
-
 async def main():
-    async with aiohttp.ClientSession(headers=headers, timeout=timeout) as session:
-        await asyncio.gather(
-            *[screen_liquidity(df_index, session) for df_index in range(0, len(df))]
-        )
+    async with aiohttp.ClientSession() as session:
+        response = await get_response("NVDA", session)
+        extract_avg_volume(response)
+
+
+# async def screen_liquidity(df_index, session):
+#     """Consumes a row index of the stock dataframe and populates data
+#     lists if the row satisfies liquidity criteria"""
+#     row = df.iloc[df_index]
+
+#     symbol = row["Symbol"]
+#     name = row["Company Name"]
+#     mkt_cap = row["Market Cap"]
+#     industry = row["Industry"]
+#     price = row["Price"]
+#     rs = row["RS"]
+
+#     if pd.isna(mkt_cap):
+#         failed_symbols.append(symbol)
+#         return None
+
+#     if mkt_cap < 1000000000 or price < 10:
+#         return None
+
+
+# async def main():
+#     async with aiohttp.ClientSession(headers=headers, timeout=timeout) as session:
+#         await asyncio.gather(
+#             *[screen_liquidity(df_index, session) for df_index in range(0, len(df))]
+#         )
+
+asyncio.run(main())
