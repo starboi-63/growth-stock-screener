@@ -28,11 +28,6 @@ price_df = tickers["Adj Close"]
 
 # populate these lists while iterating through symbols
 successful_symbols = []
-names = []
-mkt_caps = []
-industries = []
-prices = []
-rs_raws = []
 failed_symbols = []
 
 # add empty line
@@ -92,18 +87,19 @@ for symbol in price_df:
 
     df_row = df.iloc[df_pos]
 
-    successful_symbols.append(symbol)
-    names.append(df_row["Company Name"])
-    mkt_caps.append(df_row["Market Cap"])
-    industries.append(df_row["Industry"])
-    prices.append(q4_end)
-    rs_raws.append(rs_raw)
+    successful_symbols.append(
+        {
+            "Symbol": symbol,
+            "Company Name": df_row["Company Name"],
+            "Market Cap": df_row["Market Cap"],
+            "Industry": df_row["Industry"],
+            "Price": q4_end,
+            "RS (raw)": rs_raw,
+        }
+    )
 
 # create a new dataframe with symbols whose relative strengths were successfully calculated
-rs_df = pd.DataFrame(
-    list(zip(successful_symbols, names, mkt_caps, industries, prices, rs_raws)),
-    columns=["Symbol", "Company Name", "Market Cap", "Industry", "Price", "RS (raw)"],
-)
+rs_df = pd.DataFrame(successful_symbols)
 
 # calculate RS rankings and filter out any symbols with an RS below the specified minimum
 rs_df["RS"] = rs_df["RS (raw)"].rank(pct=True)
