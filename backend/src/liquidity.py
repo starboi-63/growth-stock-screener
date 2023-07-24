@@ -34,6 +34,10 @@ async def get_response(symbol: str, session):
 
 def extract_avg_volume(response):
     """extract 50-day volume SMA from request response"""
+    # handle null responses
+    if response is None:
+        return None
+
     soup = BeautifulSoup(response, "html.parser")
 
     # extract 50-day volume SMA data from html
