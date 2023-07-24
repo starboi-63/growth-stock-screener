@@ -1,10 +1,8 @@
-import requests
-from requests.exceptions import Timeout
 import pandas as pd
-import json
 import os
 import asyncio
 import aiohttp
+from bs4 import BeautifulSoup
 
 
 # retreive JSON data from previous screen iteration
@@ -36,7 +34,16 @@ async def get_response(symbol: str, session):
 
 def extract_avg_volume(response):
     """extract 50-day volume SMA from request response"""
-    print(response)
+    soup = BeautifulSoup(response, "html.parser")
+
+    # extract 50-day volume SMA data from html
+    tables = soup.find_all("tbody")
+    rows = tables[0].find_all("tr")
+    row_data = rows[2].find_all("td")
+    vol_string = str(row_data[4].contents[0])
+    vol_string_cleaned = vol_string.replace(",", "").replace(" ", "")
+    volume = int(vol_string_cleaned)
+    return volume
 
 
 async def main():
