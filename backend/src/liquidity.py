@@ -3,6 +3,7 @@ import os
 import asyncio
 import aiohttp
 from bs4 import BeautifulSoup
+from tqdm.asyncio import tqdm_asyncio
 
 
 # retreive JSON data from previous screen iteration
@@ -82,7 +83,7 @@ async def screen_liquidity(df_index, session):
 async def main():
     """Screen each stock present in the dataframe based on liquidity criteria"""
     async with aiohttp.ClientSession() as session:
-        await asyncio.gather(
+        await tqdm_asyncio.gather(
             *[screen_liquidity(df_index, session) for df_index in range(0, len(df))]
         )
 
