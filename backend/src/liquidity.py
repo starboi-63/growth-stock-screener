@@ -15,14 +15,14 @@ successful_symbols = []
 failed_symbols = []
 
 
-async def get_response(symbol: str, session):
+async def fetch(symbol: str, session):
     """coroutine for get request to barchart.com using a stock symbol"""
     url = f"https://www.barchart.com/stocks/quotes/{symbol}/technical-analysis"
 
     try:
-        response = await session.get(url)
-        return await response.text()
-    except Exception as e:
+        async with session.get(url) as response:
+            return await response.text()
+    except Exception:
         failed_symbols.append(symbol)
         return None
 
@@ -54,7 +54,7 @@ async def screen_liquidity(df_index, session):
     name = row["Company Name"]
     price = row["Price"]
     market_cap = row["Market Cap"]
-    volume = extract_avg_volume(await get_response(symbol, session))
+    volume = extract_avg_volume(await fetch(symbol, session))
     industry = row["Industry"]
     rs = row["RS"]
 
