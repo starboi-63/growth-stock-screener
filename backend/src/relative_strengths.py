@@ -12,7 +12,7 @@ min_rs = 90
 process_name = "Relative Strength"
 process_stage = 1
 print_status(process_name, process_stage, True)
-print(f"Minimum Relative Strength to Pass: {min_rs}")
+print(f"Minimum Relative Strength to Pass: {min_rs}\n")
 
 # open json data extracted from nasdaq as pandas dataframe
 json_path = os.path.join(os.getcwd(), "backend", "json", "nasdaq_listings.json")

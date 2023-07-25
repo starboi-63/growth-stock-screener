@@ -11,6 +11,16 @@ min_market_cap = 1000000000
 min_price = 10
 min_volume = 100000
 
+# print header message to terminal
+process_name = "Liquidity"
+process_stage = 2
+print_status(process_name, process_stage, True)
+print(
+    f"""Minimum market cap to pass: ${min_market_cap / 1000000000:.0f}B
+    Minimum price to pass: ${min_price:.2f}
+    Minimum average volume to pass: {min_volume} shares\n"""
+)
+
 # retreive JSON data from previous screen iteration
 json_path = os.path.join(os.getcwd(), "backend", "json", "relative_strengths.json")
 df = pd.read_json(json_path)
@@ -76,11 +86,11 @@ async def screen_liquidity(df_index, session):
 
     # print volume info to console
     print(
-        f"{symbol} | Market Cap: ${market_cap / 1000000000:.0f}B | Price: ${price:.2f} | 50-day Avg. Volume: {volume} shares"
+        f"{symbol} | Market Cap: ${market_cap / 1000000000:.0f}B | Price: ${price:.2f} | 50-day Avg. Volume: {volume} shares\n"
     )
 
     # filter out illiquid stocks
-    if market_cap < min_market_cap or price < min_price or volume < min_volume:
+    if (market_cap < min_market_cap) or (price < min_price) or (volume < min_volume):
         return
 
     successful_symbols.append(
@@ -106,4 +116,13 @@ async def main():
 
 asyncio.run(main())
 
-print(successful_symbols)
+# create a new dataframe with symbols whose relative strengths were successfully calculated
+screened_df = successful_symbols
+
+# print footer message to terminal
+print(f"{len(failed_symbols)} symbols failed (insufficient data).")
+print(
+    f"{len(symbol_list) - len(rs_df) - len(failed_symbols)} symbols filtered (thinly traded or penny stock)."
+)
+print(f"{len(rs_df)} symbols passed.")
+print_status(process_name, process_stage, False)
