@@ -39,7 +39,7 @@ $$
 \begin{aligned}
 \text{Price} &>= 50\ \text{day SMA}\\
 \text{Price} &>= 200\ \text{day SMA}\\
-10\ \text{day SMA} &>= 21\ \text{day EMA} >= 50\ \text{day SMA}\\
+10\ \text{day EMA} &>= 21\ \text{day EMA} >= 50\ \text{day SMA}\\
 \text{Price} &>= 50\\%\ \text{of YTD High}
 \end{aligned}
 $$
