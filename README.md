@@ -27,7 +27,7 @@ $$
 \begin{aligned}
 \text{Market Cap} &>= \$1\ \text{Billion}\\
 \text{Price} &>= \$10\\
-\text{Volume}\ 50\ \text{day SMA} &>= 100,000\ \text{Shares}
+50\ \text{day Average Volume} &>= 100,000\ \text{Shares}
 \end{aligned}
 $$
 

@@ -11,12 +11,6 @@ df = pd.read_json(json_path)
 
 # populate these lists while iterating through symbols
 successful_symbols = []
-# names = []
-# mkt_caps = []
-# industries = []
-# prices = []
-# avg_volumes = []
-# rs_list = []
 failed_symbols = []
 
 
@@ -33,53 +27,66 @@ async def get_response(symbol: str, session):
 
 
 def extract_avg_volume(response):
-    """extract 50-day volume SMA from request response"""
+    """extract 50-day average volume from request response"""
     # handle null responses
     if response is None:
         return None
 
     soup = BeautifulSoup(response, "html.parser")
 
-    # extract 50-day volume SMA data from html
+    # extract 50-day average volume data from html
     tables = soup.find_all("tbody")
     rows = tables[0].find_all("tr")
     row_data = rows[2].find_all("td")
-    vol_string = str(row_data[4].contents[0])
-    vol_string_cleaned = vol_string.replace(",", "").replace(" ", "")
-    volume = int(vol_string_cleaned)
+    volume_string = str(row_data[4].contents[0])
+    volume_string_cleaned = volume_string.replace(",", "").replace(" ", "")
+    volume = int(volume_string_cleaned)
     return volume
 
 
+async def screen_liquidity(df_index, session):
+    """Consumes a row index of the stock dataframe and populates data
+    list if the row satisfies liquidity criteria"""
+    row = df.iloc[df_index]
+
+    symbol = row["Symbol"]
+    name = row["Company Name"]
+    price = row["Price"]
+    market_cap = row["Market Cap"]
+    volume = extract_avg_volume(await get_response(symbol, session))
+    industry = row["Industry"]
+    rs = row["RS"]
+
+    # check if null values are present in screen criteria
+    if pd.isna(market_cap) or volume is None:
+        failed_symbols.append(symbol)
+        return
+
+    # filter out stocks with a market cap below $1B, a price below $10, or a 50-day average volume below 100,000 shares
+    if market_cap < 1000000000 or price < 10 or volume < 100000:
+        return
+
+    successful_symbols.append(
+        {
+            "Symbol": symbol,
+            "Company Name": name,
+            "Price": price,
+            "Market Cap": market_cap,
+            "50-day Average Volume": volume,
+            "Industry": industry,
+            "RS": rs,
+        }
+    )
+
+
 async def main():
+    """Screen each stock present in the dataframe based on liquidity criteria"""
     async with aiohttp.ClientSession() as session:
-        response = await get_response("NVDA", session)
-        extract_avg_volume(response)
+        await asyncio.gather(
+            *[screen_liquidity(df_index, session) for df_index in range(0, len(df))]
+        )
 
-
-# async def screen_liquidity(df_index, session):
-#     """Consumes a row index of the stock dataframe and populates data
-#     lists if the row satisfies liquidity criteria"""
-#     row = df.iloc[df_index]
-
-#     symbol = row["Symbol"]
-#     name = row["Company Name"]
-#     mkt_cap = row["Market Cap"]
-#     industry = row["Industry"]
-#     price = row["Price"]
-#     rs = row["RS"]
-
-#     if pd.isna(mkt_cap):
-#         failed_symbols.append(symbol)
-#         return None
-
-#     if mkt_cap < 1000000000 or price < 10:
-#         return None
-
-
-# async def main():
-#     async with aiohttp.ClientSession(headers=headers, timeout=timeout) as session:
-#         await asyncio.gather(
-#             *[screen_liquidity(df_index, session) for df_index in range(0, len(df))]
-#         )
 
 asyncio.run(main())
+
+print(successful_symbols)
