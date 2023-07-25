@@ -1,4 +1,7 @@
 from helper_functions import *
+import asyncio
+import aiohttp
+from tqdm.asyncio import tqdm_asyncio
 
 # print header message to terminal
 process_name = "Trend"

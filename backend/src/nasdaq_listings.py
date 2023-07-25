@@ -1,7 +1,6 @@
 import requests
 import pandas as pd
 import json
-import os
 from requests.exceptions import Timeout
 from helper_functions import print_status, create_outfile
 

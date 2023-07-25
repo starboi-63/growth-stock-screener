@@ -1,8 +1,5 @@
 import yfinance as yf
-import os
-import json
 import pandas as pd
-import datetime as dt
 from helper_functions import *
 
 # minimum RS required to pass this screen
