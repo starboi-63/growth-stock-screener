@@ -3,7 +3,7 @@ import os
 import json
 import pandas as pd
 import datetime as dt
-from helper_functions import relative_strength, print_status, print_skip, create_outfile
+from helper_functions import *
 
 # minimum RS required to pass this screen
 min_rs = 90
@@ -14,9 +14,11 @@ process_stage = 1
 print_status(process_name, process_stage, True)
 print(f"Minimum Relative Strength to Pass: {min_rs}\n")
 
+# logging data (printed to console after screen finishes)
+logs = []
+
 # open json data extracted from nasdaq as pandas dataframe
-json_path = os.path.join(os.getcwd(), "backend", "json", "nasdaq_listings.json")
-df = pd.read_json(json_path)
+df = open_outfile("nasdaq_listings")
 df_pos = 0
 
 # extract symbols from dataframe
@@ -39,7 +41,7 @@ for symbol in price_df:
 
     # eliminate symbol if it has not traded for 1yr
     if end_index < 251:
-        print_skip(symbol, "insufficient data")
+        logs.append(skip_message(symbol, "insufficient data"))
         failed_symbols.append(symbol)
         continue
 
@@ -68,7 +70,7 @@ for symbol in price_df:
         or pd.isna(q4_start)
         or pd.isna(q4_end)
     ):
-        print_skip(symbol, "insufficient data")
+        logs.append(skip_message(symbol, "insufficient data"))
         failed_symbols.append(symbol)
         continue
 
@@ -76,8 +78,8 @@ for symbol in price_df:
         q1_start, q1_end, q2_start, q2_end, q3_start, q3_end, q4_start, q4_end
     )
 
-    print(
-        f"""{symbol} | Relative Strength (raw): {rs_raw:.3f}
+    logs.append(
+        f"""\n{symbol} | Relative Strength (raw): {rs_raw:.3f}
         Q1 : start: ${q1_start:.2f}, end: ${q1_end:.2f}
         Q2 : start: ${q2_start:.2f}, end: ${q2_end:.2f}
         Q3 : start: ${q3_start:.2f}, end: ${q3_end:.2f}
@@ -111,6 +113,9 @@ rs_df = rs_df[rs_df["RS"] >= min_rs]
 
 # serialize data in JSON format and save on machine
 create_outfile(rs_df, "relative_strengths")
+
+# print log
+print("".join(logs))
 
 # print footer message to terminal
 print(f"{len(failed_symbols)} symbols failed (insufficient data).")

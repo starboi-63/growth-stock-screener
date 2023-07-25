@@ -40,9 +40,16 @@ def print_status(process: str, stage: int, starting: bool):
         print(f"\n****** Stage {stage} [{process}] Finished ******\n")
 
 
-def print_skip(symbol: str, message: str):
+def skip_message(symbol: str, message: str) -> str:
     """print a custom message when screening a stock fails"""
-    print(f"Skipping {symbol} ({message}) . . .\n")
+    return f"\nSkipping {symbol} ({message}) . . .\n"
+
+
+def open_outfile(filename: str) -> pd.DataFrame:
+    """open json outfile data as pandas dataframe"""
+    json_path = os.path.join(os.getcwd(), "backend", "json", f"{filename}.json")
+    df = pd.read_json(json_path)
+    return df
 
 
 def create_outfile(data: pd.DataFrame, filename: str):

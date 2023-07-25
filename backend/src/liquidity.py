@@ -4,7 +4,7 @@ import asyncio
 import aiohttp
 from bs4 import BeautifulSoup
 from tqdm.asyncio import tqdm_asyncio
-from helper_functions import print_status, print_skip, create_outfile
+from helper_functions import *
 
 # constants
 min_market_cap = 1000000000
@@ -16,14 +16,18 @@ process_name = "Liquidity"
 process_stage = 2
 print_status(process_name, process_stage, True)
 print(
-    f"""Minimum market cap to pass: ${min_market_cap / 1000000000:.0f}B
-    Minimum price to pass: ${min_price:.2f}
-    Minimum average volume to pass: {min_volume} shares\n"""
+    f"""
+Minimum market cap to pass: ${min_market_cap / 1000000000:.0f}B
+Minimum price to pass: ${min_price:.2f}
+Minimum average volume to pass: {min_volume} shares\n
+"""
 )
 
+# logging data (printed to console after screen finishes)
+logs = []
+
 # retreive JSON data from previous screen iteration
-json_path = os.path.join(os.getcwd(), "backend", "json", "relative_strengths.json")
-df = pd.read_json(json_path)
+df = open_outfile("relative_strengths")
 
 # populate these lists while iterating through symbols
 successful_symbols = []
@@ -38,7 +42,7 @@ async def fetch(symbol: str, session):
         async with session.get(url) as response:
             return await response.text()
     except Exception as e:
-        print_skip(symbol, e)
+        logs.append(skip_message(symbol, e))
         failed_symbols.append(symbol)
         return None
 
@@ -80,13 +84,13 @@ async def screen_liquidity(df_index, session):
         return
 
     if pd.isna(market_cap):
-        print_skip(symbol, "couldn't fetch market cap")
+        logs.append(skip_message(symbol, "couldn't fetch market cap"))
         failed_symbols.append(symbol)
         return
 
     # print volume info to console
-    print(
-        f"{symbol} | Market Cap: ${market_cap / 1000000000:.0f}B | Price: ${price:.2f} | 50-day Avg. Volume: {volume} shares\n"
+    logs.append(
+        f"\n{symbol} | Market Cap: ${market_cap / 1000000000:.1f}B | Price: ${price:.2f} | 50-day Avg. Volume: {volume} shares\n"
     )
 
     # filter out illiquid stocks
@@ -121,6 +125,9 @@ screened_df = pd.DataFrame(successful_symbols)
 
 # serialize data in JSON format and save on machine
 create_outfile(screened_df, "liquidity")
+
+# print log
+print("".join(logs))
 
 # print footer message to terminal
 print(f"{len(failed_symbols)} symbols failed (insufficient data).")
