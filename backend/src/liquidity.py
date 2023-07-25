@@ -70,7 +70,7 @@ async def screen_liquidity(df_index, session):
         return
 
     if pd.isna(market_cap):
-        print(f"Skipping {symbol} (couldn't fetch market cap) . . .")
+        print_skip(symbol, "couldn't fetch market cap")
         failed_symbols.append(symbol)
         return
 
