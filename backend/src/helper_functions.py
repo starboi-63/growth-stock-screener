@@ -1,8 +1,9 @@
 import pandas as pd
+import os
 
 
-# calculate the percent change between two positive numbers
 def percent_change(initial: float, final: float) -> float:
+    """calculate the percent change between two positive numbers"""
     if initial == 0:
         raise ZeroDivisionError("Initial value of zero is undefined!")
 
@@ -12,7 +13,6 @@ def percent_change(initial: float, final: float) -> float:
     return 100 * (final - initial) / initial
 
 
-# calculate the raw relative strength of a stock given its price at the starts and ends of four trading quarters
 def relative_strength(
     q1_start: float,
     q1_end: float,
@@ -23,6 +23,7 @@ def relative_strength(
     q4_start: float,
     q4_end: float,
 ) -> float:
+    """calculate the raw relative strength of a stock given its price at the starts and ends of four trading quarters"""
     q1_change = percent_change(q1_start, q1_end)
     q2_change = percent_change(q2_start, q2_end)
     q3_change = percent_change(q3_start, q3_end)
@@ -31,9 +32,30 @@ def relative_strength(
     return 0.2 * (q1_change) + 0.2 * (q2_change) + 0.2 * (q3_change) + 0.4 * (q4_change)
 
 
-# print a header or footer for each screen iteration
 def print_status(process: str, stage: int, starting: bool):
+    """print a header or footer for each screen iteration"""
     if starting:
         print(f"\n****** Begin Stage {stage} [{process}] ******\n")
     else:
         print(f"\n****** Stage {stage} [{process}] Finished ******\n")
+
+
+def skip_message(symbol: str, message: str) -> str:
+    """print a custom message when screening a stock fails"""
+    return f"\nSkipping {symbol} ({message}) . . .\n"
+
+
+def open_outfile(filename: str) -> pd.DataFrame:
+    """open json outfile data as pandas dataframe"""
+    json_path = os.path.join(os.getcwd(), "backend", "json", f"{filename}.json")
+    df = pd.read_json(json_path)
+    return df
+
+
+def create_outfile(data: pd.DataFrame, filename: str):
+    """serialize data in JSON format and save on machine"""
+    serialized_json = data.to_json()
+    outfile_path = os.path.join(os.getcwd(), "backend", "json", f"{filename}.json")
+
+    with open(outfile_path, "w") as outfile:
+        outfile.write(serialized_json)

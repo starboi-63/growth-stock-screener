@@ -3,7 +3,7 @@ import os
 import json
 import pandas as pd
 import datetime as dt
-from helper_functions import relative_strength, print_status
+from helper_functions import *
 
 # minimum RS required to pass this screen
 min_rs = 90
@@ -12,12 +12,14 @@ min_rs = 90
 process_name = "Relative Strength"
 process_stage = 1
 print_status(process_name, process_stage, True)
-print(f"Minimum Relative Strength to Pass: {min_rs}")
+print(f"Minimum Relative Strength to Pass: {min_rs}\n")
+
+# logging data (printed to console after screen finishes)
+logs = []
 
 # open json data extracted from nasdaq as pandas dataframe
-json_path = os.path.join(os.getcwd(), "backend", "json", "nasdaq_listings.json")
-df = pd.read_json(json_path, orient="index")
-df.columns = ["Symbol"]
+df = open_outfile("nasdaq_listings")
+df_pos = 0
 
 # extract symbols from dataframe
 symbol_list = df["Symbol"].values.tolist()
@@ -28,7 +30,6 @@ price_df = tickers["Adj Close"]
 
 # populate these lists while iterating through symbols
 successful_symbols = []
-rs_raws = []
 failed_symbols = []
 
 # add empty line
@@ -40,6 +41,7 @@ for symbol in price_df:
 
     # eliminate symbol if it has not traded for 1yr
     if end_index < 251:
+        logs.append(skip_message(symbol, "insufficient data"))
         failed_symbols.append(symbol)
         continue
 
@@ -68,6 +70,7 @@ for symbol in price_df:
         or pd.isna(q4_start)
         or pd.isna(q4_end)
     ):
+        logs.append(skip_message(symbol, "insufficient data"))
         failed_symbols.append(symbol)
         continue
 
@@ -75,34 +78,44 @@ for symbol in price_df:
         q1_start, q1_end, q2_start, q2_end, q3_start, q3_end, q4_start, q4_end
     )
 
-    print(
-        f"""Symbol: {symbol} | Relative Strength (raw): {rs_raw:.3f}
+    logs.append(
+        f"""\n{symbol} | Relative Strength (raw): {rs_raw:.3f}
         Q1 : start: ${q1_start:.2f}, end: ${q1_end:.2f}
         Q2 : start: ${q2_start:.2f}, end: ${q2_end:.2f}
         Q3 : start: ${q3_start:.2f}, end: ${q3_end:.2f}
         Q4 : start: ${q4_start:.2f}, end: ${q4_end:.2f}\n"""
     )
 
-    successful_symbols.append(symbol)
-    rs_raws.append(rs_raw)
+    while df.iloc[df_pos]["Symbol"] != symbol:
+        df_pos += 1
+
+    df_row = df.iloc[df_pos]
+
+    successful_symbols.append(
+        {
+            "Symbol": symbol,
+            "Company Name": df_row["Company Name"],
+            "Market Cap": df_row["Market Cap"],
+            "Industry": df_row["Industry"],
+            "Price": q4_end,
+            "RS (raw)": rs_raw,
+        }
+    )
 
 # create a new dataframe with symbols whose relative strengths were successfully calculated
-rs_df = pd.DataFrame(
-    list(zip(successful_symbols, rs_raws)), columns=["Symbol", "RS (raw)"]
-)
+rs_df = pd.DataFrame(successful_symbols)
 
+# calculate RS rankings and filter out any symbols with an RS below the specified minimum
 rs_df["RS"] = rs_df["RS (raw)"].rank(pct=True)
 rs_df["RS"] = rs_df["RS"].map(lambda rs: round(100 * rs))
 rs_df = rs_df.drop(columns=["RS (raw)"])
 rs_df = rs_df[rs_df["RS"] >= min_rs]
 
 # serialize data in JSON format and save on machine
-serialized_json = rs_df.to_json()
-outfile_name = "relative_strengths.json"
-outfile_path = os.path.join(os.getcwd(), "backend", "json", outfile_name)
+create_outfile(rs_df, "relative_strengths")
 
-with open(outfile_path, "w") as outfile:
-    outfile.write(serialized_json)
+# print log
+print("".join(logs))
 
 # print footer message to terminal
 print(f"{len(failed_symbols)} symbols failed (insufficient data).")
