@@ -1,4 +1,5 @@
 import pandas as pd
+import os
 
 
 def percent_change(initial: float, final: float) -> float:
@@ -42,3 +43,12 @@ def print_status(process: str, stage: int, starting: bool):
 def print_skip(symbol: str, message: str):
     """print a custom message when screening a stock fails"""
     print(f"Skipping {symbol} ({message}) . . .\n")
+
+
+def create_outfile(data: pd.DataFrame, filename: str):
+    """serialize data in JSON format and save on machine"""
+    serialized_json = data.to_json()
+    outfile_path = os.path.join(os.getcwd(), "backend", "json", f"{filename}.json")
+
+    with open(outfile_path, "w") as outfile:
+        outfile.write(serialized_json)

@@ -4,7 +4,7 @@ import asyncio
 import aiohttp
 from bs4 import BeautifulSoup
 from tqdm.asyncio import tqdm_asyncio
-from helper_functions import print_status, print_skip
+from helper_functions import print_status, print_skip, create_outfile
 
 # constants
 min_market_cap = 1000000000
@@ -116,13 +116,16 @@ async def main():
 
 asyncio.run(main())
 
-# create a new dataframe with symbols whose relative strengths were successfully calculated
-screened_df = successful_symbols
+# create a new dataframe with symbols which satisfied liquidity criteria
+screened_df = pd.DataFrame(successful_symbols)
+
+# serialize data in JSON format and save on machine
+create_outfile(screened_df, "liquidity")
 
 # print footer message to terminal
 print(f"{len(failed_symbols)} symbols failed (insufficient data).")
 print(
-    f"{len(symbol_list) - len(rs_df) - len(failed_symbols)} symbols filtered (thinly traded or penny stock)."
+    f"{len(df) - len(screened_df) - len(failed_symbols)} symbols filtered (thinly traded or penny stock)."
 )
-print(f"{len(rs_df)} symbols passed.")
+print(f"{len(screened_df)} symbols passed.")
 print_status(process_name, process_stage, False)

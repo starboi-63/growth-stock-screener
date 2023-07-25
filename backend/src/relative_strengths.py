@@ -3,7 +3,7 @@ import os
 import json
 import pandas as pd
 import datetime as dt
-from helper_functions import relative_strength, print_status, print_skip
+from helper_functions import relative_strength, print_status, print_skip, create_outfile
 
 # minimum RS required to pass this screen
 min_rs = 90
@@ -110,12 +110,7 @@ rs_df = rs_df.drop(columns=["RS (raw)"])
 rs_df = rs_df[rs_df["RS"] >= min_rs]
 
 # serialize data in JSON format and save on machine
-serialized_json = rs_df.to_json()
-outfile_name = "relative_strengths.json"
-outfile_path = os.path.join(os.getcwd(), "backend", "json", outfile_name)
-
-with open(outfile_path, "w") as outfile:
-    outfile.write(serialized_json)
+create_outfile(rs_df, "relative_strengths")
 
 # print footer message to terminal
 print(f"{len(failed_symbols)} symbols failed (insufficient data).")

@@ -3,7 +3,7 @@ import pandas as pd
 import json
 import os
 from requests.exceptions import Timeout
-from helper_functions import print_status
+from helper_functions import print_status, create_outfile
 
 # print header message to terminal
 process_name = "NASDAQ Listings"
@@ -46,12 +46,7 @@ df.columns = ["Symbol", "Company Name", "Market Cap", "Industry"]
 df = df[~(df["Symbol"].str.contains("/") | df["Symbol"].str.contains("\^"))]
 
 # serialize data in JSON format and save on machine
-serialized_json = df.to_json()
-outfile_name = "nasdaq_listings.json"
-outfile_path = os.path.join(os.getcwd(), "backend", "json", outfile_name)
-
-with open(outfile_path, "w") as outfile:
-    outfile.write(serialized_json)
+create_outfile(df, "nasdaq_listings")
 
 # print footer message to terminal
 print(f"{len(df)} symbols extracted.")
