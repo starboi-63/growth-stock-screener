@@ -4,7 +4,12 @@ import asyncio
 import aiohttp
 from bs4 import BeautifulSoup
 from tqdm.asyncio import tqdm_asyncio
+from helper_functions import print_status, print_skip
 
+# constants
+min_market_cap = 1000000000
+min_price = 10
+min_volume = 100000
 
 # retreive JSON data from previous screen iteration
 json_path = os.path.join(os.getcwd(), "backend", "json", "relative_strengths.json")
@@ -22,7 +27,8 @@ async def fetch(symbol: str, session):
     try:
         async with session.get(url) as response:
             return await response.text()
-    except Exception:
+    except Exception as e:
+        print_skip(symbol, e)
         failed_symbols.append(symbol)
         return None
 
@@ -50,6 +56,7 @@ async def screen_liquidity(df_index, session):
     list if the row satisfies liquidity criteria"""
     row = df.iloc[df_index]
 
+    # extract information from dataframe row
     symbol = row["Symbol"]
     name = row["Company Name"]
     price = row["Price"]
@@ -59,12 +66,21 @@ async def screen_liquidity(df_index, session):
     rs = row["RS"]
 
     # check if null values are present in screen criteria
-    if pd.isna(market_cap) or volume is None:
+    if volume is None:
+        return
+
+    if pd.isna(market_cap):
+        print(f"Skipping {symbol} (couldn't fetch market cap) . . .")
         failed_symbols.append(symbol)
         return
 
-    # filter out stocks with a market cap below $1B, a price below $10, or a 50-day average volume below 100,000 shares
-    if market_cap < 1000000000 or price < 10 or volume < 100000:
+    # print volume info to console
+    print(
+        f"{symbol} | Market Cap: ${market_cap / 1000000000:.0f}B | Price: ${price:.2f} | 50-day Avg. Volume: {volume} shares"
+    )
+
+    # filter out illiquid stocks
+    if market_cap < min_market_cap or price < min_price or volume < min_volume:
         return
 
     successful_symbols.append(

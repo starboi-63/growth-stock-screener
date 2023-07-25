@@ -3,7 +3,7 @@ import os
 import json
 import pandas as pd
 import datetime as dt
-from helper_functions import relative_strength, print_status
+from helper_functions import relative_strength, print_status, print_skip
 
 # minimum RS required to pass this screen
 min_rs = 90
@@ -39,6 +39,7 @@ for symbol in price_df:
 
     # eliminate symbol if it has not traded for 1yr
     if end_index < 251:
+        print_skip(symbol, "insufficient data")
         failed_symbols.append(symbol)
         continue
 
@@ -67,6 +68,7 @@ for symbol in price_df:
         or pd.isna(q4_start)
         or pd.isna(q4_end)
     ):
+        print_skip(symbol, "insufficient data")
         failed_symbols.append(symbol)
         continue
 
@@ -75,7 +77,7 @@ for symbol in price_df:
     )
 
     print(
-        f"""Symbol: {symbol} | Relative Strength (raw): {rs_raw:.3f}
+        f"""{symbol} | Relative Strength (raw): {rs_raw:.3f}
         Q1 : start: ${q1_start:.2f}, end: ${q1_end:.2f}
         Q2 : start: ${q2_start:.2f}, end: ${q2_end:.2f}
         Q3 : start: ${q3_start:.2f}, end: ${q3_end:.2f}

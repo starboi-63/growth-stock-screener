@@ -37,3 +37,8 @@ def print_status(process: str, stage: int, starting: bool):
         print(f"\n****** Begin Stage {stage} [{process}] ******\n")
     else:
         print(f"\n****** Stage {stage} [{process}] Finished ******\n")
+
+
+def print_skip(symbol: str, message: str):
+    """print a custom message when screening a stock fails"""
+    print(f"Skipping {symbol} ({message}) . . .\n")
