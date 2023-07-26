@@ -11,7 +11,7 @@ from tqdm import tqdm
 
 # constants
 threads = 10  # number of concurrent Selenium browser instances to fetch data
-timeout = 30
+timeout = 120
 moving_averages_xpath = "/html/body/main/div/div[2]/div/div[2]/div[4]/div/div[2]/div/div/div/div[4]/div/div[2]/div/div[1]/table/tbody"
 
 # print header message to terminal
@@ -127,7 +127,7 @@ def screen_trend(df_index: int):
     # print trend info to console
     logs.append(
         f"""\n{symbol} | 10-day EMA: ${ema_10}, 21-day EMA: ${ema_21}, 50-day SMA: ${sma_50}, 200-day SMA: ${sma_200}
-        52-week high: ${high_52_week}, Percent Below 52-week High: {percent_below_high:.0f}%\n"""
+        Current Price: ${price:.2f}, 52-week high: ${high_52_week}, Percent Below 52-week High: {percent_below_high:.0f}%\n"""
     )
 
     # filter out stocks which are not in a stage-2 uptrend
@@ -138,6 +138,7 @@ def screen_trend(df_index: int):
         or (ema_21 < sma_50)
         or (percent_below_high > 50)
     ):
+        logs.append(f"\n{symbol} filtered out\n")
         return
 
     successful_symbols.append(
@@ -150,7 +151,12 @@ def screen_trend(df_index: int):
             "Market Cap": row["Market Cap"],
             "50-day Average Volume": row["50-day Average Volume"],
             "% Below 52-week High": percent_below_high,
-        }.update(trend_data)
+            "10-day EMA": ema_10,
+            "21-day EMA": ema_21,
+            "50-day SMA": sma_50,
+            "200-day SMA": sma_200,
+            "52-week high": high_52_week,
+        }
     )
 
 
@@ -162,3 +168,9 @@ with ThreadPool(threads) as pool:
 
 # print log
 print("".join(logs))
+
+# create a new dataframe with symbols which satisfied trend criteria
+screened_df = pd.DataFrame(successful_symbols)
+
+print(screened_df)
+print(failed_symbols)
