@@ -99,7 +99,7 @@ def screen_trend(df_index: int):
     percent_below_high = percent_change(high_52_week, price)
 
     # print trend info to console
-    logs.append(
+    logs.extend(
         [
             f"\n{symbol} | 10-day EMA: ${ema_10}, 21-day EMA: ${ema_21}, 50-day SMA: ${sma_50}, 200-day SMA: ${sma_200}",
             f"\n52-week high: ${high_52_week}, % below 52-week high: {percent_below_high:.0f}%\n",
@@ -130,11 +130,11 @@ def screen_trend(df_index: int):
     )
 
 
-screen_trend(0)
+screen_trend(5)
+
+# print log
+print("".join(logs))
+
 print(successful_symbols)
 
 running_threads = 0
-
-# populate these lists while iterating through symbols
-successful_symbols = []
-failed_symbols = []
