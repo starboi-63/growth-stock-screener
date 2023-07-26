@@ -46,8 +46,8 @@ async def fetch(symbol: str, session):
         return None
 
 
-def extract_avg_volume(response):
-    """extract 50-day average volume from request response"""
+def extract_avg_volume(response) -> int:
+    """consumes a get request response from barchart.com and produces the 50-day average volume"""
     # handle null responses
     if response is None:
         return None
@@ -65,8 +65,8 @@ def extract_avg_volume(response):
 
 
 async def screen_liquidity(df_index, session):
-    """Consumes a row index of the stock dataframe and populates data
-    list if the row satisfies liquidity criteria"""
+    """coroutine which consumes a row index of the stock dataframe and populates
+    data lists if the row satisfies liquidity criteria"""
     row = df.iloc[df_index]
 
     # extract information from dataframe row
