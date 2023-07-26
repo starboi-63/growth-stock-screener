@@ -8,7 +8,7 @@ from selenium.common.exceptions import TimeoutException
 import multiprocessing
 
 # constants
-max_threads = 10  # number of concurrent Selenium browser instances to fetch data
+threads = 10  # number of concurrent Selenium browser instances to fetch data
 timeout = 30
 moving_averages_xpath = "/html/body/main/div/div[2]/div/div[2]/div[4]/div/div[2]/div/div/div/div[4]/div/div[2]/div/div[1]/table/tbody"
 
@@ -102,7 +102,7 @@ def screen_trend(df_index: int):
     logs.extend(
         [
             f"\n{symbol} | 10-day EMA: ${ema_10}, 21-day EMA: ${ema_21}, 50-day SMA: ${sma_50}, 200-day SMA: ${sma_200}",
-            f"\n52-week high: ${high_52_week}, % below 52-week high: {percent_below_high:.0f}%\n",
+            f"\n52-week high: ${high_52_week}, Percent Below 52-week High: {percent_below_high:.0f}%\n",
         ]
     )
 
@@ -130,11 +130,8 @@ def screen_trend(df_index: int):
     )
 
 
-screen_trend(5)
+with multiprocessing.ThreadPool(threads) as pool:
+    pool.map(screen_trend, range(0, len(df)))
 
 # print log
 print("".join(logs))
-
-print(successful_symbols)
-
-running_threads = 0
