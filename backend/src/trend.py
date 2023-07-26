@@ -96,7 +96,7 @@ def screen_trend(df_index: int):
     sma_200 = trend_data["200-day SMA"]
     high_52_week = trend_data["52-week high"]
 
-    percent_below_high = percent_change(high_52_week, price)
+    percent_below_high = -1 * percent_change(high_52_week, price)
 
     # print trend info to console
     logs.extend(
