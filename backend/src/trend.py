@@ -7,6 +7,7 @@ from selenium.webdriver.support import expected_conditions as EC
 from selenium.common.exceptions import TimeoutException
 import threading
 from multiprocessing.pool import ThreadPool
+from tqdm import tqdm
 
 # constants
 threads = 10  # number of concurrent Selenium browser instances to fetch data
@@ -156,7 +157,9 @@ def screen_trend(df_index: int):
 
 
 with ThreadPool(threads) as pool:
-    pool.map(screen_trend, range(0, len(df)))
+    results_tqdm = []
+    for result in tqdm(pool.imap(screen_trend, range(0, 10)), total=10):
+        results_tqdm.append(result)
 
 # print log
 print("".join(logs))
