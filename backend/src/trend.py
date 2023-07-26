@@ -38,7 +38,7 @@ def extract_value(td) -> float:
 
 
 def fetch(symbol: str) -> dict:
-    """consumes a stock symbol and fetches moving average data and 52-week high"""
+    """consumes a stock symbol and returns moving average data and 52-week high as a dictionary"""
     url = f"https://www.movingaverages.com/pivot-points/{symbol}"
 
     with webdriver.Firefox(options=options) as driver:
@@ -63,13 +63,22 @@ def fetch(symbol: str) -> dict:
         ema_21 = extract_value(soup.find("td", class_="ma21"))
         sma_50 = extract_value(soup.find("td", class_="ma50"))
         sma_200 = extract_value(soup.find("td", class_="ma200"))
-        high_52_week = soup.find("tr", class_="52wkHigh")
+        high_52_week = float(
+            soup.find("tr", attrs={"data-marker": "52wkHigh"})["data-value"]
+        )
 
-        return ema_21
+        return {
+            "10-day EMA": ema_10,
+            "21-day EMA": ema_21,
+            "50-day SMA": sma_50,
+            "200-day SMA": sma_200,
+            "52-week high": high_52_week,
+        }
 
 
 result = fetch("NVDA")
 print(result)
+print(type(result))
 
 running_threads = 0
 
