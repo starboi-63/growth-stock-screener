@@ -5,7 +5,7 @@ from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.common.exceptions import TimeoutException
-from threading import Thread
+import multiprocessing
 
 # constants
 max_threads = 10  # number of concurrent Selenium browser instances to fetch data
@@ -28,6 +28,10 @@ options = webdriver.FirefoxOptions()
 options.add_argument("--headless")
 options.add_argument("--disable-gpu")
 options.page_load_strategy = "none"
+
+# populate these lists while iterating through symbols
+successful_symbols = []
+failed_symbols = []
 
 
 def extract_value(td) -> float:
@@ -76,9 +80,58 @@ def fetch(symbol: str) -> dict:
         }
 
 
-result = fetch("NVDA")
-print(result)
-print(type(result))
+def screen_trend(df_index: int):
+    """consumes a stock symbol and populates data lists based on whether the stock
+    is in a stage-2 uptrend"""
+    # extract stock information from dataframe and fetch trend info
+    row = df.iloc[df_index]
+
+    symbol = row["Symbol"]
+    trend_data = fetch(symbol)
+
+    price = row["Price"]
+    ema_10 = trend_data["10-day EMA"]
+    ema_21 = trend_data["21-day EMA"]
+    sma_50 = trend_data["50-day SMA"]
+    sma_200 = trend_data["200-day SMA"]
+    high_52_week = trend_data["52-week high"]
+
+    percent_below_high = percent_change(high_52_week, price)
+
+    # print trend info to console
+    logs.append(
+        [
+            f"\n{symbol} | 10-day EMA: ${ema_10}, 21-day EMA: ${ema_21}, 50-day SMA: ${sma_50}, 200-day SMA: ${sma_200}",
+            f"\n52-week high: ${high_52_week}, % below 52-week high: {percent_below_high:.0f}%\n",
+        ]
+    )
+
+    # filter out stocks which are not in a stage-2 uptrend
+    if (
+        (price < sma_50)
+        or (price < sma_200)
+        or (ema_10 < ema_21)
+        or (ema_21 < sma_50)
+        or (percent_below_high > 50)
+    ):
+        return
+
+    successful_symbols.append(
+        {
+            "Symbol": symbol,
+            "Company Name": row["Company Name"],
+            "Industry": row["Industry"],
+            "RS": row["RS"],
+            "Price": price,
+            "Market Cap": row["Market Cap"],
+            "50-day Average Volume": row["50-day Average Volume"],
+            "% Below 52-week High": percent_below_high,
+        }.update(trend_data)
+    )
+
+
+screen_trend(0)
+print(successful_symbols)
 
 running_threads = 0
 

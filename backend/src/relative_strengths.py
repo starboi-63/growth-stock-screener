@@ -16,7 +16,7 @@ logs = []
 
 # open json data extracted from nasdaq as pandas dataframe
 df = open_outfile("nasdaq_listings")
-df_pos = 0
+df_index = 0
 
 # extract symbols from dataframe
 symbol_list = df["Symbol"].values.tolist()
@@ -83,17 +83,17 @@ for symbol in price_df:
         Q4 : start: ${q4_start:.2f}, end: ${q4_end:.2f}\n"""
     )
 
-    while df.iloc[df_pos]["Symbol"] != symbol:
-        df_pos += 1
+    while df.iloc[df_index]["Symbol"] != symbol:
+        df_index += 1
 
-    df_row = df.iloc[df_pos]
+    row = df.iloc[df_index]
 
     successful_symbols.append(
         {
             "Symbol": symbol,
-            "Company Name": df_row["Company Name"],
-            "Market Cap": df_row["Market Cap"],
-            "Industry": df_row["Industry"],
+            "Company Name": row["Company Name"],
+            "Market Cap": row["Market Cap"],
+            "Industry": row["Industry"],
             "Price": q4_end,
             "RS (raw)": rs_raw,
         }

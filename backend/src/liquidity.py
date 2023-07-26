@@ -64,19 +64,16 @@ def extract_avg_volume(response) -> int:
     return volume
 
 
-async def screen_liquidity(df_index, session):
+async def screen_liquidity(df_index: int, session):
     """coroutine which consumes a row index of the stock dataframe and populates
     data lists if the row satisfies liquidity criteria"""
     row = df.iloc[df_index]
 
-    # extract information from dataframe row
+    # extract important information from dataframe row
     symbol = row["Symbol"]
-    name = row["Company Name"]
     price = row["Price"]
     market_cap = row["Market Cap"]
     volume = extract_avg_volume(await fetch(symbol, session))
-    industry = row["Industry"]
-    rs = row["RS"]
 
     # check if null values are present in screen criteria
     if volume is None:
@@ -99,12 +96,12 @@ async def screen_liquidity(df_index, session):
     successful_symbols.append(
         {
             "Symbol": symbol,
-            "Company Name": name,
+            "Company Name": row["Company Name"],
             "Price": price,
             "Market Cap": market_cap,
             "50-day Average Volume": volume,
-            "Industry": industry,
-            "RS": rs,
+            "Industry": row["Industry"],
+            "RS": row["RS"],
         }
     )
 
