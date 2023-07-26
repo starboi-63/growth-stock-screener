@@ -28,7 +28,6 @@ df = open_outfile("liquidity")
 # populate these lists while iterating through symbols
 successful_symbols = []
 failed_symbols = []
-drivers = []
 
 # store local thread data
 thread_local = threading.local()
@@ -48,7 +47,6 @@ def get_driver():
         options.page_load_strategy = "none"
         driver = webdriver.Firefox(options=options)
         setattr(thread_local, "driver", driver)
-        drivers.append(driver)
 
     return driver
 
@@ -157,13 +155,10 @@ def screen_trend(df_index: int):
 
 
 with ThreadPool(threads) as pool:
+    # tqdm requires an array to track finished threads in order to create a progress bar
     results_tqdm = []
     for result in tqdm(pool.imap(screen_trend, range(0, 10)), total=10):
         results_tqdm.append(result)
 
 # print log
 print("".join(logs))
-
-# close all browser instances
-for driver in drivers:
-    driver.quit()
