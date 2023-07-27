@@ -57,7 +57,7 @@ def extract_value(td) -> float:
     """consumes a beautiful soup table-data object from movingaverages.com
     and returns the value contained in it"""
     raw_value = list(td.children)[1].contents[0]
-    return float(raw_value)
+    return float(str(raw_value).replace(",", ""))
 
 
 def fetch(symbol: str) -> dict:
@@ -84,7 +84,9 @@ def fetch(symbol: str) -> dict:
     sma_50 = extract_value(soup.find("td", class_="ma50"))
     sma_200 = extract_value(soup.find("td", class_="ma200"))
     high_52_week = float(
-        soup.find("tr", attrs={"data-marker": "52wkHigh"})["data-value"]
+        str(soup.find("tr", attrs={"data-marker": "52wkHigh"})["data-value"]).replace(
+            ",", ""
+        )
     )
 
     trend_data = {
