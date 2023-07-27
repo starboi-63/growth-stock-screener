@@ -163,14 +163,22 @@ def screen_trend(df_index: int):
 with ThreadPool(threads) as pool:
     # tqdm requires an array to track finished threads in order to create a progress bar
     results_tqdm = []
-    for result in tqdm(pool.imap(screen_trend, range(0, 10)), total=10):
+    for result in tqdm(pool.imap(screen_trend, range(0, len(df))), total=len(df)):
         results_tqdm.append(result)
-
-# print log
-print("".join(logs))
 
 # create a new dataframe with symbols which satisfied trend criteria
 screened_df = pd.DataFrame(successful_symbols)
 
-print(screened_df)
-print(failed_symbols)
+# serialize data in JSON format and save on machine
+create_outfile(screened_df, "trend")
+
+# print log
+print("".join(logs))
+
+# print footer message to terminal
+print(f"{len(failed_symbols)} symbols failed (insufficient data).")
+print(
+    f"{len(df) - len(screened_df) - len(failed_symbols)} symbols filtered (not in stage-2 uptrend)."
+)
+print(f"{len(screened_df)} symbols passed.")
+print_status(process_name, process_stage, False)
