@@ -10,7 +10,7 @@ from multiprocessing.pool import ThreadPool
 from tqdm import tqdm
 
 # constants
-threads = 10  # number of concurrent Selenium browser instances to fetch data
+threads = 1  # number of concurrent Selenium browser instances to fetch data
 timeout = 120
 moving_averages_xpath = "/html/body/main/div/div[2]/div/div[2]/div[4]/div/div[2]/div/div/div/div[4]/div/div[2]/div/div[1]/table/tbody"
 
@@ -28,6 +28,7 @@ df = open_outfile("liquidity")
 # populate these lists while iterating through symbols
 successful_symbols = []
 failed_symbols = []
+drivers = []
 
 # store local thread data
 thread_local = threading.local()
@@ -44,9 +45,10 @@ def get_driver():
         options = webdriver.FirefoxOptions()
         options.add_argument("--headless")
         options.add_argument("--disable-gpu")
-        options.page_load_strategy = "none"
+        options.page_load_strategy = "eager"
         driver = webdriver.Firefox(options=options)
         setattr(thread_local, "driver", driver)
+        drivers.append(driver)
 
     return driver
 
@@ -163,7 +165,7 @@ def screen_trend(df_index: int):
 with ThreadPool(threads) as pool:
     # tqdm requires an array to track finished threads in order to create a progress bar
     results_tqdm = []
-    for result in tqdm(pool.imap(screen_trend, range(0, len(df))), total=len(df)):
+    for result in tqdm(pool.imap(screen_trend, range(0, 2)), total=2):
         results_tqdm.append(result)
 
 # create a new dataframe with symbols which satisfied trend criteria
@@ -182,3 +184,6 @@ print(
 )
 print(f"{len(screened_df)} symbols passed.")
 print_status(process_name, process_stage, False)
+
+for driver in drivers:
+    driver.quit()
