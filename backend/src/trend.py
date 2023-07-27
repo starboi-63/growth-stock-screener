@@ -10,7 +10,7 @@ from multiprocessing.pool import ThreadPool
 from tqdm import tqdm
 
 # constants
-threads = 1  # number of concurrent Selenium browser instances to fetch data
+threads = 10  # number of concurrent Selenium browser instances to fetch data
 timeout = 120
 moving_averages_xpath = "/html/body/main/div/div[2]/div/div[2]/div[4]/div/div[2]/div/div/div/div[4]/div/div[2]/div/div[1]/table/tbody"
 
@@ -165,7 +165,7 @@ def screen_trend(df_index: int):
 with ThreadPool(threads) as pool:
     # tqdm requires an array to track finished threads in order to create a progress bar
     results_tqdm = []
-    for result in tqdm(pool.imap(screen_trend, range(0, 2)), total=2):
+    for result in tqdm(pool.imap(screen_trend, range(0, len(df))), total=len(df)):
         results_tqdm.append(result)
 
 # create a new dataframe with symbols which satisfied trend criteria
