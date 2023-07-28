@@ -137,7 +137,7 @@ def screen_trend(df_index: int) -> None:
 
     # print trend info to console
     logs.append(
-        f"""\n{symbol} | 10-day EMA: ${sma_10}, 21-day EMA: ${sma_20}, 50-day SMA: ${sma_50}, 200-day SMA: ${sma_200}
+        f"""\n{symbol} | 10-day SMA: ${sma_10}, 20-day SMA: ${sma_20}, 50-day SMA: ${sma_50}, 200-day SMA: ${sma_200}
         Current Price: ${price:.2f}, 52-week high: ${high_52_week}, Percent Below 52-week High: {percent_below_high:.0f}%\n"""
     )
 
