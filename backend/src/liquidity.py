@@ -42,7 +42,6 @@ async def fetch(symbol: str, session):
             return await response.text()
     except Exception as e:
         logs.append(skip_message(symbol, e))
-        failed_symbols.append(symbol)
         return None
 
 
@@ -77,6 +76,7 @@ async def screen_liquidity(df_index: int, session):
 
     # check if null values are present in screen criteria
     if volume is None:
+        failed_symbols.append(symbol)
         return
 
     if pd.isna(market_cap):

@@ -73,7 +73,6 @@ def fetch(symbol: str) -> dict:
         driver.execute_script("window.stop();")
     except TimeoutException:
         logs.append(skip_message(symbol, "request timed out"))
-        failed_symbols.append(symbol)
         return None
 
     # extract moving averages and 52-week high from response
@@ -101,7 +100,6 @@ def fetch(symbol: str) -> dict:
     for data in trend_data.values():
         if data is None:
             logs.append(skip_message(symbol, "insufficient data"))
-            failed_symbols.append(symbol)
             return None
 
     return trend_data
@@ -117,6 +115,7 @@ def screen_trend(df_index: int):
     trend_data = fetch(symbol)
 
     if trend_data is None:
+        failed_symbols.append(symbol)
         return
 
     price = row["Price"]
