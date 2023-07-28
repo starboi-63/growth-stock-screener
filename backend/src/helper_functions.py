@@ -32,7 +32,7 @@ def relative_strength(
     return 0.2 * (q1_change) + 0.2 * (q2_change) + 0.2 * (q3_change) + 0.4 * (q4_change)
 
 
-def print_status(process: str, stage: int, starting: bool):
+def print_status(process: str, stage: int, starting: bool) -> None:
     """print a header or footer for each screen iteration"""
     if starting:
         print(f"\n****** Begin Stage {stage} [{process}] ******\n")
@@ -52,7 +52,7 @@ def open_outfile(filename: str) -> pd.DataFrame:
     return df
 
 
-def create_outfile(data: pd.DataFrame, filename: str):
+def create_outfile(data: pd.DataFrame, filename: str) -> None:
     """serialize data in JSON format and save on machine"""
     serialized_json = data.to_json()
     outfile_path = os.path.join(os.getcwd(), "backend", "json", f"{filename}.json")
