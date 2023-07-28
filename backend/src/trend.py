@@ -1,8 +1,7 @@
 from helper_functions import *
-import bs4
-from bs4 import BeautifulSoup
 from selenium import webdriver
 from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver.remote.webelement import WebElement
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.common.exceptions import TimeoutException
@@ -11,9 +10,11 @@ from multiprocessing.pool import ThreadPool
 from tqdm import tqdm
 
 # constants
-threads = 10  # number of concurrent Selenium browser instances to fetch data
+threads = 1  # number of concurrent Selenium browser instances to fetch data
 timeout = 120
-moving_averages_xpath = "/html/body/main/div/div[2]/div/div[2]/div[4]/div/div[2]/div/div/div/div[4]/div/div[2]/div/div[1]/table/tbody"
+moving_averages_xpath = "/html/body/div[3]/div[4]/div[2]/div[2]/div/section/div/div[6]/div[2]/div[2]/table/tbody/tr[13]/td[2]"
+sma_20_xpath = "/html/body/div[3]/div[4]/div[2]/div[2]/div/section/div/div[6]/div[2]/div[2]/table/tbody/tr[5]/td[2]"
+sma_200_xpath = "/html/body/div[3]/div[4]/div[2]/div[2]/div/section/div/div[6]/div[2]/div[2]/table/tbody/tr[13]/td[2]"
 
 # print header message to terminal
 process_name = "Trend"
@@ -54,16 +55,17 @@ def get_driver() -> webdriver.Firefox:
     return driver
 
 
-def extract_value(td: bs4.element.Tag) -> float:
-    """Consume a beautiful soup table-data object from movingaverages.com
-    and return the value contained in it."""
-    raw_value = list(td.children)[1].contents[0]
-    return float(str(raw_value).replace(",", ""))
+def extract_value(element: WebElement) -> float:
+    """Consume a Selenium WebElement and return its value as a float."""
+    try:
+        return float(element.text)
+    except:
+        return None
 
 
 def fetch(symbol: str) -> dict:
-    """Consume a stock symbol and return moving average data and 52-week high as a dictionary."""
-    url = f"https://www.movingaverages.com/pivot-points/{symbol}"
+    """Consume a stock symbol and return moving average data as a dictionary."""
+    url = f"https://www.tradingview.com/symbols/{symbol}/technicals/"
     # perform get request and stop loading page when data table is detected in DOM
     driver = get_driver()
     driver.get(url)
@@ -76,19 +78,17 @@ def fetch(symbol: str) -> dict:
         logs.append(skip_message(symbol, "request timed out"))
         return None
 
-    # extract moving averages and 52-week high from response
-    soup = BeautifulSoup(driver.page_source, "html.parser")
+    # # extract moving averages and 52-week high from response
+    # soup = BeautifulSoup(driver.page_source, "html.parser")
+
+    elt = driver.find_element(By.XPATH, sma_20_xpath)
+    print(extract_value(elt))
 
     try:
-        ema_10 = extract_value(soup.find("td", class_="ma10"))
-        ema_21 = extract_value(soup.find("td", class_="ma21"))
-        sma_50 = extract_value(soup.find("td", class_="ma50"))
-        sma_200 = extract_value(soup.find("td", class_="ma200"))
-        high_52_week = float(
-            str(
-                soup.find("tr", attrs={"data-marker": "52wkHigh"})["data-value"]
-            ).replace(",", "")
-        )
+        ema_10 = None
+        ema_21 = None
+        sma_50 = None
+        sma_200 = None
     except Exception as e:
         logs.append(skip_message(symbol, e))
         return None
@@ -98,7 +98,6 @@ def fetch(symbol: str) -> dict:
         "21-day EMA": ema_21,
         "50-day SMA": sma_50,
         "200-day SMA": sma_200,
-        "52-week high": high_52_week,
     }
 
     # check for null values in fetched trend data

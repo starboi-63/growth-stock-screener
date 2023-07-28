@@ -1,6 +1,7 @@
 import pandas as pd
 import asyncio
 import aiohttp
+from aiohttp.client import ClientSession
 from bs4 import BeautifulSoup
 from tqdm.asyncio import tqdm_asyncio
 from helper_functions import *
@@ -33,7 +34,7 @@ successful_symbols = []
 failed_symbols = []
 
 
-async def fetch(symbol: str, session: aiohttp.client.ClientSession) -> str:
+async def fetch(symbol: str, session: ClientSession) -> str:
     """Send a GET request for the given stock symbol to barchart.com and return the response as a string."""
     url = f"https://www.barchart.com/stocks/quotes/{symbol}/technical-analysis"
 
@@ -67,9 +68,7 @@ def extract_avg_volume(symbol: str, response: str) -> int:
         return None
 
 
-async def screen_liquidity(
-    df_index: int, session: aiohttp.client.ClientSession
-) -> None:
+async def screen_liquidity(df_index: int, session: ClientSession) -> None:
     """Consume a row index of the stock dataframe and populate
     data lists if the row satisfies liquidity criteria."""
     row = df.iloc[df_index]
