@@ -3,7 +3,7 @@ import os
 
 
 def percent_change(initial: float, final: float) -> float:
-    """calculate the percent change between two positive numbers"""
+    """Calculate the percent change between two positive numbers."""
     if initial == 0:
         raise ZeroDivisionError("Initial value of zero is undefined!")
 
@@ -23,7 +23,7 @@ def relative_strength(
     q4_start: float,
     q4_end: float,
 ) -> float:
-    """calculate the raw relative strength of a stock given its price at the starts and ends of four trading quarters"""
+    """Calculate the raw relative strength of a stock given its price at the starts and ends of four trading quarters."""
     q1_change = percent_change(q1_start, q1_end)
     q2_change = percent_change(q2_start, q2_end)
     q3_change = percent_change(q3_start, q3_end)
@@ -33,7 +33,7 @@ def relative_strength(
 
 
 def print_status(process: str, stage: int, starting: bool) -> None:
-    """print a header or footer for each screen iteration"""
+    """Print a header or footer for each screen iteration."""
     if starting:
         print(f"\n****** Begin Stage {stage} [{process}] ******\n")
     else:
@@ -41,24 +41,24 @@ def print_status(process: str, stage: int, starting: bool) -> None:
 
 
 def skip_message(symbol: str, message: str) -> str:
-    """returns a custom message logging screening errors"""
+    """Return a custom message logging screening errors."""
     return f"\nSkipping {symbol} ({message}) . . .\n"
 
 
 def filter_message(symbol: str) -> str:
-    """returns a custom message for logging when a stock is filtered out by a screen"""
+    """Return a custom message for logging when a stock is filtered out by a screen."""
     return f"\n{symbol} filtered out.\n"
 
 
 def open_outfile(filename: str) -> pd.DataFrame:
-    """opens json outfile data as pandas dataframe"""
+    """Open json outfile data as pandas dataframe."""
     json_path = os.path.join(os.getcwd(), "backend", "json", f"{filename}.json")
     df = pd.read_json(json_path)
     return df
 
 
 def create_outfile(data: pd.DataFrame, filename: str) -> None:
-    """Serializes a pandas dataframe in JSON format and saves in ".\\backend\\json" directory"""
+    """Serialize a pandas dataframe in JSON format and save in ".\\backend\\json" directory."""
     serialized_json = data.to_json()
     outfile_path = os.path.join(os.getcwd(), "backend", "json", f"{filename}.json")
 

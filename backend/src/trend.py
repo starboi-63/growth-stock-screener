@@ -35,9 +35,9 @@ drivers = []
 thread_local = threading.local()
 
 
-def get_driver() -> webdriver.firefox.webdriver.WebDriver:
-    """returns the web driver attributed to a thread; creates a new
-    web driver if no driver is found"""
+def get_driver() -> webdriver.Firefox:
+    """Return the web driver attributed to a thread. Create a new
+    web driver if no driver is found."""
     # check the driver associated with the thread
     driver = getattr(thread_local, "driver", None)
 
@@ -55,14 +55,14 @@ def get_driver() -> webdriver.firefox.webdriver.WebDriver:
 
 
 def extract_value(td: bs4.element.Tag) -> float:
-    """consumes a beautiful soup table-data object from movingaverages.com
-    and returns the value contained in it"""
+    """Consume a beautiful soup table-data object from movingaverages.com
+    and return the value contained in it."""
     raw_value = list(td.children)[1].contents[0]
     return float(str(raw_value).replace(",", ""))
 
 
 def fetch(symbol: str) -> dict:
-    """consumes a stock symbol and returns moving average data and 52-week high as a dictionary"""
+    """Consume a stock symbol and return moving average data and 52-week high as a dictionary."""
     url = f"https://www.movingaverages.com/pivot-points/{symbol}"
     # perform get request and stop loading page when data table is detected in DOM
     driver = get_driver()
@@ -107,8 +107,8 @@ def fetch(symbol: str) -> dict:
 
 
 def screen_trend(df_index: int) -> None:
-    """consumes a stock symbol and populates data lists based on whether the stock
-    is in a stage-2 uptrend"""
+    """Consume a stock symbol and populate data lists based on whether the stock
+    is in a stage-2 uptrend."""
     # extract stock information from dataframe and fetch trend info
     row = df.iloc[df_index]
 
