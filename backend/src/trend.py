@@ -79,15 +79,19 @@ def fetch(symbol: str) -> dict:
     # extract moving averages and 52-week high from response
     soup = BeautifulSoup(driver.page_source, "html.parser")
 
-    ema_10 = extract_value(soup.find("td", class_="ma10"))
-    ema_21 = extract_value(soup.find("td", class_="ma21"))
-    sma_50 = extract_value(soup.find("td", class_="ma50"))
-    sma_200 = extract_value(soup.find("td", class_="ma200"))
-    high_52_week = float(
-        str(soup.find("tr", attrs={"data-marker": "52wkHigh"})["data-value"]).replace(
-            ",", ""
+    try:
+        ema_10 = extract_value(soup.find("td", class_="ma10"))
+        ema_21 = extract_value(soup.find("td", class_="ma21"))
+        sma_50 = extract_value(soup.find("td", class_="ma50"))
+        sma_200 = extract_value(soup.find("td", class_="ma200"))
+        high_52_week = float(
+            str(
+                soup.find("tr", attrs={"data-marker": "52wkHigh"})["data-value"]
+            ).replace(",", "")
         )
-    )
+    except Exception as e:
+        logs.append(skip_message(symbol, e))
+        return None
 
     trend_data = {
         "10-day EMA": ema_10,
