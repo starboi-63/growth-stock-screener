@@ -142,7 +142,7 @@ def screen_trend(df_index: int) -> None:
         or (ema_21 < sma_50)
         or (percent_below_high > 50)
     ):
-        logs.append(f"\n{symbol} filtered out\n")
+        logs.append(filter_message(symbol))
         return
 
     successful_symbols.append(

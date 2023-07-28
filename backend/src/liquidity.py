@@ -93,6 +93,7 @@ async def screen_liquidity(
 
     # filter out illiquid stocks
     if (market_cap < min_market_cap) or (price < min_price) or (volume < min_volume):
+        logs.append(filter_message(symbol))
         return
 
     successful_symbols.append(

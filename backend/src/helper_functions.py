@@ -41,19 +41,24 @@ def print_status(process: str, stage: int, starting: bool) -> None:
 
 
 def skip_message(symbol: str, message: str) -> str:
-    """print a custom message when screening a stock fails"""
+    """returns a custom message logging screening errors"""
     return f"\nSkipping {symbol} ({message}) . . .\n"
 
 
+def filter_message(symbol: str) -> str:
+    """returns a custom message for logging when a stock is filtered out by a screen"""
+    return f"\n{symbol} filtered out.\n"
+
+
 def open_outfile(filename: str) -> pd.DataFrame:
-    """open json outfile data as pandas dataframe"""
+    """opens json outfile data as pandas dataframe"""
     json_path = os.path.join(os.getcwd(), "backend", "json", f"{filename}.json")
     df = pd.read_json(json_path)
     return df
 
 
 def create_outfile(data: pd.DataFrame, filename: str) -> None:
-    """serialize data in JSON format and save on machine"""
+    """Serializes a pandas dataframe in JSON format and saves in ".\\backend\\json" directory"""
     serialized_json = data.to_json()
     outfile_path = os.path.join(os.getcwd(), "backend", "json", f"{filename}.json")
 
