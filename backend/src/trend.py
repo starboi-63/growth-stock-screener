@@ -1,20 +1,23 @@
 from helper_functions import *
 from selenium import webdriver
 from selenium.webdriver.support.ui import WebDriverWait
-from selenium.webdriver.remote.webelement import WebElement
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.common.exceptions import TimeoutException
 import threading
 from multiprocessing.pool import ThreadPool
 from tqdm import tqdm
+import requests
+from lxml import html
 
 # constants
 threads = 1  # number of concurrent Selenium browser instances to fetch data
 timeout = 120
-moving_averages_xpath = "/html/body/div[3]/div[4]/div[2]/div[2]/div/section/div/div[6]/div[2]/div[2]/table/tbody/tr[13]/td[2]"
+sma_10_xpath = "/html/body/div[3]/div[4]/div[2]/div[2]/div/section/div/div[6]/div[2]/div[2]/table/tbody/tr[3]/td[2]"
 sma_20_xpath = "/html/body/div[3]/div[4]/div[2]/div[2]/div/section/div/div[6]/div[2]/div[2]/table/tbody/tr[5]/td[2]"
+sma_50_xpath = "/html/body/div[3]/div[4]/div[2]/div[2]/div/section/div/div[6]/div[2]/div[2]/table/tbody/tr[9]/td[2]"
 sma_200_xpath = "/html/body/div[3]/div[4]/div[2]/div[2]/div/section/div/div[6]/div[2]/div[2]/table/tbody/tr[13]/td[2]"
+high_52_week_xpath = "/html/body/div[2]/div/div[1]/div[3]/div/div/div[1]/div[5]/div[2]/section/div[1]/ul/li[5]/span[2]"
 
 # print header message to terminal
 process_name = "Trend"
@@ -37,8 +40,7 @@ thread_local = threading.local()
 
 
 def get_driver() -> webdriver.Firefox:
-    """Return the web driver attributed to a thread. Create a new
-    web driver if no driver is found."""
+    """Return the web driver attributed to a thread. Create a new web driver if no driver is found."""
     # check the driver associated with the thread
     driver = getattr(thread_local, "driver", None)
 
@@ -55,47 +57,33 @@ def get_driver() -> webdriver.Firefox:
     return driver
 
 
-def extract_value(element: WebElement) -> float:
-    """Consume a Selenium WebElement and return its value as a float."""
-    try:
-        return float(element.text)
-    except:
-        return None
-
-
-def fetch(symbol: str) -> dict:
-    """Consume a stock symbol and return moving average data as a dictionary."""
+def fetch_moving_averages(symbol: str) -> dict:
+    """Consume a stock symbol and return its moving average data as a dictionary."""
     url = f"https://www.tradingview.com/symbols/{symbol}/technicals/"
     # perform get request and stop loading page when data table is detected in DOM
     driver = get_driver()
     driver.get(url)
 
     try:
-        data_present = EC.presence_of_element_located((By.XPATH, moving_averages_xpath))
+        data_present = EC.presence_of_element_located((By.XPATH, sma_200_xpath))
         WebDriverWait(driver, timeout).until(data_present)
         driver.execute_script("window.stop();")
     except TimeoutException:
         logs.append(skip_message(symbol, "request timed out"))
         return None
 
-    # # extract moving averages and 52-week high from response
-    # soup = BeautifulSoup(driver.page_source, "html.parser")
-
-    elt = driver.find_element(By.XPATH, sma_20_xpath)
-    print(extract_value(elt))
-
     try:
-        ema_10 = None
-        ema_21 = None
-        sma_50 = None
-        sma_200 = None
+        sma_10 = extract_value(driver.find_element(By.XPATH, sma_10_xpath))
+        sma_20 = extract_value(driver.find_element(By.XPATH, sma_20_xpath))
+        sma_50 = extract_value(driver.find_element(By.XPATH, sma_50_xpath))
+        sma_200 = extract_value(driver.find_element(By.XPATH, sma_200_xpath))
     except Exception as e:
         logs.append(skip_message(symbol, e))
         return None
 
     trend_data = {
-        "10-day EMA": ema_10,
-        "21-day EMA": ema_21,
+        "10-day SMA": sma_10,
+        "20-day SMA": sma_20,
         "50-day SMA": sma_50,
         "200-day SMA": sma_200,
     }
@@ -109,6 +97,22 @@ def fetch(symbol: str) -> dict:
     return trend_data
 
 
+def fetch_52_week_high(symbol: str) -> float:
+    """Consume a stock symbol and return its 52-week high."""
+    url = f"https://www.cnbc.com/quotes/{symbol}"
+    response = requests.get(url)
+
+    try:
+        dom = html.fromstring(response.content)
+        high_52_week_elt = dom.xpath(high_52_week_xpath)[0]
+        high_52_week = extract_value(high_52_week_elt)
+    except Exception as e:
+        logs.append(skip_message(symbol, e))
+        return None
+
+    return high_52_week
+
+
 def screen_trend(df_index: int) -> None:
     """Consume a stock symbol and populate data lists based on whether the stock
     is in a stage-2 uptrend."""
@@ -116,15 +120,15 @@ def screen_trend(df_index: int) -> None:
     row = df.iloc[df_index]
 
     symbol = row["Symbol"]
-    trend_data = fetch(symbol)
+    trend_data = fetch_moving_averages(symbol)
 
     if trend_data is None:
         failed_symbols.append(symbol)
         return
 
     price = row["Price"]
-    ema_10 = trend_data["10-day EMA"]
-    ema_21 = trend_data["21-day EMA"]
+    sma_10 = trend_data["10-day EMA"]
+    sma_20 = trend_data["21-day EMA"]
     sma_50 = trend_data["50-day SMA"]
     sma_200 = trend_data["200-day SMA"]
     high_52_week = trend_data["52-week high"]
@@ -133,7 +137,7 @@ def screen_trend(df_index: int) -> None:
 
     # print trend info to console
     logs.append(
-        f"""\n{symbol} | 10-day EMA: ${ema_10}, 21-day EMA: ${ema_21}, 50-day SMA: ${sma_50}, 200-day SMA: ${sma_200}
+        f"""\n{symbol} | 10-day EMA: ${sma_10}, 21-day EMA: ${sma_20}, 50-day SMA: ${sma_50}, 200-day SMA: ${sma_200}
         Current Price: ${price:.2f}, 52-week high: ${high_52_week}, Percent Below 52-week High: {percent_below_high:.0f}%\n"""
     )
 
@@ -141,8 +145,8 @@ def screen_trend(df_index: int) -> None:
     if (
         (price < sma_50)
         or (price < sma_200)
-        or (ema_10 < ema_21)
-        or (ema_21 < sma_50)
+        or (sma_10 < sma_20)
+        or (sma_20 < sma_50)
         or (percent_below_high > 50)
     ):
         logs.append(filter_message(symbol))
@@ -158,8 +162,8 @@ def screen_trend(df_index: int) -> None:
             "Market Cap": row["Market Cap"],
             "50-day Average Volume": row["50-day Average Volume"],
             "% Below 52-week High": percent_below_high,
-            "10-day EMA": ema_10,
-            "21-day EMA": ema_21,
+            "10-day EMA": sma_10,
+            "21-day EMA": sma_20,
             "50-day SMA": sma_50,
             "200-day SMA": sma_200,
             "52-week high": high_52_week,

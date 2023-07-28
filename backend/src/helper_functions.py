@@ -1,5 +1,6 @@
 import pandas as pd
 import os
+from selenium.webdriver.remote.webelement import WebElement
 
 
 def percent_change(initial: float, final: float) -> float:
@@ -64,3 +65,11 @@ def create_outfile(data: pd.DataFrame, filename: str) -> None:
 
     with open(outfile_path, "w") as outfile:
         outfile.write(serialized_json)
+
+
+def extract_value(element: WebElement) -> float:
+    """Consume a WebElement and return its value as a float."""
+    try:
+        return float(element.text.replace(",", "").replace(" ", ""))
+    except:
+        return None
