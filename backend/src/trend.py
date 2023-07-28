@@ -121,17 +121,17 @@ def screen_trend(df_index: int) -> None:
 
     symbol = row["Symbol"]
     trend_data = fetch_moving_averages(symbol)
+    high_52_week = fetch_52_week_high(symbol)
 
-    if trend_data is None:
+    if (trend_data is None) or (high_52_week is None):
         failed_symbols.append(symbol)
         return
 
     price = row["Price"]
-    sma_10 = trend_data["10-day EMA"]
-    sma_20 = trend_data["21-day EMA"]
+    sma_10 = trend_data["10-day SMA"]
+    sma_20 = trend_data["20-day SMA"]
     sma_50 = trend_data["50-day SMA"]
     sma_200 = trend_data["200-day SMA"]
-    high_52_week = trend_data["52-week high"]
 
     percent_below_high = -1 * percent_change(high_52_week, price)
 
@@ -162,8 +162,8 @@ def screen_trend(df_index: int) -> None:
             "Market Cap": row["Market Cap"],
             "50-day Average Volume": row["50-day Average Volume"],
             "% Below 52-week High": percent_below_high,
-            "10-day EMA": sma_10,
-            "21-day EMA": sma_20,
+            "10-day SMA": sma_10,
+            "20-day SMA": sma_20,
             "50-day SMA": sma_50,
             "200-day SMA": sma_200,
             "52-week high": high_52_week,
