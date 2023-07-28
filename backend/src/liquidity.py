@@ -45,7 +45,7 @@ async def fetch(symbol: str, session: aiohttp.client.ClientSession) -> str:
         return None
 
 
-def extract_avg_volume(response: str) -> int:
+def extract_avg_volume(symbol: str, response: str) -> int:
     """Consume a GET request response from barchart.com and return the 50-day average volume."""
     # handle null responses
     if response is None:
@@ -54,13 +54,17 @@ def extract_avg_volume(response: str) -> int:
     soup = BeautifulSoup(response, "html.parser")
 
     # extract 50-day average volume data from html
-    tables = soup.find_all("tbody")
-    rows = tables[0].find_all("tr")
-    row_data = rows[2].find_all("td")
-    volume_string = str(row_data[4].contents[0])
-    volume_string_cleaned = volume_string.replace(",", "").replace(" ", "")
-    volume = int(volume_string_cleaned)
-    return volume
+    try:
+        tables = soup.find_all("tbody")
+        rows = tables[0].find_all("tr")
+        row_data = rows[2].find_all("td")
+        volume_string = str(row_data[4].contents[0])
+        volume_string_cleaned = volume_string.replace(",", "").replace(" ", "")
+        volume = int(volume_string_cleaned)
+        return volume
+    except Exception as e:
+        logs.append(skip_message(symbol, e))
+        return None
 
 
 async def screen_liquidity(
@@ -74,17 +78,20 @@ async def screen_liquidity(
     symbol = row["Symbol"]
     price = row["Price"]
     market_cap = row["Market Cap"]
-    volume = extract_avg_volume(await fetch(symbol, session))
+    volume = extract_avg_volume(symbol, await fetch(symbol, session))
 
     # check if null values are present in screen criteria
     if volume is None:
         failed_symbols.append(symbol)
         return
 
-    if pd.isna(market_cap):
+    if pd.isna(market_cap) or market_cap == "":
         logs.append(skip_message(symbol, "couldn't fetch market cap"))
         failed_symbols.append(symbol)
         return
+
+    # convert market cap from string literal to float
+    market_cap = float(market_cap)
 
     # print volume info to console
     logs.append(
