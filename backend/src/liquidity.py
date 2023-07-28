@@ -2,14 +2,15 @@ import pandas as pd
 import asyncio
 import aiohttp
 from aiohttp.client import ClientSession
-from bs4 import BeautifulSoup
 from tqdm.asyncio import tqdm_asyncio
 from helper_functions import *
+from lxml import html
 
 # constants
 min_market_cap = 1000000000
 min_price = 10
 min_volume = 100000
+volume_xpath = "/html/body/main/div/div[2]/div[2]/div/div[2]/div/div/div/div[2]/div/div[1]/barchart-table-scroll/table/tbody/tr[3]/td[5]"
 
 # print header message to terminal
 process_name = "Liquidity"
@@ -52,16 +53,12 @@ def extract_avg_volume(symbol: str, response: str) -> int:
     if response is None:
         return None
 
-    soup = BeautifulSoup(response, "html.parser")
+    dom = html.fromstring(response)
 
     # extract 50-day average volume data from html
     try:
-        tables = soup.find_all("tbody")
-        rows = tables[0].find_all("tr")
-        row_data = rows[2].find_all("td")
-        volume_string = str(row_data[4].contents[0])
-        volume_string_cleaned = volume_string.replace(",", "").replace(" ", "")
-        volume = int(volume_string_cleaned)
+        volume_elt = dom.xpath(volume_xpath)[0]
+        volume = int(extract_value(volume_elt))
         return volume
     except Exception as e:
         logs.append(skip_message(symbol, e))
