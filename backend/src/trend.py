@@ -1,4 +1,5 @@
 from helper_functions import *
+import bs4
 from bs4 import BeautifulSoup
 from selenium import webdriver
 from selenium.webdriver.support.ui import WebDriverWait
@@ -34,7 +35,7 @@ drivers = []
 thread_local = threading.local()
 
 
-def get_driver():
+def get_driver() -> webdriver.firefox.webdriver.WebDriver:
     """returns the web driver attributed to a thread; creates a new
     web driver if no driver is found"""
     # check the driver associated with the thread
@@ -53,7 +54,7 @@ def get_driver():
     return driver
 
 
-def extract_value(td) -> float:
+def extract_value(td: bs4.element.Tag) -> float:
     """consumes a beautiful soup table-data object from movingaverages.com
     and returns the value contained in it"""
     raw_value = list(td.children)[1].contents[0]
@@ -105,7 +106,7 @@ def fetch(symbol: str) -> dict:
     return trend_data
 
 
-def screen_trend(df_index: int):
+def screen_trend(df_index: int) -> None:
     """consumes a stock symbol and populates data lists based on whether the stock
     is in a stage-2 uptrend"""
     # extract stock information from dataframe and fetch trend info

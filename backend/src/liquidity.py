@@ -33,7 +33,7 @@ successful_symbols = []
 failed_symbols = []
 
 
-async def fetch(symbol: str, session):
+async def fetch(symbol: str, session: aiohttp.client.ClientSession) -> str:
     """coroutine for get request to barchart.com using a stock symbol"""
     url = f"https://www.barchart.com/stocks/quotes/{symbol}/technical-analysis"
 
@@ -45,7 +45,7 @@ async def fetch(symbol: str, session):
         return None
 
 
-def extract_avg_volume(response) -> int:
+def extract_avg_volume(response: str) -> int:
     """consumes a get request response from barchart.com and produces the 50-day average volume"""
     # handle null responses
     if response is None:
@@ -63,7 +63,9 @@ def extract_avg_volume(response) -> int:
     return volume
 
 
-async def screen_liquidity(df_index: int, session):
+async def screen_liquidity(
+    df_index: int, session: aiohttp.client.ClientSession
+) -> None:
     """coroutine which consumes a row index of the stock dataframe and populates
     data lists if the row satisfies liquidity criteria"""
     row = df.iloc[df_index]
@@ -106,7 +108,7 @@ async def screen_liquidity(df_index: int, session):
     )
 
 
-async def main():
+async def main() -> None:
     """Screen each stock present in the dataframe based on liquidity criteria"""
     async with aiohttp.ClientSession() as session:
         await tqdm_asyncio.gather(
