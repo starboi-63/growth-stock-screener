@@ -3,6 +3,7 @@ from selenium import webdriver
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as EC
+from selenium.webdriver.remote.webdriver import WebDriver
 from selenium.common.exceptions import TimeoutException
 import threading
 from multiprocessing.pool import ThreadPool
@@ -11,8 +12,8 @@ import requests
 from lxml import html
 
 # constants
-threads = 1  # number of concurrent Selenium browser instances to fetch data
-timeout = 120
+threads = 5  # number of concurrent Selenium browser instances to fetch data
+timeout = 30
 sma_10_xpath = "/html/body/div[3]/div[4]/div[2]/div[2]/div/section/div/div[6]/div[2]/div[2]/table/tbody/tr[3]/td[2]"
 sma_20_xpath = "/html/body/div[3]/div[4]/div[2]/div[2]/div/section/div/div[6]/div[2]/div[2]/table/tbody/tr[5]/td[2]"
 sma_50_xpath = "/html/body/div[3]/div[4]/div[2]/div[2]/div/section/div/div[6]/div[2]/div[2]/table/tbody/tr[9]/td[2]"
@@ -39,7 +40,7 @@ drivers = []
 thread_local = threading.local()
 
 
-def get_driver() -> webdriver.Firefox:
+def get_driver() -> WebDriver:
     """Return the web driver attributed to a thread. Create a new web driver if no driver is found."""
     # check the driver associated with the thread
     driver = getattr(thread_local, "driver", None)
@@ -64,9 +65,17 @@ def fetch_moving_averages(symbol: str) -> dict:
     driver = get_driver()
     driver.get(url)
 
+    wait_methods = [
+        element_is_float(sma_10_xpath),
+        element_is_float(sma_20_xpath),
+        element_is_float(sma_50_xpath),
+        element_is_float(sma_200_xpath),
+    ]
+
+    combined_wait_method = WaitForAll(wait_methods)
+
     try:
-        data_present = EC.presence_of_element_located((By.XPATH, sma_200_xpath))
-        WebDriverWait(driver, timeout).until(data_present)
+        WebDriverWait(driver, timeout).until(combined_wait_method)
         driver.execute_script("window.stop();")
     except TimeoutException:
         logs.append(skip_message(symbol, "request timed out"))
