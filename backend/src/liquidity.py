@@ -3,8 +3,10 @@ import asyncio
 import aiohttp
 from aiohttp.client import ClientSession
 from tqdm.asyncio import tqdm_asyncio
-from helper_functions import *
 from lxml import html
+from utils.logging import *
+from utils.outfiles import *
+from utils.scraping import *
 
 # constants
 min_market_cap = 1000000000
