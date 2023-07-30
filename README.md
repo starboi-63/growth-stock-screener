@@ -39,7 +39,7 @@ $$
 \begin{aligned}
 \text{Price} &>= 50\ \text{day SMA}\\
 \text{Price} &>= 200\ \text{day SMA}\\
-10\ \text{day EMA} &>= 21\ \text{day EMA} >= 50\ \text{day SMA}\\
+10\ \text{day SMA} &>= 20\ \text{day SMA} >= 50\ \text{day SMA}\\
 \text{Price} &>= 50\\%\ \text{of YTD High}
 \end{aligned}
 $$
@@ -51,4 +51,4 @@ the percent increase in the most recent reported quarterly revenue versus a year
 
 ### Iteration 5: Institutional Accumulation
 
-Any stocks with a _decrease_ in fund-ownership are excluded at this point. Changes in institutional holdings are sourced from _NASDAQ_.
+Any stocks with a _decrease_ in fund-ownership are excluded at this point. "Fund-ownership" is measured by both the total number of funds invested in a company and the total number of shares owned by institutions.

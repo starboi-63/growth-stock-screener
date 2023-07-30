@@ -1,14 +1,18 @@
 import pandas as pd
 import asyncio
 import aiohttp
-from bs4 import BeautifulSoup
+from aiohttp.client import ClientSession
 from tqdm.asyncio import tqdm_asyncio
-from helper_functions import *
+from lxml import html
+from utils.logging import *
+from utils.outfiles import *
+from utils.scraping import *
 
 # constants
 min_market_cap = 1000000000
 min_price = 10
 min_volume = 100000
+volume_xpath = "/html/body/main/div/div[2]/div[2]/div/div[2]/div/div/div/div[2]/div/div[1]/barchart-table-scroll/table/tbody/tr[3]/td[5]"
 
 # print header message to terminal
 process_name = "Liquidity"
@@ -33,8 +37,8 @@ successful_symbols = []
 failed_symbols = []
 
 
-async def fetch(symbol: str, session):
-    """coroutine for get request to barchart.com using a stock symbol"""
+async def fetch(symbol: str, session: ClientSession) -> str:
+    """Send a GET request for the given stock symbol to barchart.com and return the response as a string."""
     url = f"https://www.barchart.com/stocks/quotes/{symbol}/technical-analysis"
 
     try:
@@ -42,47 +46,50 @@ async def fetch(symbol: str, session):
             return await response.text()
     except Exception as e:
         logs.append(skip_message(symbol, e))
-        failed_symbols.append(symbol)
         return None
 
 
-def extract_avg_volume(response) -> int:
-    """consumes a get request response from barchart.com and produces the 50-day average volume"""
+def extract_avg_volume(symbol: str, response: str) -> int:
+    """Consume a GET request response from barchart.com and return the 50-day average volume."""
     # handle null responses
     if response is None:
         return None
 
-    soup = BeautifulSoup(response, "html.parser")
+    dom = html.fromstring(response)
 
     # extract 50-day average volume data from html
-    tables = soup.find_all("tbody")
-    rows = tables[0].find_all("tr")
-    row_data = rows[2].find_all("td")
-    volume_string = str(row_data[4].contents[0])
-    volume_string_cleaned = volume_string.replace(",", "").replace(" ", "")
-    volume = int(volume_string_cleaned)
-    return volume
+    try:
+        volume_elt = dom.xpath(volume_xpath)[0]
+        volume = int(extract_value(volume_elt))
+        return volume
+    except Exception as e:
+        logs.append(skip_message(symbol, e))
+        return None
 
 
-async def screen_liquidity(df_index: int, session):
-    """coroutine which consumes a row index of the stock dataframe and populates
-    data lists if the row satisfies liquidity criteria"""
+async def screen_liquidity(df_index: int, session: ClientSession) -> None:
+    """Consume a row index of the stock dataframe and populate
+    data lists if the row satisfies liquidity criteria."""
     row = df.iloc[df_index]
 
     # extract important information from dataframe row
     symbol = row["Symbol"]
     price = row["Price"]
     market_cap = row["Market Cap"]
-    volume = extract_avg_volume(await fetch(symbol, session))
+    volume = extract_avg_volume(symbol, await fetch(symbol, session))
 
     # check if null values are present in screen criteria
     if volume is None:
+        failed_symbols.append(symbol)
         return
 
-    if pd.isna(market_cap):
+    if pd.isna(market_cap) or market_cap == "":
         logs.append(skip_message(symbol, "couldn't fetch market cap"))
         failed_symbols.append(symbol)
         return
+
+    # convert market cap from string literal to float
+    market_cap = float(market_cap)
 
     # print volume info to console
     logs.append(
@@ -91,6 +98,7 @@ async def screen_liquidity(df_index: int, session):
 
     # filter out illiquid stocks
     if (market_cap < min_market_cap) or (price < min_price) or (volume < min_volume):
+        logs.append(filter_message(symbol))
         return
 
     successful_symbols.append(
@@ -106,8 +114,8 @@ async def screen_liquidity(df_index: int, session):
     )
 
 
-async def main():
-    """Screen each stock present in the dataframe based on liquidity criteria"""
+async def main() -> None:
+    """Screen each stock present in the dataframe based on liquidity criteria."""
     async with aiohttp.ClientSession() as session:
         await tqdm_asyncio.gather(
             *[screen_liquidity(df_index, session) for df_index in range(0, len(df))]

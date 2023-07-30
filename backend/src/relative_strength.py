@@ -1,6 +1,8 @@
 import yfinance as yf
 import pandas as pd
-from helper_functions import *
+from utils.logging import *
+from utils.outfiles import *
+from utils.calculations import *
 
 # minimum RS required to pass this screen
 min_rs = 90
@@ -115,7 +117,9 @@ create_outfile(rs_df, "relative_strengths")
 print("".join(logs))
 
 # print footer message to terminal
-print(f"{len(failed_symbols)} symbols failed (insufficient data).")
+print(
+    f"{len(failed_symbols)} symbols failed (stock has traded for less than a year or insufficient data)."
+)
 print(
     f"{len(symbol_list) - len(rs_df) - len(failed_symbols)} symbols filtered (RS below {min_rs})."
 )
