@@ -17,13 +17,12 @@ url = f"https://www.nasdaq.com/market-activity/stocks/{symbol}/institutional-hol
 options = webdriver.FirefoxOptions()
 options.add_argument("--headless")
 options.add_argument("--disable-gpu")
-options.page_load_strategy = "none"
+options.page_load_strategy = "eager"
 driver = webdriver.Firefox(options=options)
 
-# perform GET request
+# perform GET request and load page until holdings table is present in the DOM
 driver.get(url)
 
-# load page until holdings table is present in the DOM
 try:
     data_present = EC.presence_of_element_located((By.XPATH, holdings_data_xpath))
     WebDriverWait(driver, timeout).until(data_present)

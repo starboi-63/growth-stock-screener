@@ -1,9 +1,8 @@
 import yfinance as yf
-import os
-import json
 import pandas as pd
-import datetime as dt
-from helper_functions import *
+from utils.logging import *
+from utils.outfiles import *
+from utils.calculations import *
 
 # minimum RS required to pass this screen
 min_rs = 90
@@ -19,7 +18,7 @@ logs = []
 
 # open json data extracted from nasdaq as pandas dataframe
 df = open_outfile("nasdaq_listings")
-df_pos = 0
+df_index = 0
 
 # extract symbols from dataframe
 symbol_list = df["Symbol"].values.tolist()
@@ -86,17 +85,17 @@ for symbol in price_df:
         Q4 : start: ${q4_start:.2f}, end: ${q4_end:.2f}\n"""
     )
 
-    while df.iloc[df_pos]["Symbol"] != symbol:
-        df_pos += 1
+    while df.iloc[df_index]["Symbol"] != symbol:
+        df_index += 1
 
-    df_row = df.iloc[df_pos]
+    row = df.iloc[df_index]
 
     successful_symbols.append(
         {
             "Symbol": symbol,
-            "Company Name": df_row["Company Name"],
-            "Market Cap": df_row["Market Cap"],
-            "Industry": df_row["Industry"],
+            "Company Name": row["Company Name"],
+            "Market Cap": row["Market Cap"],
+            "Industry": row["Industry"],
             "Price": q4_end,
             "RS (raw)": rs_raw,
         }
@@ -118,7 +117,9 @@ create_outfile(rs_df, "relative_strengths")
 print("".join(logs))
 
 # print footer message to terminal
-print(f"{len(failed_symbols)} symbols failed (insufficient data).")
+print(
+    f"{len(failed_symbols)} symbols failed (stock has traded for less than a year or insufficient data)."
+)
 print(
     f"{len(symbol_list) - len(rs_df) - len(failed_symbols)} symbols filtered (RS below {min_rs})."
 )
