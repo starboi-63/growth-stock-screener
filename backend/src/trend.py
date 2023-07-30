@@ -1,18 +1,14 @@
-from selenium import webdriver
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.common.by import By
-from selenium.webdriver.support import expected_conditions as EC
-from selenium.webdriver.remote.webdriver import WebDriver
 from selenium.common.exceptions import TimeoutException
 import threading
-from multiprocessing.pool import ThreadPool
-from tqdm import tqdm
 import requests
 from lxml import html
 from utils.logging import *
 from utils.outfiles import *
 from utils.calculations import *
 from utils.scraping import *
+from utils.concurrency import *
 
 # constants
 threads = 10  # number of concurrent Selenium browser instances to fetch data
@@ -165,11 +161,8 @@ def screen_trend(df_index: int) -> None:
     )
 
 
-with ThreadPool(threads) as pool:
-    # tqdm requires an array to track finished threads in order to create a progress bar
-    results_tqdm = []
-    for result in tqdm(pool.imap(screen_trend, range(0, len(df))), total=len(df)):
-        results_tqdm.append(result)
+# launch concurrent worker threads to execute the screen
+tqdm_thread_pool_map(threads, screen_trend, range(0, len(df)))
 
 # create a new dataframe with symbols which satisfied trend criteria
 screened_df = pd.DataFrame(successful_symbols)
