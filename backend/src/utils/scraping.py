@@ -35,7 +35,7 @@ def extract_value(element: WebElement) -> float:
 
 
 def element_is_float(xpath: str) -> Callable[[WebDriver], bool]:
-    """Consumes an xpath and returns a function which consumes a WebDriver and returns true if the DOM element
+    """Consume an xpath and returns a function which consumes a WebDriver and return true if the DOM element
     at the specified xpath is a float type."""
 
     def inner(driver: WebDriver) -> bool:
@@ -45,7 +45,7 @@ def element_is_float(xpath: str) -> Callable[[WebDriver], bool]:
 
 
 class WaitForAll:
-    """Represents an expected condition which is the logical "and" of multiple expected conditions."""
+    """Represent an expected condition which is the logical "and" of multiple expected conditions."""
 
     def __init__(self, methods: List[Callable[[WebDriver], bool]]):
         self.methods = methods
