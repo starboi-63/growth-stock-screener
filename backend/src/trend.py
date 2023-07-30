@@ -43,29 +43,11 @@ drivers = []
 thread_local = threading.local()
 
 
-def get_driver() -> WebDriver:
-    """Return the web driver attributed to a thread. Create a new web driver if no driver is found."""
-    # check the driver associated with the thread
-    driver = getattr(thread_local, "driver", None)
-
-    if driver is None:
-        # construct new web broswer driver
-        options = webdriver.FirefoxOptions()
-        options.add_argument("--headless")
-        options.add_argument("--disable-gpu")
-        options.page_load_strategy = "eager"
-        driver = webdriver.Firefox(options=options)
-        setattr(thread_local, "driver", driver)
-        drivers.append(driver)
-
-    return driver
-
-
 def fetch_moving_averages(symbol: str) -> dict:
     """Consume a stock symbol and return its moving average data as a dictionary."""
     url = f"https://www.tradingview.com/symbols/{symbol}/technicals/"
     # perform get request and stop loading page when data table is detected in DOM
-    driver = get_driver()
+    driver = get_driver(thread_local, drivers)
     driver.get(url)
 
     wait_methods = [
