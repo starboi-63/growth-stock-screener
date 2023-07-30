@@ -19,8 +19,7 @@ process_name = "Liquidity"
 process_stage = 2
 print_status(process_name, process_stage, True)
 print(
-    f"""
-Minimum market cap to pass: ${min_market_cap / 1000000000:.0f}B
+    f"""Minimum market cap to pass: ${min_market_cap / 1000000000:.0f}B
 Minimum price to pass: ${min_price:.2f}
 Minimum average volume to pass: {min_volume} shares\n
 """
