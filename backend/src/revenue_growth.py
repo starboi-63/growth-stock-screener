@@ -131,3 +131,6 @@ async def main() -> None:
 
 
 asyncio.run(main())
+
+# create a new dataframe with symbols which satisfied revenue_growth criteria
+screened_df = pd.DataFrame(successful_symbols)
