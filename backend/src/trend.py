@@ -94,9 +94,9 @@ def fetch_52_week_high(symbol: str) -> float:
     response = requests.get(url)
 
     try:
-        dom = html.fromstring(response.content)
-        high_52_week_elt = dom.xpath(high_52_week_xpath)[0]
-        high_52_week = extract_float(high_52_week_elt)
+        high_52_week = extract_float(
+            extract_element(high_52_week_xpath, response.content)
+        )
     except Exception as e:
         logs.append(skip_message(symbol, e))
         return None
@@ -152,11 +152,6 @@ def screen_trend(df_index: int) -> None:
             "Market Cap": row["Market Cap"],
             "50-day Average Volume": row["50-day Average Volume"],
             "% Below 52-week High": percent_below_high,
-            "10-day SMA": sma_10,
-            "20-day SMA": sma_20,
-            "50-day SMA": sma_50,
-            "200-day SMA": sma_200,
-            "52-week high": high_52_week,
         }
     )
 

@@ -54,10 +54,10 @@ async def fetch_revenue(
     q2_prev_revenue = extract_float(extract_element(q2_prev_revenue_xpath, response))
 
     # check for null values in fetched revenue data
-    if (q1_revenue is None) or (q1_prev_revenue is None):
+    if (q1_revenue is None) or (q1_prev_revenue is None) or (q1_prev_revenue is 0):
         return None
 
-    if (q2_revenue is None) or (q2_prev_revenue is None):
+    if (q2_revenue is None) or (q2_prev_revenue is None) or (q2_prev_revenue is 0):
         return {"Q1": {"Current": q1_revenue, "Previous": q1_prev_revenue}}
 
     return {
@@ -66,9 +66,62 @@ async def fetch_revenue(
     }
 
 
+async def screen_revenue_growth(df_row: int, session: ClientSession) -> None:
+    """Populate stock data lists based on whether the given dataframe row has strong revenue growth"""
+    row = df.iloc[df_row]
+
+    symbol = row["Symbol"]
+    revenue_data = await fetch_revenue(symbol, session)
+
+    # handle null values from unsuccessful fetching
+    if revenue_data is None:
+        failed_symbols.append(symbol)
+        return
+
+    q1_revenue_growth = percent_change(
+        revenue_data["Q1"]["Previous"], revenue_data["Q1"]["Current"]
+    )
+    q2_revenue_growth = (
+        percent_change(revenue_data["Q2"]["Previous"], revenue_data["Q2"]["Current"])
+        if "Q2" in revenue_data
+        else None
+    )
+
+    # print revenue growth data to console
+    logs.append(
+        f"""\n{symbol} | Q1 revenue growth: {q1_revenue_growth}%, Q2 revenue growth: {q2_revenue_growth}%
+        Q1 : current revenue: ${revenue_data["Q1"]["Current"]}M, previous revenue: ${revenue_data["Q1"]["Previous"]}M
+        Q2 : current revenue: ${revenue_data["Q2"]["Current"]}M, previous revenue: ${revenue_data["Q2"]["Previous"]}M"""
+    )
+
+    # filter out stocks with low quarterly revenue growth
+    if q1_revenue_growth < min_growth_percent:
+        logs.append(filter_message(symbol))
+        return
+
+    if (q2_revenue_growth is not None) and (q2_revenue_growth < min_growth_percent):
+        logs.append(filter_message(symbol))
+        return
+
+    successful_symbols.append(
+        {
+            "Symbol": symbol,
+            "Company Name": row["Company Name"],
+            "Industry": row["Industry"],
+            "RS": row["RS"],
+            "Price": row["Price"],
+            "Market Cap": row["Market Cap"],
+            "Revenue Growth % (most recent Q)": q1_revenue_growth,
+            "Revenue Growth % (previous Q)": q2_revenue_growth,
+            "50-day Average Volume": row["50-day Average Volume"],
+            "% Below 52-week High": row["% Below 52-week High"],
+        }
+    )
+
+
 async def main() -> None:
     async with aiohttp.ClientSession() as session:
-        print(await get("NVDA", session))
+        print(await fetch_revenue("UPST", session))
 
 
 asyncio.run(main())
