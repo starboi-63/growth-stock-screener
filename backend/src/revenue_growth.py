@@ -89,11 +89,17 @@ async def screen_revenue_growth(df_index: int, session: ClientSession) -> None:
     )
 
     # print revenue growth data to console
-    logs.append(
-        f"""\n{symbol} | Q1 revenue growth: {q1_revenue_growth}%, Q2 revenue growth: {q2_revenue_growth}%
-        Q1 : current revenue: ${revenue_data["Q1"]["Current"]}M, previous revenue: ${revenue_data["Q1"]["Previous"]}M
-        Q2 : current revenue: ${revenue_data["Q2"]["Current"]}M, previous revenue: ${revenue_data["Q2"]["Previous"]}M\n"""
-    )
+    if "Q2" in revenue_data:
+        logs.append(
+            f"""\n{symbol} | Q1 revenue growth: {q1_revenue_growth}%, Q2 revenue growth: {q2_revenue_growth}%
+            Q1 : current revenue: ${revenue_data["Q1"]["Current"]}M, previous revenue: ${revenue_data["Q1"]["Previous"]}M
+            Q2 : current revenue: ${revenue_data["Q2"]["Current"]}M, previous revenue: ${revenue_data["Q2"]["Previous"]}M\n"""
+        )
+    else:
+        logs.append(
+            f"""\n{symbol} | Q1 revenue growth: {q1_revenue_growth}%, Q2 revenue growth: {q2_revenue_growth}%
+            Q1 : current revenue: ${revenue_data["Q1"]["Current"]}M, previous revenue: ${revenue_data["Q1"]["Previous"]}M\n"""
+        )
 
     # filter out stocks with low quarterly revenue growth
     if q1_revenue_growth < min_growth_percent:
