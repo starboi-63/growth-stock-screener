@@ -3,7 +3,6 @@ import asyncio
 import aiohttp
 from aiohttp.client import ClientSession
 from tqdm.asyncio import tqdm_asyncio
-from lxml import html
 from utils.logging import *
 from utils.outfiles import *
 from utils.scraping import *
@@ -37,10 +36,17 @@ failed_symbols = []
 
 
 async def fetch_volume(symbol: str, session: ClientSession) -> int:
+    """Consume a stock symbol and aiohttp session and return the 50-day average volume of the given symbol."""
     url = f"https://www.barchart.com/stocks/quotes/{symbol}/technical-analysis"
-    response = await fetch(url, session)
-    volume_element = extract_element(response, volume_xpath)
-    volume = int(extract_float(volume_element))
+
+    try:
+        response = await fetch(url, session)
+        volume_element = extract_element(response, volume_xpath)
+        volume = int(extract_float(volume_element))
+    except Exception as e:
+        logs.append(skip_message(symbol, e))
+        return None
+
     return volume
 
 
