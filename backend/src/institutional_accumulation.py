@@ -155,3 +155,6 @@ screened_df = pd.DataFrame(successful_symbols)
 
 # serialize data in JSON format and save on machine
 create_outfile(screened_df, "institutional_accumulation")
+
+# print log
+print("".join(logs))
