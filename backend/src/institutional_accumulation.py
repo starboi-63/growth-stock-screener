@@ -4,7 +4,9 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.common.exceptions import TimeoutException
 from bs4 import BeautifulSoup
+import threading
 from utils.logging import *
+from utils.outfiles import *
 
 # constants
 timeout = 30
@@ -22,7 +24,7 @@ print_status(process_name, process_stage, True)
 logs = []
 
 # retreive JSON data from previous screen iteration
-df = open_outfile("liquidity")
+df = open_outfile("revenue_growth")
 
 # populate these lists while iterating through symbols
 successful_symbols = []
