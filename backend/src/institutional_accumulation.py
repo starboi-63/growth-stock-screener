@@ -18,6 +18,20 @@ process_name = "Institutional Accumulation"
 process_stage = 5
 print_status(process_name, process_stage, True)
 
+# logging data (printed to console after screen finishes)
+logs = []
+
+# retreive JSON data from previous screen iteration
+df = open_outfile("liquidity")
+
+# populate these lists while iterating through symbols
+successful_symbols = []
+failed_symbols = []
+drivers = []
+
+# store local thread data
+thread_local = threading.local()
+
 # construct the url and headers for the request
 symbol = "NVDA"
 url = f"https://www.nasdaq.com/market-activity/stocks/{symbol}/institutional-holdings"
