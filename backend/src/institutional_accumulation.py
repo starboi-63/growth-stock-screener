@@ -145,3 +145,7 @@ def screen_institutional_accumulation(df_index: int) -> None:
             "Net Institutional Shares": int(net_shares),
         }
     )
+
+
+# launch concurrent worker threads to execute the screen
+tqdm_thread_pool_map(threads, screen_institutional_accumulation, range(0, len(df)))
