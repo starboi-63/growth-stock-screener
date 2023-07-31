@@ -54,10 +54,10 @@ async def fetch_revenue(
     q2_prev_revenue = extract_float(extract_element(q2_prev_revenue_xpath, response))
 
     # check for null values in fetched revenue data
-    if (q1_revenue is None) or (q1_prev_revenue is None) or (q1_prev_revenue is 0):
+    if (q1_revenue is None) or (q1_prev_revenue is None) or (q1_prev_revenue == 0):
         return None
 
-    if (q2_revenue is None) or (q2_prev_revenue is None) or (q2_prev_revenue is 0):
+    if (q2_revenue is None) or (q2_prev_revenue is None) or (q2_prev_revenue == 0):
         return {"Q1": {"Current": q1_revenue, "Previous": q1_prev_revenue}}
 
     return {
