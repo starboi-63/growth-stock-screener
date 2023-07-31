@@ -166,3 +166,8 @@ print(
 )
 print(f"{len(screened_df)} symbols passed.")
 print_status(process_name, process_stage, False)
+
+# close Selenium web driver sessions
+print("Closing browser instances . . .\n")
+for driver in tqdm(drivers):
+    driver.quit()
