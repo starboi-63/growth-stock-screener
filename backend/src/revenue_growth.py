@@ -137,3 +137,6 @@ screened_df = pd.DataFrame(successful_symbols)
 
 # serialize data in JSON format and save on machine
 create_outfile(screened_df, "revenue_growth")
+
+# print log
+print("".join(logs))
