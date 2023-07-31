@@ -140,3 +140,11 @@ create_outfile(screened_df, "revenue_growth")
 
 # print log
 print("".join(logs))
+
+# print footer message to terminal
+print(f"{len(failed_symbols)} symbols failed (insufficient data).")
+print(
+    f"{len(df) - len(screened_df) - len(failed_symbols)} symbols filtered (revenue growth too low)."
+)
+print(f"{len(screened_df)} symbols passed.")
+print_status(process_name, process_stage, False)
