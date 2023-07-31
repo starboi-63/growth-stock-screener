@@ -91,13 +91,13 @@ async def screen_revenue_growth(df_index: int, session: ClientSession) -> None:
     # print revenue growth data to console
     if "Q2" in revenue_data:
         logs.append(
-            f"""\n{symbol} | Q1 revenue growth: {q1_revenue_growth}%, Q2 revenue growth: {q2_revenue_growth}%
+            f"""\n{symbol} | Q1 revenue growth: {q1_revenue_growth:.0f}%, Q2 revenue growth: {q2_revenue_growth:.0f}%
             Q1 : current revenue: ${revenue_data["Q1"]["Current"]}M, previous revenue: ${revenue_data["Q1"]["Previous"]}M
             Q2 : current revenue: ${revenue_data["Q2"]["Current"]}M, previous revenue: ${revenue_data["Q2"]["Previous"]}M\n"""
         )
     else:
         logs.append(
-            f"""\n{symbol} | Q1 revenue growth: {q1_revenue_growth}%, Q2 revenue growth: {q2_revenue_growth}%
+            f"""\n{symbol} | Q1 revenue growth: {q1_revenue_growth:.0f}%
             Q1 : current revenue: ${revenue_data["Q1"]["Current"]}M, previous revenue: ${revenue_data["Q1"]["Previous"]}M\n"""
         )
 
