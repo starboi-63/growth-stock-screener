@@ -67,7 +67,7 @@ async def fetch_revenue(
 
 
 async def screen_revenue_growth(df_index: int, session: ClientSession) -> None:
-    """Populate stock data lists based on whether the given dataframe row has strong revenue growth"""
+    """Populate stock data lists based on whether the given dataframe row has strong revenue growth."""
     row = df.iloc[df_index]
 
     symbol = row["Symbol"]
