@@ -43,11 +43,10 @@ async def fetch_volume(symbol: str, session: ClientSession) -> int:
         response = await get(url, session)
         volume_element = extract_element(volume_xpath, response)
         volume = int(extract_float(volume_element))
+        return volume
     except Exception as e:
         logs.append(skip_message(symbol, e))
         return None
-
-    return volume
 
 
 async def screen_liquidity(df_index: int, session: ClientSession) -> None:

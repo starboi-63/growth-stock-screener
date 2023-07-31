@@ -17,6 +17,12 @@ q1_revenue_xpath = (
 q1_prev_revenue_xpath = (
     "/html/body/div[2]/div[3]/div[1]/div[8]/div[2]/table/tbody/tr[5]/td[2]"
 )
+q2_revenue_xpath = (
+    "/html/body/div[2]/div[3]/div[1]/div[8]/div[2]/table/tbody/tr[2]/td[2]"
+)
+q2_prev_revenue_xpath = (
+    "/html/body/div[2]/div[3]/div[1]/div[8]/div[2]/table/tbody/tr[6]/td[2]"
+)
 
 # print header message to terminal
 process_name = "Revenue Growth"
@@ -38,8 +44,8 @@ failed_symbols = []
 async def fetch_revenues(symbol: str, session: ClientSession) -> Dict[str, float]:
     url = f"https://www.macrotrends.net/stocks/charts/{symbol}/upstart-holdings/revenue"
     response = await get(url, session)
-    q1_revenue_element = extract_element(q1_revenue_xpath, response)
-    q1_prev_revenue_element = extract_element(q1_prev_revenue_xpath, response)
+    q1_revenue = extract_element(q1_revenue_xpath, response)
+    q1_prev_revenue = extract_element(q1_prev_revenue_xpath, response)
 
 
 async def main() -> None:

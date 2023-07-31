@@ -6,6 +6,7 @@ from typing import Callable, List
 from aiohttp.client import ClientSession
 from utils.logging import skip_message
 from lxml import html
+import re
 
 
 async def get(url: str, session: ClientSession) -> str:
@@ -34,7 +35,8 @@ def extract_element(xpath: str, response: str) -> WebElement:
 def extract_float(element: WebElement) -> float:
     """Consume a WebElement and return its value as a float."""
     try:
-        return float(element.text.replace(",", "").replace(" ", ""))
+        cleaned_content = re.sub(r"[^0-9]", "", element.text)
+        return float(cleaned_content)
     except Exception:
         return None
 
