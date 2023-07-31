@@ -41,11 +41,29 @@ successful_symbols = []
 failed_symbols = []
 
 
-async def fetch_revenues(symbol: str, session: ClientSession) -> Dict[str, float]:
+async def fetch_revenue(
+    symbol: str, session: ClientSession
+) -> Dict[str, Dict[str, float]]:
+    """Fetch quarterly revenue data for the given stock symbol from macrotrends.com."""
     url = f"https://www.macrotrends.net/stocks/charts/{symbol}/upstart-holdings/revenue"
     response = await get(url, session)
-    q1_revenue = extract_element(q1_revenue_xpath, response)
-    q1_prev_revenue = extract_element(q1_prev_revenue_xpath, response)
+
+    q1_revenue = extract_float(extract_element(q1_revenue_xpath, response))
+    q1_prev_revenue = extract_float(extract_element(q1_prev_revenue_xpath, response))
+    q2_revenue = extract_float(extract_element(q2_revenue_xpath, response))
+    q2_prev_revenue = extract_float(extract_element(q2_prev_revenue_xpath, response))
+
+    # check for null values in fetched revenue data
+    if (q1_revenue is None) or (q1_prev_revenue is None):
+        return None
+
+    if (q2_revenue is None) or (q2_prev_revenue is None):
+        return {"Q1": {"Current": q1_revenue, "Previous": q1_prev_revenue}}
+
+    return {
+        "Q1": {"Current": q1_revenue, "Previous": q1_prev_revenue},
+        "Q2": {"Current": q2_revenue, "Previous": q2_prev_revenue},
+    }
 
 
 async def main() -> None:
