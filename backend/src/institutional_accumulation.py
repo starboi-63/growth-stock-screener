@@ -5,10 +5,14 @@ from selenium.webdriver.support import expected_conditions as EC
 from selenium.common.exceptions import TimeoutException
 from bs4 import BeautifulSoup
 import threading
+from typing import Dict
 from utils.logging import *
 from utils.outfiles import *
+from utils.scraping import *
+from utils.concurrency import *
 
 # constants
+threads = 10  # number of concurrent Selenium browser instances to fetch data
 timeout = 30
 increased_holders_xpath = "/html/body/div[2]/div/main/div[2]/div[4]/div[3]/div/div[1]/div/div[1]/div[2]/div/div[2]/div/table/tbody/tr[1]/td[2]"
 increased_shares_xpath = "/html/body/div[2]/div/main/div[2]/div[4]/div[3]/div/div[1]/div/div[1]/div[2]/div/div[2]/div/table/tbody/tr[1]/td[3]"
@@ -34,27 +38,24 @@ drivers = []
 # store local thread data
 thread_local = threading.local()
 
-# construct the url and headers for the request
-symbol = "NVDA"
-url = f"https://www.nasdaq.com/market-activity/stocks/{symbol}/institutional-holdings"
 
-# configure selenium to use a headless Firefox browser instance to request data
-options = webdriver.FirefoxOptions()
-options.add_argument("--headless")
-options.add_argument("--disable-gpu")
-options.page_load_strategy = "eager"
-driver = webdriver.Firefox(options=options)
+def fetch_institutional_holdings(symbol: str) -> Dict[str, Dict[str, float]]:
+    # construct the url and headers for the request
+    url = (
+        f"https://www.nasdaq.com/market-activity/stocks/{symbol}/institutional-holdings"
+    )
 
-# perform GET request and load page until holdings table is present in the DOM
-driver.get(url)
+    driver = get_driver(thread_local, drivers)
+    driver.get(url)
 
-try:
-    data_present = EC.presence_of_element_located((By.XPATH, holdings_data_xpath))
-    WebDriverWait(driver, timeout).until(data_present)
-    driver.execute_script("window.stop();")
-except TimeoutException:
-    print(f"Skipping {symbol} (request timed out) . . .")
-    # continue
+    try:
+        data_present = EC.presence_of_element_located((By.XPATH, holdings_data_xpath))
+        WebDriverWait(driver, timeout).until(data_present)
+        driver.execute_script("window.stop();")
+    except TimeoutException:
+        print(f"Skipping {symbol} (request timed out) . . .")
+        # continue
+
 
 # extract institutional holdings information from site HTML
 soup = BeautifulSoup(driver.page_source, "html.parser")

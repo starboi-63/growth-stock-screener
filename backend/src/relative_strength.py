@@ -24,6 +24,7 @@ df_index = 0
 symbol_list = df["Symbol"].values.tolist()
 
 # download all historical price data at once
+logs.append("\nDownloading historical stock data . . .\n")
 tickers = yf.download(symbol_list, period="2y", timeout=10)
 price_df = tickers["Adj Close"]
 
