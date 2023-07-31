@@ -66,9 +66,9 @@ async def fetch_revenue(
     }
 
 
-async def screen_revenue_growth(df_row: int, session: ClientSession) -> None:
+async def screen_revenue_growth(df_index: int, session: ClientSession) -> None:
     """Populate stock data lists based on whether the given dataframe row has strong revenue growth"""
-    row = df.iloc[df_row]
+    row = df.iloc[df_index]
 
     symbol = row["Symbol"]
     revenue_data = await fetch_revenue(symbol, session)
@@ -120,8 +120,14 @@ async def screen_revenue_growth(df_row: int, session: ClientSession) -> None:
 
 
 async def main() -> None:
+    """Screen each stock present in the dataframe based on revenue growth."""
     async with aiohttp.ClientSession() as session:
-        print(await fetch_revenue("UPST", session))
+        await tqdm_asyncio.gather(
+            *[
+                screen_revenue_growth(df_index, session)
+                for df_index in range(0, len(df))
+            ]
+        )
 
 
 asyncio.run(main())
