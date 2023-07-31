@@ -134,3 +134,6 @@ asyncio.run(main())
 
 # create a new dataframe with symbols which satisfied revenue_growth criteria
 screened_df = pd.DataFrame(successful_symbols)
+
+# serialize data in JSON format and save on machine
+create_outfile(screened_df, "revenue_growth")
