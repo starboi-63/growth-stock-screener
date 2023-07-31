@@ -5,6 +5,7 @@ import threading
 import requests
 from lxml import html
 from typing import Dict
+from tqdm import tqdm
 from utils.logging import *
 from utils.outfiles import *
 from utils.calculations import *
@@ -177,5 +178,6 @@ print(f"{len(screened_df)} symbols passed.")
 print_status(process_name, process_stage, False)
 
 # close Selenium web driver sessions
-for driver in drivers:
+print("Closing browser instances . . .\n")
+for driver in tqdm(drivers):
     driver.quit()
