@@ -8,7 +8,7 @@ from utils.logging import skip_message
 from lxml import html
 
 
-async def fetch(url: str, session: ClientSession) -> str:
+async def get(url: str, session: ClientSession) -> str:
     """Send a GET request for the given url and return the response as a string."""
     try:
         async with session.get(url) as response:
@@ -17,7 +17,7 @@ async def fetch(url: str, session: ClientSession) -> str:
         return None
 
 
-def extract_element(response: str, xpath: str) -> WebElement:
+def extract_element(xpath: str, response: str) -> WebElement:
     """Return the WebElement at a given xpath from a GET request response."""
     if response is None:
         return None

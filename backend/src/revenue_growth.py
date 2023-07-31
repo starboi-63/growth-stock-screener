@@ -6,6 +6,7 @@ import pandas as pd
 from utils.logging import *
 from utils.outfiles import *
 from utils.calculations import *
+from utils.scraping import *
 
 # constants
 min_growth_percent = 25
@@ -35,7 +36,7 @@ failed_symbols = []
 
 async def main() -> None:
     async with aiohttp.ClientSession() as session:
-        print(await fetch("NVDA", session))
+        print(await get("NVDA", session))
 
 
 asyncio.run(main())

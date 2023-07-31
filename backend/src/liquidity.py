@@ -40,8 +40,8 @@ async def fetch_volume(symbol: str, session: ClientSession) -> int:
     url = f"https://www.barchart.com/stocks/quotes/{symbol}/technical-analysis"
 
     try:
-        response = await fetch(url, session)
-        volume_element = extract_element(response, volume_xpath)
+        response = await get(url, session)
+        volume_element = extract_element(volume_xpath, response)
         volume = int(extract_float(volume_element))
     except Exception as e:
         logs.append(skip_message(symbol, e))
@@ -59,7 +59,6 @@ async def screen_liquidity(df_index: int, session: ClientSession) -> None:
     symbol = row["Symbol"]
     price = row["Price"]
     market_cap = row["Market Cap"]
-
     volume = await fetch_volume(symbol, session)
 
     # check if null values are present in screen criteria
