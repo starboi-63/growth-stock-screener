@@ -63,10 +63,10 @@ def fetch_moving_averages(symbol: str) -> dict:
         return None
 
     try:
-        sma_10 = extract_value(driver.find_element(By.XPATH, sma_10_xpath))
-        sma_20 = extract_value(driver.find_element(By.XPATH, sma_20_xpath))
-        sma_50 = extract_value(driver.find_element(By.XPATH, sma_50_xpath))
-        sma_200 = extract_value(driver.find_element(By.XPATH, sma_200_xpath))
+        sma_10 = extract_float(driver.find_element(By.XPATH, sma_10_xpath))
+        sma_20 = extract_float(driver.find_element(By.XPATH, sma_20_xpath))
+        sma_50 = extract_float(driver.find_element(By.XPATH, sma_50_xpath))
+        sma_200 = extract_float(driver.find_element(By.XPATH, sma_200_xpath))
     except Exception as e:
         logs.append(skip_message(symbol, e))
         return None
@@ -95,7 +95,7 @@ def fetch_52_week_high(symbol: str) -> float:
     try:
         dom = html.fromstring(response.content)
         high_52_week_elt = dom.xpath(high_52_week_xpath)[0]
-        high_52_week = extract_value(high_52_week_elt)
+        high_52_week = extract_float(high_52_week_elt)
     except Exception as e:
         logs.append(skip_message(symbol, e))
         return None

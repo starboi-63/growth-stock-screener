@@ -36,34 +36,12 @@ successful_symbols = []
 failed_symbols = []
 
 
-async def fetch(symbol: str, session: ClientSession) -> str:
-    """Send a GET request for the given stock symbol to barchart.com and return the response as a string."""
+async def fetch_volume(symbol: str, session: ClientSession) -> int:
     url = f"https://www.barchart.com/stocks/quotes/{symbol}/technical-analysis"
-
-    try:
-        async with session.get(url) as response:
-            return await response.text()
-    except Exception as e:
-        logs.append(skip_message(symbol, e))
-        return None
-
-
-def extract_avg_volume(symbol: str, response: str) -> int:
-    """Consume a GET request response from barchart.com and return the 50-day average volume."""
-    # handle null responses
-    if response is None:
-        return None
-
-    dom = html.fromstring(response)
-
-    # extract 50-day average volume data from html
-    try:
-        volume_elt = dom.xpath(volume_xpath)[0]
-        volume = int(extract_value(volume_elt))
-        return volume
-    except Exception as e:
-        logs.append(skip_message(symbol, e))
-        return None
+    response = await fetch(url, session)
+    volume_element = extract_element(response, volume_xpath)
+    volume = int(extract_float(volume_element))
+    return volume
 
 
 async def screen_liquidity(df_index: int, session: ClientSession) -> None:
@@ -75,7 +53,8 @@ async def screen_liquidity(df_index: int, session: ClientSession) -> None:
     symbol = row["Symbol"]
     price = row["Price"]
     market_cap = row["Market Cap"]
-    volume = extract_avg_volume(symbol, await fetch(symbol, session))
+
+    volume = await fetch_volume(symbol, session)
 
     # check if null values are present in screen criteria
     if volume is None:
