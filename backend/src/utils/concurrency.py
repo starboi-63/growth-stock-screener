@@ -26,7 +26,8 @@ def get_driver(thread_local: local, drivers: List[WebDriver]) -> WebDriver:
 
 
 def tqdm_thread_pool_map(threads: int, func: Callable, items: List) -> List:
-    """Consume a number of desired threads, a function, and a list of items to call the given function on. Return a list of results."""
+    """Concurrently pass each inputted item into the given function using a thread pool.
+    Display a progress bar and return a list of results."""
     with ThreadPool(threads) as pool:
         results = []
         for result in tqdm(pool.imap(func, items), total=len(items)):

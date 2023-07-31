@@ -3,7 +3,6 @@ import asyncio
 import aiohttp
 from aiohttp.client import ClientSession
 from tqdm.asyncio import tqdm_asyncio
-from lxml import html
 from utils.logging import *
 from utils.outfiles import *
 from utils.scraping import *
@@ -36,30 +35,14 @@ successful_symbols = []
 failed_symbols = []
 
 
-async def fetch(symbol: str, session: ClientSession) -> str:
-    """Send a GET request for the given stock symbol to barchart.com and return the response as a string."""
+async def fetch_volume(symbol: str, session: ClientSession) -> int:
+    """Fetch the 50-day average volume of the given stock symbol from barchart.com."""
     url = f"https://www.barchart.com/stocks/quotes/{symbol}/technical-analysis"
 
     try:
-        async with session.get(url) as response:
-            return await response.text()
-    except Exception as e:
-        logs.append(skip_message(symbol, e))
-        return None
-
-
-def extract_avg_volume(symbol: str, response: str) -> int:
-    """Consume a GET request response from barchart.com and return the 50-day average volume."""
-    # handle null responses
-    if response is None:
-        return None
-
-    dom = html.fromstring(response)
-
-    # extract 50-day average volume data from html
-    try:
-        volume_elt = dom.xpath(volume_xpath)[0]
-        volume = int(extract_value(volume_elt))
+        response = await get(url, session)
+        volume_element = extract_element(volume_xpath, response)
+        volume = int(extract_float(volume_element))
         return volume
     except Exception as e:
         logs.append(skip_message(symbol, e))
@@ -67,15 +50,14 @@ def extract_avg_volume(symbol: str, response: str) -> int:
 
 
 async def screen_liquidity(df_index: int, session: ClientSession) -> None:
-    """Consume a row index of the stock dataframe and populate
-    data lists if the row satisfies liquidity criteria."""
+    """Populate stock data lists based on whether the given row satisfies liquidity criteria."""
     row = df.iloc[df_index]
 
     # extract important information from dataframe row
     symbol = row["Symbol"]
     price = row["Price"]
     market_cap = row["Market Cap"]
-    volume = extract_avg_volume(symbol, await fetch(symbol, session))
+    volume = await fetch_volume(symbol, session)
 
     # check if null values are present in screen criteria
     if volume is None:

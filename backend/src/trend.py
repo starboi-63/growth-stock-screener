@@ -4,6 +4,7 @@ from selenium.common.exceptions import TimeoutException
 import threading
 import requests
 from lxml import html
+from typing import Dict
 from utils.logging import *
 from utils.outfiles import *
 from utils.calculations import *
@@ -39,8 +40,8 @@ drivers = []
 thread_local = threading.local()
 
 
-def fetch_moving_averages(symbol: str) -> dict:
-    """Consume a stock symbol and return its moving average data as a dictionary."""
+def fetch_moving_averages(symbol: str) -> Dict[str, float]:
+    """Fetch moving average data for the given stock symbol from tradingview.com"""
     url = f"https://www.tradingview.com/symbols/{symbol}/technicals/"
     # perform get request and stop loading page when data table is detected in DOM
     driver = get_driver(thread_local, drivers)
@@ -63,10 +64,10 @@ def fetch_moving_averages(symbol: str) -> dict:
         return None
 
     try:
-        sma_10 = extract_value(driver.find_element(By.XPATH, sma_10_xpath))
-        sma_20 = extract_value(driver.find_element(By.XPATH, sma_20_xpath))
-        sma_50 = extract_value(driver.find_element(By.XPATH, sma_50_xpath))
-        sma_200 = extract_value(driver.find_element(By.XPATH, sma_200_xpath))
+        sma_10 = extract_float(driver.find_element(By.XPATH, sma_10_xpath))
+        sma_20 = extract_float(driver.find_element(By.XPATH, sma_20_xpath))
+        sma_50 = extract_float(driver.find_element(By.XPATH, sma_50_xpath))
+        sma_200 = extract_float(driver.find_element(By.XPATH, sma_200_xpath))
     except Exception as e:
         logs.append(skip_message(symbol, e))
         return None
@@ -88,14 +89,14 @@ def fetch_moving_averages(symbol: str) -> dict:
 
 
 def fetch_52_week_high(symbol: str) -> float:
-    """Consume a stock symbol and return its 52-week high."""
+    """Fetch the 52-week high of the given stock symbol from cnbc.com."""
     url = f"https://www.cnbc.com/quotes/{symbol}"
     response = requests.get(url)
 
     try:
-        dom = html.fromstring(response.content)
-        high_52_week_elt = dom.xpath(high_52_week_xpath)[0]
-        high_52_week = extract_value(high_52_week_elt)
+        high_52_week = extract_float(
+            extract_element(high_52_week_xpath, response.content)
+        )
     except Exception as e:
         logs.append(skip_message(symbol, e))
         return None
@@ -104,8 +105,7 @@ def fetch_52_week_high(symbol: str) -> float:
 
 
 def screen_trend(df_index: int) -> None:
-    """Consume a stock symbol and populate data lists based on whether the stock
-    is in a stage-2 uptrend."""
+    """Populate stock data lists based on whether the given dataframe row is in a stage-2 uptrend."""
     # extract stock information from dataframe and fetch trend info
     row = df.iloc[df_index]
 
@@ -152,11 +152,6 @@ def screen_trend(df_index: int) -> None:
             "Market Cap": row["Market Cap"],
             "50-day Average Volume": row["50-day Average Volume"],
             "% Below 52-week High": percent_below_high,
-            "10-day SMA": sma_10,
-            "20-day SMA": sma_20,
-            "50-day SMA": sma_50,
-            "200-day SMA": sma_200,
-            "52-week high": high_52_week,
         }
     )
 

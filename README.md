@@ -37,17 +37,17 @@ All stocks which are not in a _stage-two_ uptrend are filtered out. A stage-two 
 
 $$
 \begin{aligned}
-\text{Price} &>= 50\ \text{day SMA}\\
-\text{Price} &>= 200\ \text{day SMA}\\
-10\ \text{day SMA} &>= 20\ \text{day SMA} >= 50\ \text{day SMA}\\
-\text{Price} &>= 50\\%\ \text{of YTD High}
+\text{Price} &>= 50\ \text{Day SMA}\\
+\text{Price} &>= 200\ \text{Day SMA}\\
+10\ \text{Day SMA} &>= 20\ \text{Day SMA} >= 50\ \text{Day SMA}\\
+\text{Price} &>= 50\\%\ \text{of}\ 52\ \text{Week High}
 \end{aligned}
 $$
 
 ### Iteration 4: Revenue Growth
 
 Only the most rapidly growing stocks with _high sales growth_ are allowed to pass this iteration of the screen. Specifically,
-the percent increase in the most recent reported quarterly revenue versus a year ago must be at least $25\\%$; the percent increase in the prior period versus the same quarter a year ago must also be at least $25\\%$.
+the percent increase in the most recent reported quarterly revenue versus a year ago must be at least $25\\%$; if available, the percent increase in the prior period versus the same quarter a year ago must also be at least $25\\%$.
 
 ### Iteration 5: Institutional Accumulation
 
