@@ -3,6 +3,7 @@ import aiohttp
 from aiohttp.client import ClientSession
 from tqdm.asyncio import tqdm_asyncio
 import pandas as pd
+from typing import Dict
 from utils.logging import *
 from utils.outfiles import *
 from utils.calculations import *
@@ -32,6 +33,9 @@ df = open_outfile("trend")
 # populate these lists while iterating through symbols
 successful_symbols = []
 failed_symbols = []
+
+
+async def fetch_revenues(symbol: str, session: ClientSession) -> Dict[str, float]:
 
 
 async def main() -> None:

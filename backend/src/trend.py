@@ -4,6 +4,7 @@ from selenium.common.exceptions import TimeoutException
 import threading
 import requests
 from lxml import html
+from typing import Dict
 from utils.logging import *
 from utils.outfiles import *
 from utils.calculations import *
@@ -39,7 +40,7 @@ drivers = []
 thread_local = threading.local()
 
 
-def fetch_moving_averages(symbol: str) -> dict:
+def fetch_moving_averages(symbol: str) -> Dict[str, float]:
     """Consume a stock symbol and return its moving average data as a dictionary."""
     url = f"https://www.tradingview.com/symbols/{symbol}/technicals/"
     # perform get request and stop loading page when data table is detected in DOM
