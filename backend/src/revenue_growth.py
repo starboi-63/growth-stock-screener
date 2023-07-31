@@ -36,6 +36,10 @@ failed_symbols = []
 
 
 async def fetch_revenues(symbol: str, session: ClientSession) -> Dict[str, float]:
+    url = f"https://www.macrotrends.net/stocks/charts/{symbol}/upstart-holdings/revenue"
+    response = await get(url, session)
+    q1_revenue_element = extract_element(q1_revenue_xpath, response)
+    q1_prev_revenue_element = extract_element(q1_prev_revenue_xpath, response)
 
 
 async def main() -> None:

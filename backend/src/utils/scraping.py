@@ -13,7 +13,7 @@ async def get(url: str, session: ClientSession) -> str:
     try:
         async with session.get(url) as response:
             return await response.text()
-    except:
+    except Exception:
         return None
 
 
@@ -27,7 +27,7 @@ def extract_element(xpath: str, response: str) -> WebElement:
     try:
         element = dom.xpath(xpath)[0]
         return element
-    except:
+    except Exception:
         return None
 
 
@@ -35,7 +35,7 @@ def extract_float(element: WebElement) -> float:
     """Consume a WebElement and return its value as a float."""
     try:
         return float(element.text.replace(",", "").replace(" ", ""))
-    except:
+    except Exception:
         return None
 
 
