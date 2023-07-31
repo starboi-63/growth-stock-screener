@@ -4,10 +4,19 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.common.exceptions import TimeoutException
 from bs4 import BeautifulSoup
+from utils.logging import *
 
 # constants
 timeout = 30
-holdings_data_xpath = "/html/body/div[3]/div/main/div[2]/div[4]/div[3]/div/div[1]/div/div[1]/div[2]/div/div[2]/div/table/tbody"
+increased_holders_xpath = "/html/body/div[2]/div/main/div[2]/div[4]/div[3]/div/div[1]/div/div[1]/div[2]/div/div[2]/div/table/tbody/tr[1]/td[2]"
+increased_shares_xpath = "/html/body/div[2]/div/main/div[2]/div[4]/div[3]/div/div[1]/div/div[1]/div[2]/div/div[2]/div/table/tbody/tr[1]/td[3]"
+decreased_holders_xpath = "/html/body/div[2]/div/main/div[2]/div[4]/div[3]/div/div[1]/div/div[1]/div[2]/div/div[2]/div/table/tbody/tr[2]/td[2]"
+decreased_shares_xpath = "/html/body/div[2]/div/main/div[2]/div[4]/div[3]/div/div[1]/div/div[1]/div[2]/div/div[2]/div/table/tbody/tr[2]/td[3]"
+
+# print header message to terminal
+process_name = "Institutional Accumulation"
+process_stage = 5
+print_status(process_name, process_stage, True)
 
 # construct the url and headers for the request
 symbol = "NVDA"
