@@ -162,6 +162,11 @@ def screen_trend(df_index: int) -> None:
 # launch concurrent worker threads to execute the screen
 tqdm_thread_pool_map(threads, screen_trend, range(0, len(df)))
 
+# close Selenium web driver sessions
+print("\nClosing browser instances . . .\n")
+for driver in tqdm(drivers):
+    driver.quit()
+
 # create a new dataframe with symbols which satisfied trend criteria
 screened_df = pd.DataFrame(successful_symbols)
 
@@ -178,8 +183,3 @@ print(
 )
 print(f"{len(screened_df)} symbols passed.")
 print_status(process_name, process_stage, False)
-
-# close Selenium web driver sessions
-print("Closing browser instances . . .\n")
-for driver in tqdm(drivers):
-    driver.quit()
