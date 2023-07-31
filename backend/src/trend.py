@@ -41,7 +41,7 @@ thread_local = threading.local()
 
 
 def fetch_moving_averages(symbol: str) -> Dict[str, float]:
-    """Consume a stock symbol and return its moving average data as a dictionary."""
+    """Fetch moving average data for the given stock symbol from tradingview.com"""
     url = f"https://www.tradingview.com/symbols/{symbol}/technicals/"
     # perform get request and stop loading page when data table is detected in DOM
     driver = get_driver(thread_local, drivers)
@@ -89,7 +89,7 @@ def fetch_moving_averages(symbol: str) -> Dict[str, float]:
 
 
 def fetch_52_week_high(symbol: str) -> float:
-    """Consume a stock symbol and return its 52-week high."""
+    """Fetch the 52-week high of the given stock symbol from cnbc.com."""
     url = f"https://www.cnbc.com/quotes/{symbol}"
     response = requests.get(url)
 
@@ -105,8 +105,7 @@ def fetch_52_week_high(symbol: str) -> float:
 
 
 def screen_trend(df_index: int) -> None:
-    """Consume a stock symbol and populate data lists based on whether the stock
-    is in a stage-2 uptrend."""
+    """Populate stock data lists based on whether the given dataframe row is in a stage-2 uptrend."""
     # extract stock information from dataframe and fetch trend info
     row = df.iloc[df_index]
 

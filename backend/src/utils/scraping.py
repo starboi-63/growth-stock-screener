@@ -33,7 +33,7 @@ def extract_element(xpath: str, response: str) -> WebElement:
 
 
 def extract_float(element: WebElement) -> float:
-    """Consume a WebElement and return its value as a float."""
+    """Return the content stored in a WebElement as a float."""
     try:
         cleaned_content = re.sub(r"[^0-9]", "", element.text)
         return float(cleaned_content)
@@ -42,7 +42,7 @@ def extract_float(element: WebElement) -> float:
 
 
 def element_is_float(xpath: str) -> Callable[[WebDriver], bool]:
-    """Consume an xpath and return a function which consumes a WebDriver and returns true if the DOM element
+    """Return a function which consumes a WebDriver and returns true if the DOM element
     at the specified xpath is a float type."""
 
     def inner(driver: WebDriver) -> bool:

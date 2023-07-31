@@ -36,7 +36,7 @@ failed_symbols = []
 
 
 async def fetch_volume(symbol: str, session: ClientSession) -> int:
-    """Consume a stock symbol and aiohttp session and return the 50-day average volume of the given symbol."""
+    """Fetch the 50-day average volume of the given stock symbol from barchart.com."""
     url = f"https://www.barchart.com/stocks/quotes/{symbol}/technical-analysis"
 
     try:
@@ -50,8 +50,7 @@ async def fetch_volume(symbol: str, session: ClientSession) -> int:
 
 
 async def screen_liquidity(df_index: int, session: ClientSession) -> None:
-    """Consume a row index of the stock dataframe and populate
-    data lists if the row satisfies liquidity criteria."""
+    """Populate stock data lists based on whether the given row satisfies liquidity criteria."""
     row = df.iloc[df_index]
 
     # extract important information from dataframe row
