@@ -1,6 +1,7 @@
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.common.by import By
 from selenium.common.exceptions import TimeoutException
+from selenium.common.exceptions import InvalidSessionIdException
 import threading
 from typing import Dict
 from utils.logging import *
@@ -9,8 +10,8 @@ from utils.scraping import *
 from utils.concurrency import *
 
 # constants
-threads = 10  # number of concurrent Selenium browser instances to fetch data
-timeout = 30
+threads = 5  # number of concurrent Selenium browser instances to fetch data
+timeout = 60
 increased_holders_xpath = "/html/body/div[2]/div/main/div[2]/div[4]/div[3]/div/div[1]/div/div[1]/div[2]/div/div[2]/div/table/tbody/tr[1]/td[2]"
 increased_shares_xpath = "/html/body/div[2]/div/main/div[2]/div[4]/div[3]/div/div[1]/div/div[1]/div[2]/div/div[2]/div/table/tbody/tr[1]/td[3]"
 decreased_holders_xpath = "/html/body/div[2]/div/main/div[2]/div[4]/div[3]/div/div[1]/div/div[1]/div[2]/div/div[2]/div/table/tbody/tr[2]/td[2]"
@@ -121,7 +122,7 @@ def screen_institutional_accumulation(df_index: int) -> None:
 
     # add institutional holdings info to logs
     logs.append(
-        f"""{symbol} | Net Institutional Holders: {net_holders:.0f}, Net Institutional Shares: {net_shares:.0f} 
+        f"""\n{symbol} | Net Institutional Holders: {net_holders:.0f}, Net Institutional Shares: {net_shares:.0f} 
         Increased : holders: {holdings_data["Increased"]["Holders"]:.0f}, shares: {holdings_data["Increased"]["Shares"]:.0f}
         Decreased : holders: {holdings_data["Decreased"]["Holders"]:.0f}, shares: {holdings_data["Decreased"]["Shares"]:.0f}\n"""
     )
