@@ -149,3 +149,9 @@ def screen_institutional_accumulation(df_index: int) -> None:
 
 # launch concurrent worker threads to execute the screen
 tqdm_thread_pool_map(threads, screen_institutional_accumulation, range(0, len(df)))
+
+# create a new dataframe with symbols which satisfied trend criteria
+screened_df = pd.DataFrame(successful_symbols)
+
+# serialize data in JSON format and save on machine
+create_outfile(screened_df, "institutional_accumulation")
