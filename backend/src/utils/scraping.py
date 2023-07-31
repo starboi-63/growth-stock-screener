@@ -35,7 +35,7 @@ def extract_element(xpath: str, response: str) -> WebElement:
 def extract_float(element: WebElement) -> float:
     """Return the content stored in a WebElement as a float."""
     try:
-        cleaned_content = re.sub(r"[^0-9]", "", element.text)
+        cleaned_content = re.sub(r"[^0-9.]", "", element.text)
         return float(cleaned_content)
     except Exception:
         return None
