@@ -52,7 +52,7 @@ def element_is_float(xpath: str) -> Callable[[WebDriver], bool]:
 
 
 class WaitForAll:
-    """Represent an expected condition which is the logical "and" of multiple expected conditions."""
+    """Expected condition which is the logical "and" of multiple expected conditions."""
 
     def __init__(self, methods: List[Callable[[WebDriver], bool]]):
         self.methods = methods

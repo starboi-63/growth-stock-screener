@@ -1,9 +1,6 @@
-from selenium import webdriver
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.common.by import By
-from selenium.webdriver.support import expected_conditions as EC
 from selenium.common.exceptions import TimeoutException
-from bs4 import BeautifulSoup
 import threading
 from typing import Dict
 from utils.logging import *
@@ -40,7 +37,8 @@ thread_local = threading.local()
 
 
 def fetch_institutional_holdings(symbol: str) -> Dict[str, Dict[str, float]]:
-    # construct the url and headers for the request
+    "Fetch institutional holdings data for a stock symbol from nasdaq.com."
+    # perform get request and stop loading page when data is detected in DOM
     url = (
         f"https://www.nasdaq.com/market-activity/stocks/{symbol}/institutional-holdings"
     )
@@ -48,38 +46,102 @@ def fetch_institutional_holdings(symbol: str) -> Dict[str, Dict[str, float]]:
     driver = get_driver(thread_local, drivers)
     driver.get(url)
 
+    wait_methods = [
+        element_is_float(increased_holders_xpath),
+        element_is_float(increased_shares_xpath),
+        element_is_float(decreased_holders_xpath),
+        element_is_float(decreased_shares_xpath),
+    ]
+
+    combined_wait_method = WaitForAll(wait_methods)
+
     try:
-        data_present = EC.presence_of_element_located((By.XPATH, holdings_data_xpath))
-        WebDriverWait(driver, timeout).until(data_present)
+        WebDriverWait(driver, timeout).until(combined_wait_method)
         driver.execute_script("window.stop();")
     except TimeoutException:
-        print(f"Skipping {symbol} (request timed out) . . .")
-        # continue
+        logs.append(skip_message(symbol, "request timed out"))
+        return None
+
+    # extract institutional holdings information from DOM
+    try:
+        increased_holders = extract_float(
+            driver.find_element(By.XPATH, increased_holders_xpath)
+        )
+        increased_shares = extract_float(
+            driver.find_element(By.XPATH, increased_shares_xpath)
+        )
+        decreased_holders = extract_float(
+            driver.find_element(By.XPATH, decreased_holders_xpath)
+        )
+        decreased_shares = extract_float(
+            driver.find_element(By.XPATH, decreased_shares_xpath)
+        )
+    except Exception as e:
+        logs.append(skip_message(symbol, e))
+        return None
+
+    # check for null values in fetched holdings data
+    data = [
+        increased_holders,
+        increased_shares,
+        decreased_holders,
+        decreased_shares,
+    ]
+
+    for datum in data:
+        if datum is None:
+            logs.append(skip_message(symbol, "insufficient data"))
+            return None
+
+    return {
+        "Increased": {"Holders": increased_holders, "Shares": increased_shares},
+        "Decreased": {"Holders": decreased_holders, "Shares": decreased_shares},
+    }
 
 
-# extract institutional holdings information from site HTML
-soup = BeautifulSoup(driver.page_source, "html.parser")
+def screen_institutional_accumulation(df_index: int) -> None:
+    """Populate stock data lists based on whether the given dataframe row is experiencing institutional demand."""
+    # extract stock information from dataframe and fetch institutional holdings info
+    row = df.iloc[df_index]
 
-# the second table on the "institutional-holdings" page has position data
-holdings_tables = soup.find_all("tbody", class_="institutional-holdings__body")
-active_positions_table = holdings_tables[1]
+    symbol = row["Symbol"]
+    holdings_data = fetch_institutional_holdings(symbol)
 
-# extract the number of institutions that have increased or decreased positions
-table_rows = list(active_positions_table.children)
-increased_row = list(table_rows[0].contents)
-decreased_row = list(table_rows[1].contents)
+    # check for failed GET requests
+    if holdings_data is None:
+        failed_symbols.append(symbol)
+        return
 
-increased_positions = increased_row[1].contents[0]
-increased_shares = increased_row[2].contents[0]
-decreased_positions = decreased_row[1].contents[0]
-decreased_shares = decreased_row[2].contents[0]
+    net_holders = (
+        holdings_data["Increased"]["Holders"] - holdings_data["Decreased"]["Holders"]
+    )
+    net_shares = (
+        holdings_data["Increased"]["Shares"] - holdings_data["Decreased"]["Shares"]
+    )
 
-# print extracted data to terminal
-print(
-    f"""Symbol: {symbol}
-    Increased Positions: {increased_positions} | Increased Shares: {increased_shares}
-    Decreased Positions: {decreased_positions} | Decreased Shares: {decreased_shares}"""
-)
+    # add institutional holdings info to logs
+    logs.append(
+        f"""{symbol} | Net Institutional Holders: {net_holders:.0f}, Net Institutional Shares: {net_shares:.0f} 
+        Increased : holders: {holdings_data["Increased"]["Holders"]:.0f}, shares: {holdings_data["Increased"]["Shares"]:.0f}
+        Decreased : holders: {holdings_data["Decreased"]["Holders"]:.0f}, shares: {holdings_data["Decreased"]["Shares"]:.0f}\n"""
+    )
 
-# close all Firefox browser instances
-driver.quit()
+    # filter out stocks which are not under institutional accumulation
+    if (net_holders < 0) or (net_shares < 0):
+        logs.append(filter_message(symbol))
+        return
+
+    successful_symbols.append(
+        {
+            "Symbol": symbol,
+            "Company Name": row["Company Name"],
+            "Industry": row["Industry"],
+            "RS": row["RS"],
+            "Price": row["Price"],
+            "Market Cap": row["Market Cap"],
+            "50-day Average Volume": row["50-day Average Volume"],
+            "% Below 52-week High": row["% Below 52-week High"],
+            "Net Institutional Holders": int(net_holders),
+            "Net Institutional Shares": int(net_shares),
+        }
+    )
