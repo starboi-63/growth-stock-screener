@@ -59,39 +59,17 @@ def fetch_institutional_holdings(symbol: str) -> Dict[str, float]:
 
     # extract institutional holdings information from DOM
     try:
-        increased_holders = extract_float(
-            driver.find_element(By.XPATH, increased_holders_xpath)
-        )
-        increased_shares = extract_float(
-            driver.find_element(By.XPATH, increased_shares_xpath)
-        )
-        decreased_holders = extract_float(
-            driver.find_element(By.XPATH, decreased_holders_xpath)
-        )
-        decreased_shares = extract_float(
-            driver.find_element(By.XPATH, decreased_shares_xpath)
-        )
+        inflows = extract_dollars(driver.find_element(By.XPATH, inflows_xpath))
+        outflows = extract_dollars(driver.find_element(By.XPATH, outflows_xpath))
     except Exception as e:
         logs.append(skip_message(symbol, e))
         return None
 
-    # check for null values in fetched holdings data
-    data = [
-        increased_holders,
-        increased_shares,
-        decreased_holders,
-        decreased_shares,
-    ]
+    if (inflows is None) or (outflows is None):
+        logs.append(skip_message(symbol, "insufficient data"))
+        return None
 
-    for datum in data:
-        if datum is None:
-            logs.append(skip_message(symbol, "insufficient data"))
-            return None
-
-    return {
-        "Increased": {"Holders": increased_holders, "Shares": increased_shares},
-        "Decreased": {"Holders": decreased_holders, "Shares": decreased_shares},
-    }
+    return {"Inflows": inflows, "Outflows": outflows}
 
 
 def screen_institutional_accumulation(df_index: int) -> None:
