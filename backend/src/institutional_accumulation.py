@@ -1,6 +1,5 @@
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.common.by import By
-from selenium.webdriver.support import expected_conditions as EC
 from selenium.common.exceptions import TimeoutException
 import threading
 import requests
@@ -111,8 +110,8 @@ def screen_institutional_accumulation(df_index: int) -> None:
 
     # add institutional holdings info to logs
     logs.append(
-        f"""\n{symbol} | Net Institutional Inflows (most recent Q): ${net_inflows:.0f} 
-        Inflows: ${holdings_data["Inflows"]:.0f}, Outflows: ${holdings_data["Outflows"]:.0f}\n"""
+        f"""\n{symbol} | Net Institutional Inflows (most recent Q): ${net_inflows:,.0f} 
+        Inflows: ${holdings_data["Inflows"]:,.0f}, Outflows: ${holdings_data["Outflows"]:,.0f}\n"""
     )
 
     # filter out stocks which are not under institutional accumulation
