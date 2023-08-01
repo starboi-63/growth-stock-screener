@@ -103,6 +103,7 @@ async def main() -> None:
         )
 
 
+print("\nFetching liquidity data . . .\n")
 asyncio.run(main())
 
 # create a new dataframe with symbols which satisfied liquidity criteria

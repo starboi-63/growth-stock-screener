@@ -137,6 +137,7 @@ async def main() -> None:
         )
 
 
+print("\nFetching quarterly revenue data . . .\n")
 asyncio.run(main())
 
 # create a new dataframe with symbols which satisfied revenue_growth criteria

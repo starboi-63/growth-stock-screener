@@ -160,6 +160,7 @@ def screen_trend(df_index: int) -> None:
 
 
 # launch concurrent worker threads to execute the screen
+print("\nFetching trend data . . .\n")
 tqdm_thread_pool_map(threads, screen_trend, range(0, len(df)))
 
 # close Selenium web driver sessions

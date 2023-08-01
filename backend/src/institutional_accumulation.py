@@ -12,10 +12,8 @@ from utils.concurrency import *
 # constants
 threads = 5  # number of concurrent Selenium browser instances to fetch data
 timeout = 60
-increased_holders_xpath = "/html/body/div[2]/div/main/div[2]/div[4]/div[3]/div/div[1]/div/div[1]/div[2]/div/div[2]/div/table/tbody/tr[1]/td[2]"
-increased_shares_xpath = "/html/body/div[2]/div/main/div[2]/div[4]/div[3]/div/div[1]/div/div[1]/div[2]/div/div[2]/div/table/tbody/tr[1]/td[3]"
-decreased_holders_xpath = "/html/body/div[2]/div/main/div[2]/div[4]/div[3]/div/div[1]/div/div[1]/div[2]/div/div[2]/div/table/tbody/tr[2]/td[2]"
-decreased_shares_xpath = "/html/body/div[2]/div/main/div[2]/div[4]/div[3]/div/div[1]/div/div[1]/div[2]/div/div[2]/div/table/tbody/tr[2]/td[3]"
+inflows_xpath = "/html/body/div[2]/main/div[2]/article/form/div[4]/div[2]/div[2]/div[1]/div[2]/div/div/div[2]/div/svg/g[3]/g[4]/text[1]/tspan[2]"
+outflows_xpath = "/html/body/div[2]/main/div[2]/article/form/div[4]/div[2]/div[2]/div[1]/div[2]/div/div/div[2]/div/svg/g[3]/g[4]/text[3]/tspan[2]"
 
 # print header message to terminal
 process_name = "Institutional Accumulation"
@@ -37,21 +35,17 @@ drivers = []
 thread_local = threading.local()
 
 
-def fetch_institutional_holdings(symbol: str) -> Dict[str, Dict[str, float]]:
+def fetch_institutional_holdings(symbol: str) -> Dict[str, float]:
     "Fetch institutional holdings data for a stock symbol from nasdaq.com."
     # perform get request and stop loading page when data is detected in DOM
-    url = (
-        f"https://www.nasdaq.com/market-activity/stocks/{symbol}/institutional-holdings"
-    )
+    url = f"https://www.marketbeat.com/stocks/NASDAQ/{symbol}/institutional-ownership/"
 
     driver = get_driver(thread_local, drivers)
     driver.get(url)
 
     wait_methods = [
-        element_is_float(increased_holders_xpath),
-        element_is_float(increased_shares_xpath),
-        element_is_float(decreased_holders_xpath),
-        element_is_float(decreased_shares_xpath),
+        element_is_float(inflows_xpath),
+        element_is_float(outflows_xpath),
     ]
 
     combined_wait_method = WaitForAll(wait_methods)
@@ -149,6 +143,7 @@ def screen_institutional_accumulation(df_index: int) -> None:
 
 
 # launch concurrent worker threads to execute the screen
+print("\nFetching institutional holdings data . . .\n")
 tqdm_thread_pool_map(threads, screen_institutional_accumulation, range(0, len(df)))
 
 # close Selenium web driver sessions
