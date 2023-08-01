@@ -41,6 +41,23 @@ def extract_float(element: WebElement) -> float:
         return None
 
 
+def extract_dollars(element: WebElement) -> float:
+    "Return the financial content stored in a WebElement of the form '$x.xxB' or '$x.xxM' as a float representing dollars."
+    try:
+        cleaned_content = re.sub(r"[^0-9.BM]", "", element.text)
+        nums_only = re.sub(r"[^0-9.]", "", element.text)
+        last_char = cleaned_content[len(cleaned_content) - 1]
+
+        if (last_char != "B") and (last_char != "M"):
+            raise Exception
+        if last_char == "B":
+            return float(nums_only) * 1000000000
+        if last_char == "M":
+            return float(nums_only) * 1000000
+    except Exception:
+        return None
+
+
 def element_is_float(xpath: str) -> Callable[[WebDriver], bool]:
     """Return a function which consumes a WebDriver and returns true if the DOM element
     at the specified xpath is a float type."""
