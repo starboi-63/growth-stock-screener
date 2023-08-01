@@ -85,22 +85,16 @@ def screen_institutional_accumulation(df_index: int) -> None:
         failed_symbols.append(symbol)
         return
 
-    net_holders = (
-        holdings_data["Increased"]["Holders"] - holdings_data["Decreased"]["Holders"]
-    )
-    net_shares = (
-        holdings_data["Increased"]["Shares"] - holdings_data["Decreased"]["Shares"]
-    )
+    net_inflows = holdings_data["Inflows"] - holdings_data["Outflows"]
 
     # add institutional holdings info to logs
     logs.append(
-        f"""\n{symbol} | Net Institutional Holders: {net_holders:.0f}, Net Institutional Shares: {net_shares:.0f} 
-        Increased : holders: {holdings_data["Increased"]["Holders"]:.0f}, shares: {holdings_data["Increased"]["Shares"]:.0f}
-        Decreased : holders: {holdings_data["Decreased"]["Holders"]:.0f}, shares: {holdings_data["Decreased"]["Shares"]:.0f}\n"""
+        f"""\n{symbol} | Net Institutional Inflows (most recent Q): ${net_inflows / 1000000:.2f}M 
+        Inflows: ${holdings_data["Inflows"] / 1000000:.2f}M, Outflows: ${holdings_data["Outflows"] / 1000000:.2f}M\n"""
     )
 
     # filter out stocks which are not under institutional accumulation
-    if (net_holders < 0) or (net_shares < 0):
+    if net_inflows < 0:
         logs.append(filter_message(symbol))
         return
 
@@ -112,10 +106,11 @@ def screen_institutional_accumulation(df_index: int) -> None:
             "RS": row["RS"],
             "Price": row["Price"],
             "Market Cap": row["Market Cap"],
+            "Net Institutional Inflows": net_inflows,
+            "Revenue Growth % (most recent Q)": row["Revenue Growth % (most recent Q)"],
+            "Revenue Growth % (previous Q)": row["Revenue Growth % (previous Q)"],
             "50-day Average Volume": row["50-day Average Volume"],
             "% Below 52-week High": row["% Below 52-week High"],
-            "Net Institutional Holders": int(net_holders),
-            "Net Institutional Shares": int(net_shares),
         }
     )
 
