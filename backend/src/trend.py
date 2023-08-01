@@ -49,10 +49,10 @@ def fetch_moving_averages(symbol: str) -> Dict[str, float]:
     driver.get(url)
 
     wait_methods = [
-        element_is_float(sma_10_xpath),
-        element_is_float(sma_20_xpath),
-        element_is_float(sma_50_xpath),
-        element_is_float(sma_200_xpath),
+        element_is_float_xpath(sma_10_xpath),
+        element_is_float_xpath(sma_20_xpath),
+        element_is_float_xpath(sma_50_xpath),
+        element_is_float_xpath(sma_200_xpath),
     ]
 
     combined_wait_method = WaitForAll(wait_methods)

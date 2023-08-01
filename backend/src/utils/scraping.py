@@ -58,12 +58,24 @@ def extract_dollars(element: WebElement) -> float:
         return None
 
 
-def element_is_float(xpath: str) -> Callable[[WebDriver], bool]:
+def element_is_float_xpath(xpath: str) -> Callable[[WebDriver], bool]:
     """Return a function which consumes a WebDriver and returns true if the DOM element
     at the specified xpath is a float type."""
 
     def inner(driver: WebDriver) -> bool:
-        return type(extract_float(driver.find_element(By.XPATH, xpath))) == float
+        element = driver.find_element(By.XPATH, xpath)
+        return type(extract_float(element)) == float
+
+    return inner
+
+
+def element_is_float_css(css_selector: str) -> Callable[[WebDriver], bool]:
+    """Return a function which consumes a WebDriver and returns true if the DOM element
+    at the specified css-selector is a float type."""
+
+    def inner(driver: WebDriver) -> bool:
+        element = driver.find_element(By.CSS_SELECTOR, css_selector)
+        return type(extract_float(element)) == float
 
     return inner
 

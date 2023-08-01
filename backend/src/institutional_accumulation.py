@@ -11,8 +11,8 @@ from utils.scraping import *
 from utils.concurrency import *
 
 # constants
-threads = 10  # number of concurrent Selenium browser instances to fetch data
-timeout = 30
+threads = 5  # number of concurrent Selenium browser instances to fetch data
+timeout = 60
 exchange_xpath = "/html/body/div[3]/div[2]/div[2]/div/div[1]/div[2]/span[2]"
 inflows_css = ".info-slider-bought-text > tspan:nth-child(2)"
 outflows_css = ".info-slider-sold-text > tspan:nth-child(2)"
@@ -38,18 +38,18 @@ thread_local = threading.local()
 
 
 def fetch_exchange(symbol: str) -> str:
-    "Fetch the exchange that a stock symbol is listed on."
-    url = f"https://www.marketwatch.com/investing/stock/{symbol}"
-    response = requests.get(url)
+    "Fetch the exchange that a stock symbol is listed on (either NASDAQ or NYSE)."
+    exchanges = ["NASDAQ", "NYSE"]
 
-    exchange_element = extract_element(exchange_xpath, response.content)
+    for exchange in exchanges:
+        url = f"https://www.marketbeat.com/stocks/{exchange}/{symbol}/"
+        response = requests.get(url, allow_redirects=False)
 
-    if exchange_element is None:
-        logs.append(skip_message(symbol, "couldn't fetch exchange"))
-        return None
+        if response.status_code == 200:
+            return exchange
 
-    exchange = exchange_element.text.split()[-1]
-    return exchange
+    logs.append(skip_message(symbol, "couldn't fetch exchange"))
+    return None
 
 
 def fetch_institutional_holdings(symbol: str) -> Dict[str, float]:
@@ -66,8 +66,8 @@ def fetch_institutional_holdings(symbol: str) -> Dict[str, float]:
     driver.get(url)
 
     wait_methods = [
-        EC.presence_of_element_located((By.CSS_SELECTOR, inflows_css)),
-        EC.presence_of_element_located((By.CSS_SELECTOR, outflows_css)),
+        element_is_float_css(inflows_css),
+        element_is_float_css(outflows_css),
     ]
 
     combined_wait_method = WaitForAll(wait_methods)
