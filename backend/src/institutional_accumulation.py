@@ -11,7 +11,7 @@ from utils.scraping import *
 from utils.concurrency import *
 
 # constants
-threads = 1  # number of concurrent Selenium browser instances to fetch data
+threads = 10  # number of concurrent Selenium browser instances to fetch data
 timeout = 30
 exchange_xpath = "/html/body/div[3]/div[2]/div[2]/div/div[1]/div[2]/span[2]"
 inflows_css = ".info-slider-bought-text > tspan:nth-child(2)"
@@ -53,7 +53,7 @@ def fetch_exchange(symbol: str) -> str:
 
 
 def fetch_institutional_holdings(symbol: str) -> Dict[str, float]:
-    "Fetch institutional holdings data for a stock symbol from nasdaq.com."
+    "Fetch institutional holdings data for a stock symbol from marketbeat.com."
     # perform get request and stop loading page when data is detected in DOM
     exchange = fetch_exchange(symbol)
 
@@ -139,7 +139,7 @@ def screen_institutional_accumulation(df_index: int) -> None:
 
 # launch concurrent worker threads to execute the screen
 print("\nFetching institutional holdings data . . .\n")
-tqdm_thread_pool_map(threads, screen_institutional_accumulation, range(0, 2))
+tqdm_thread_pool_map(threads, screen_institutional_accumulation, range(0, len(df)))
 
 # close Selenium web driver sessions
 print("\nClosing browser instances . . .\n")
