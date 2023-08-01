@@ -42,20 +42,22 @@ def extract_float(element: WebElement) -> float:
 
 
 def extract_dollars(element: WebElement) -> float:
-    "Return the financial content stored in a WebElement of the form '...B', '...M', or '...k' as a float representing dollars."
+    "Return the financial content stored in a WebElement of the form '...B', '...M', '...k', or '...' as a float representing dollars."
     try:
         cleaned_content = re.sub(r"[^0-9.BMk]", "", element.text)
         nums_only = re.sub(r"[^0-9.]", "", element.text)
         last_char = cleaned_content[-1]
 
-        if (last_char != "B") and (last_char != "M") and (last_char != "k"):
-            raise Exception
         if last_char == "B":
             return float(nums_only) * 1000000000
-        if last_char == "M":
+        elif last_char == "M":
             return float(nums_only) * 1000000
-        if last_char == "k":
+        elif last_char == "k":
             return float(nums_only) * 1000
+        elif last_char.isdigit():
+            return float(nums_only)
+        else:
+            return None
     except Exception:
         return None
 
