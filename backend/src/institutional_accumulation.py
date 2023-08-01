@@ -111,8 +111,8 @@ def screen_institutional_accumulation(df_index: int) -> None:
 
     # add institutional holdings info to logs
     logs.append(
-        f"""\n{symbol} | Net Institutional Inflows (most recent Q): ${net_inflows / 1000000:.2f}M 
-        Inflows: ${holdings_data["Inflows"] / 1000000:.2f}M, Outflows: ${holdings_data["Outflows"] / 1000000:.2f}M\n"""
+        f"""\n{symbol} | Net Institutional Inflows (most recent Q): ${net_inflows:.0f} 
+        Inflows: ${holdings_data["Inflows"]:.0f}, Outflows: ${holdings_data["Outflows"]:.0f}\n"""
     )
 
     # filter out stocks which are not under institutional accumulation
