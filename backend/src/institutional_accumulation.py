@@ -1,8 +1,9 @@
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.common.by import By
+from selenium.webdriver.support import expected_conditions as EC
 from selenium.common.exceptions import TimeoutException
-from selenium.common.exceptions import InvalidSessionIdException
 import threading
+import requests
 from typing import Dict
 from utils.logging import *
 from utils.outfiles import *
@@ -10,10 +11,11 @@ from utils.scraping import *
 from utils.concurrency import *
 
 # constants
-threads = 5  # number of concurrent Selenium browser instances to fetch data
-timeout = 60
-inflows_xpath = "/html/body/div[2]/main/div[2]/article/form/div[4]/div[2]/div[2]/div[1]/div[2]/div/div/div[2]/div/svg/g[3]/g[4]/text[1]/tspan[2]"
-outflows_xpath = "/html/body/div[2]/main/div[2]/article/form/div[4]/div[2]/div[2]/div[1]/div[2]/div/div/div[2]/div/svg/g[3]/g[4]/text[3]/tspan[2]"
+threads = 1  # number of concurrent Selenium browser instances to fetch data
+timeout = 30
+exchange_xpath = "/html/body/div[3]/div[2]/div[2]/div/div[1]/div[2]/span[2]"
+inflows_css = ".info-slider-bought-text > tspan:nth-child(2)"
+outflows_css = ".info-slider-sold-text > tspan:nth-child(2)"
 
 # print header message to terminal
 process_name = "Institutional Accumulation"
@@ -35,17 +37,37 @@ drivers = []
 thread_local = threading.local()
 
 
+def fetch_exchange(symbol: str) -> str:
+    "Fetch the exchange that a stock symbol is listed on."
+    url = f"https://www.marketwatch.com/investing/stock/{symbol}"
+    response = requests.get(url)
+
+    exchange_element = extract_element(exchange_xpath, response.content)
+
+    if exchange_element is None:
+        logs.append(skip_message(symbol, "couldn't fetch exchange"))
+        return None
+
+    exchange = exchange_element.text.split()[-1]
+    return exchange
+
+
 def fetch_institutional_holdings(symbol: str) -> Dict[str, float]:
     "Fetch institutional holdings data for a stock symbol from nasdaq.com."
     # perform get request and stop loading page when data is detected in DOM
-    url = f"https://www.marketbeat.com/stocks/NASDAQ/{symbol}/institutional-ownership/"
+    exchange = fetch_exchange(symbol)
+
+    if exchange is None:
+        return None
+
+    url = f"https://www.marketbeat.com/stocks/{exchange}/{symbol}/institutional-ownership/"
 
     driver = get_driver(thread_local, drivers)
     driver.get(url)
 
     wait_methods = [
-        element_is_float(inflows_xpath),
-        element_is_float(outflows_xpath),
+        EC.presence_of_element_located((By.CSS_SELECTOR, inflows_css)),
+        EC.presence_of_element_located((By.CSS_SELECTOR, outflows_css)),
     ]
 
     combined_wait_method = WaitForAll(wait_methods)
@@ -59,8 +81,8 @@ def fetch_institutional_holdings(symbol: str) -> Dict[str, float]:
 
     # extract institutional holdings information from DOM
     try:
-        inflows = extract_dollars(driver.find_element(By.XPATH, inflows_xpath))
-        outflows = extract_dollars(driver.find_element(By.XPATH, outflows_xpath))
+        inflows = extract_dollars(driver.find_element(By.CSS_SELECTOR, inflows_css))
+        outflows = extract_dollars(driver.find_element(By.CSS_SELECTOR, outflows_css))
     except Exception as e:
         logs.append(skip_message(symbol, e))
         return None
@@ -117,14 +139,14 @@ def screen_institutional_accumulation(df_index: int) -> None:
 
 # launch concurrent worker threads to execute the screen
 print("\nFetching institutional holdings data . . .\n")
-tqdm_thread_pool_map(threads, screen_institutional_accumulation, range(0, len(df)))
+tqdm_thread_pool_map(threads, screen_institutional_accumulation, range(0, 2))
 
 # close Selenium web driver sessions
 print("\nClosing browser instances . . .\n")
 for driver in tqdm(drivers):
     driver.quit()
 
-# create a new dataframe with symbols which satisfied trend criteria
+# create a new dataframe with symbols which are under institutional accumulation
 screened_df = pd.DataFrame(successful_symbols)
 
 # serialize data in JSON format and save on machine

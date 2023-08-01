@@ -46,7 +46,7 @@ def extract_dollars(element: WebElement) -> float:
     try:
         cleaned_content = re.sub(r"[^0-9.BM]", "", element.text)
         nums_only = re.sub(r"[^0-9.]", "", element.text)
-        last_char = cleaned_content[len(cleaned_content) - 1]
+        last_char = cleaned_content[-1]
 
         if (last_char != "B") and (last_char != "M"):
             raise Exception
