@@ -4,7 +4,6 @@ from selenium.common.exceptions import StaleElementReferenceException
 from selenium.webdriver.common.by import By
 from typing import Callable, List
 from aiohttp.client import ClientSession
-from utils.logging import skip_message
 from lxml import html
 import re
 
@@ -42,7 +41,7 @@ def extract_float(element: WebElement) -> float:
 
 
 def extract_dollars(element: WebElement) -> float:
-    "Return the financial content stored in a WebElement of the form '...B', '...M', '...k', or '...' as a float representing dollars."
+    """Return the financial content stored in a WebElement of the form "...B", "...M", "...k", or "..." as a float representing dollars."""
     try:
         cleaned_content = re.sub(r"[^0-9.BMk]", "", element.text)
         nums_only = re.sub(r"[^0-9.]", "", element.text)
