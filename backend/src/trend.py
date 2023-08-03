@@ -6,7 +6,7 @@ import requests
 from lxml import html
 from typing import Dict
 from tqdm import tqdm
-from utils.logging import *
+from utils.logs import *
 from utils.outfiles import *
 from utils.calculations import *
 from utils.scraping import *
