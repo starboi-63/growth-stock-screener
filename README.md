@@ -49,6 +49,8 @@ $$
 Only the most rapidly growing stocks with _high sales growth_ are allowed to pass this iteration of the screen. Specifically,
 the percent increase in the most recent reported quarterly revenue versus a year ago must be at least $25\\%$; if available, the percent increase in the prior period versus the same quarter a year ago must also be at least $25\\%$.
 
+The current market often factors in _future_ revenue growth; historically, this means certain exceptional stocks have exhibited super-performance _without_ having strong on-paper revenue growth (examples include NVDA, UPST, PLTR, etc.). To ensure that these stocks aren't needlessly filtered out, a small exception to revenue criteria is added: stocks with an $\text{RS} \geq 99$ can bypass revenue criteria and make it through this screen iteration.
+
 ### Iteration 5: Institutional Accumulation
 
-Any stocks with a _decrease_ in fund-ownership are excluded at this point. "Fund-ownership" is measured by both the total number of funds invested in a company and the total number of shares owned by institutions.
+Any stocks with a _net-decrease_ in institutional-ownership are excluded at this point. Institutional-ownership is measured by the total inflows and outflows in the most recent financial quarter. If institutional inflows exceed outflows, a stock will pass this iteration of the screen as it is under accumulation.

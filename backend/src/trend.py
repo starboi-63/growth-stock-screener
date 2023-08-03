@@ -5,6 +5,7 @@ import threading
 import requests
 from lxml import html
 from typing import Dict
+from tqdm import tqdm
 from utils.logging import *
 from utils.outfiles import *
 from utils.calculations import *
@@ -43,15 +44,15 @@ thread_local = threading.local()
 def fetch_moving_averages(symbol: str) -> Dict[str, float]:
     """Fetch moving average data for the given stock symbol from tradingview.com"""
     url = f"https://www.tradingview.com/symbols/{symbol}/technicals/"
-    # perform get request and stop loading page when data table is detected in DOM
+    # perform get request and stop loading page when data is detected in DOM
     driver = get_driver(thread_local, drivers)
     driver.get(url)
 
     wait_methods = [
-        element_is_float(sma_10_xpath),
-        element_is_float(sma_20_xpath),
-        element_is_float(sma_50_xpath),
-        element_is_float(sma_200_xpath),
+        element_is_float_xpath(sma_10_xpath),
+        element_is_float_xpath(sma_20_xpath),
+        element_is_float_xpath(sma_50_xpath),
+        element_is_float_xpath(sma_200_xpath),
     ]
 
     combined_wait_method = WaitForAll(wait_methods)
@@ -63,6 +64,7 @@ def fetch_moving_averages(symbol: str) -> Dict[str, float]:
         logs.append(skip_message(symbol, "request timed out"))
         return None
 
+    # extract moving averages from DOM
     try:
         sma_10 = extract_float(driver.find_element(By.XPATH, sma_10_xpath))
         sma_20 = extract_float(driver.find_element(By.XPATH, sma_20_xpath))
@@ -113,6 +115,7 @@ def screen_trend(df_index: int) -> None:
     trend_data = fetch_moving_averages(symbol)
     high_52_week = fetch_52_week_high(symbol)
 
+    # check for failed GET requests
     if (trend_data is None) or (high_52_week is None):
         failed_symbols.append(symbol)
         return
@@ -157,7 +160,13 @@ def screen_trend(df_index: int) -> None:
 
 
 # launch concurrent worker threads to execute the screen
+print("\nFetching trend data . . .\n")
 tqdm_thread_pool_map(threads, screen_trend, range(0, len(df)))
+
+# close Selenium web driver sessions
+print("\nClosing browser instances . . .\n")
+for driver in tqdm(drivers):
+    driver.quit()
 
 # create a new dataframe with symbols which satisfied trend criteria
 screened_df = pd.DataFrame(successful_symbols)
@@ -175,7 +184,3 @@ print(
 )
 print(f"{len(screened_df)} symbols passed.")
 print_status(process_name, process_stage, False)
-
-# close Selenium web driver sessions
-for driver in drivers:
-    driver.quit()

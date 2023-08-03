@@ -4,7 +4,6 @@ from selenium.common.exceptions import StaleElementReferenceException
 from selenium.webdriver.common.by import By
 from typing import Callable, List
 from aiohttp.client import ClientSession
-from utils.logging import skip_message
 from lxml import html
 import re
 
@@ -41,18 +40,51 @@ def extract_float(element: WebElement) -> float:
         return None
 
 
-def element_is_float(xpath: str) -> Callable[[WebDriver], bool]:
+def extract_dollars(element: WebElement) -> float:
+    """Return the financial content stored in a WebElement of the form "...B", "...M", "...k", or "..." as a float representing dollars."""
+    try:
+        cleaned_content = re.sub(r"[^0-9.BMk]", "", element.text)
+        nums_only = re.sub(r"[^0-9.]", "", element.text)
+        last_char = cleaned_content[-1]
+
+        if last_char == "B":
+            return float(nums_only) * 1000000000
+        elif last_char == "M":
+            return float(nums_only) * 1000000
+        elif last_char == "k":
+            return float(nums_only) * 1000
+        elif last_char.isdigit():
+            return float(nums_only)
+        else:
+            return None
+    except Exception:
+        return None
+
+
+def element_is_float_xpath(xpath: str) -> Callable[[WebDriver], bool]:
     """Return a function which consumes a WebDriver and returns true if the DOM element
     at the specified xpath is a float type."""
 
     def inner(driver: WebDriver) -> bool:
-        return type(extract_float(driver.find_element(By.XPATH, xpath))) == float
+        element = driver.find_element(By.XPATH, xpath)
+        return type(extract_float(element)) == float
+
+    return inner
+
+
+def element_is_float_css(css_selector: str) -> Callable[[WebDriver], bool]:
+    """Return a function which consumes a WebDriver and returns true if the DOM element
+    at the specified css-selector is a float type."""
+
+    def inner(driver: WebDriver) -> bool:
+        element = driver.find_element(By.CSS_SELECTOR, css_selector)
+        return type(extract_float(element)) == float
 
     return inner
 
 
 class WaitForAll:
-    """Represent an expected condition which is the logical "and" of multiple expected conditions."""
+    """Expected condition which is the logical "and" of multiple expected conditions."""
 
     def __init__(self, methods: List[Callable[[WebDriver], bool]]):
         self.methods = methods

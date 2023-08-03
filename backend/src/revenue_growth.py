@@ -45,7 +45,7 @@ async def fetch_revenue(
     symbol: str, session: ClientSession
 ) -> Dict[str, Dict[str, float]]:
     """Fetch quarterly revenue data for the given stock symbol from macrotrends.com."""
-    url = f"https://www.macrotrends.net/stocks/charts/{symbol}/upstart-holdings/revenue"
+    url = f"https://www.macrotrends.net/stocks/charts/{symbol}/place-holder/revenue"
     response = await get(url, session)
 
     q1_revenue = extract_float(extract_element(q1_revenue_xpath, response))
@@ -71,6 +71,7 @@ async def screen_revenue_growth(df_index: int, session: ClientSession) -> None:
     row = df.iloc[df_index]
 
     symbol = row["Symbol"]
+    rs = row["RS"]
     revenue_data = await fetch_revenue(symbol, session)
 
     # handle null values from unsuccessful fetching
@@ -91,22 +92,26 @@ async def screen_revenue_growth(df_index: int, session: ClientSession) -> None:
     # print revenue growth data to console
     if "Q2" in revenue_data:
         logs.append(
-            f"""\n{symbol} | Q1 revenue growth: {q1_revenue_growth:.0f}%, Q2 revenue growth: {q2_revenue_growth:.0f}%
+            f"""\n{symbol} | Q1 revenue growth: {q1_revenue_growth:.0f}%, Q2 revenue growth: {q2_revenue_growth:.0f}%, RS: {rs}
             Q1 : current revenue: ${revenue_data["Q1"]["Current"]:.0f}M, previous revenue: ${revenue_data["Q1"]["Previous"]:.0f}M
             Q2 : current revenue: ${revenue_data["Q2"]["Current"]:.0f}M, previous revenue: ${revenue_data["Q2"]["Previous"]:.0f}M\n"""
         )
     else:
         logs.append(
-            f"""\n{symbol} | Q1 revenue growth: {q1_revenue_growth:.0f}%
+            f"""\n{symbol} | Q1 revenue growth: {q1_revenue_growth:.0f}%, RS: {rs}
             Q1 : current revenue: ${revenue_data["Q1"]["Current"]:.0f}M, previous revenue: ${revenue_data["Q1"]["Previous"]:.0f}M\n"""
         )
 
     # filter out stocks with low quarterly revenue growth
-    if q1_revenue_growth < min_growth_percent:
+    if (q1_revenue_growth < min_growth_percent) and (rs < 99):
         logs.append(filter_message(symbol))
         return
 
-    if (q2_revenue_growth is not None) and (q2_revenue_growth < min_growth_percent):
+    if (
+        (q2_revenue_growth is not None)
+        and (q2_revenue_growth < min_growth_percent)
+        and (rs < 99)
+    ):
         logs.append(filter_message(symbol))
         return
 
@@ -115,7 +120,7 @@ async def screen_revenue_growth(df_index: int, session: ClientSession) -> None:
             "Symbol": symbol,
             "Company Name": row["Company Name"],
             "Industry": row["Industry"],
-            "RS": row["RS"],
+            "RS": rs,
             "Price": row["Price"],
             "Market Cap": row["Market Cap"],
             "Revenue Growth % (most recent Q)": q1_revenue_growth,
@@ -137,6 +142,7 @@ async def main() -> None:
         )
 
 
+print("\nFetching quarterly revenue data . . .\n")
 asyncio.run(main())
 
 # create a new dataframe with symbols which satisfied revenue_growth criteria
