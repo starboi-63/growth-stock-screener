@@ -1,7 +1,6 @@
 import requests
 from requests.exceptions import JSONDecodeError
 import pandas as pd
-from calculations import percent_change
 from typing import List, Dict
 import time
 from tqdm import tqdm
@@ -124,16 +123,3 @@ def previous_frame(timeframe: str) -> str:
     year = int(timeframe[2:6]) - 1
     quarter = timeframe[6:]
     return f"CY{year}{quarter}"
-
-
-def revenue_growth(timeframe: str, df: pd.DataFrame) -> float:
-    """Calculate the revenue growth for the given timeframe compared to the same timeframe one year earlier."""
-    prev_frame = previous_frame(timeframe)
-
-    revenue = extract_revenue(timeframe, df)
-    prev_revenue = extract_revenue(prev_frame, df)
-
-    if (revenue is None) or (prev_revenue is None):
-        return None
-
-    return percent_change(prev_revenue, revenue)

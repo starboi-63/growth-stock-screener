@@ -1,28 +1,12 @@
-import asyncio
-import aiohttp
-from aiohttp.client import ClientSession
-from tqdm.asyncio import tqdm_asyncio
 import pandas as pd
 from typing import Dict
 from utils.logs import *
 from utils.outfiles import *
+from utils.sec_requests import *
 from utils.calculations import *
-from utils.scraping import *
 
 # constants
 min_growth_percent = 25
-q1_revenue_xpath = (
-    "/html/body/div[2]/div[3]/div[1]/div[8]/div[2]/table/tbody/tr[1]/td[2]"
-)
-q1_prev_revenue_xpath = (
-    "/html/body/div[2]/div[3]/div[1]/div[8]/div[2]/table/tbody/tr[5]/td[2]"
-)
-q2_revenue_xpath = (
-    "/html/body/div[2]/div[3]/div[1]/div[8]/div[2]/table/tbody/tr[2]/td[2]"
-)
-q2_prev_revenue_xpath = (
-    "/html/body/div[2]/div[3]/div[1]/div[8]/div[2]/table/tbody/tr[6]/td[2]"
-)
 
 # print header message to terminal
 process_name = "Revenue Growth"
@@ -41,38 +25,31 @@ successful_symbols = []
 failed_symbols = []
 
 
-async def fetch_revenue(
-    symbol: str, session: ClientSession
-) -> Dict[str, Dict[str, float]]:
-    """Fetch quarterly revenue data for the given stock symbol from macrotrends.com."""
-    url = f"https://www.macrotrends.net/stocks/charts/{symbol}/place-holder/revenue"
-    response = await get(url, session)
+def revenue_growth(timeframe: str, df: pd.DataFrame) -> float:
+    """Calculate the revenue growth for the given timeframe compared to the same timeframe one year earlier."""
+    prev_frame = previous_frame(timeframe)
 
-    q1_revenue = extract_float(extract_element(q1_revenue_xpath, response))
-    q1_prev_revenue = extract_float(extract_element(q1_prev_revenue_xpath, response))
-    q2_revenue = extract_float(extract_element(q2_revenue_xpath, response))
-    q2_prev_revenue = extract_float(extract_element(q2_prev_revenue_xpath, response))
+    revenue = extract_revenue(timeframe, df)
+    prev_revenue = extract_revenue(prev_frame, df)
 
-    # check for null values in fetched revenue data
-    if (q1_revenue is None) or (q1_prev_revenue is None) or (q1_prev_revenue == 0):
+    if (revenue is None) or (prev_revenue is None):
         return None
 
-    if (q2_revenue is None) or (q2_prev_revenue is None) or (q2_prev_revenue == 0):
-        return {"Q1": {"Current": q1_revenue, "Previous": q1_prev_revenue}}
-
-    return {
-        "Q1": {"Current": q1_revenue, "Previous": q1_prev_revenue},
-        "Q2": {"Current": q2_revenue, "Previous": q2_prev_revenue},
-    }
+    return percent_change(prev_revenue, revenue)
 
 
-async def screen_revenue_growth(df_index: int, session: ClientSession) -> None:
+def fetch_comparison_revenues(symbol: str) -> Dict[str, Dict[str, float]]:
+    """Fetches two most recent quarters and corresponding quarters one year ago."""
+    return None
+
+
+def screen_revenue_growth(df_index: int) -> None:
     """Populate stock data lists based on whether the given dataframe row has strong revenue growth."""
     row = df.iloc[df_index]
 
     symbol = row["Symbol"]
     rs = row["RS"]
-    revenue_data = await fetch_revenue(symbol, session)
+    revenue_data = ...
 
     # handle null values from unsuccessful fetching
     if revenue_data is None:
@@ -80,14 +57,8 @@ async def screen_revenue_growth(df_index: int, session: ClientSession) -> None:
         failed_symbols.append(symbol)
         return
 
-    q1_revenue_growth = percent_change(
-        revenue_data["Q1"]["Previous"], revenue_data["Q1"]["Current"]
-    )
-    q2_revenue_growth = (
-        percent_change(revenue_data["Q2"]["Previous"], revenue_data["Q2"]["Current"])
-        if "Q2" in revenue_data
-        else None
-    )
+    q1_revenue_growth = 5
+    q2_revenue_growth = 5
 
     # print revenue growth data to console
     if "Q2" in revenue_data:
@@ -131,19 +102,7 @@ async def screen_revenue_growth(df_index: int, session: ClientSession) -> None:
     )
 
 
-async def main() -> None:
-    """Screen each stock present in the dataframe based on revenue growth."""
-    async with aiohttp.ClientSession() as session:
-        await tqdm_asyncio.gather(
-            *[
-                screen_revenue_growth(df_index, session)
-                for df_index in range(0, len(df))
-            ]
-        )
-
-
-print("\nFetching quarterly revenue data . . .\n")
-asyncio.run(main())
+print(df)
 
 # create a new dataframe with symbols which satisfied revenue_growth criteria
 screened_df = pd.DataFrame(successful_symbols)
