@@ -107,7 +107,7 @@ def subtract_prev_quarters(timeframe: str, df: pd.DataFrame) -> float:
         if (i < index) and ("Q" not in row["frame"]):
             return None
 
-        revenues.append(row["val"])
+        revenues.append(float(row["val"]))
 
     # subtract quarterly revenues from annual revenue
     revenue = revenues[3] - (revenues[0] + revenues[1] + revenues[2])
@@ -119,7 +119,9 @@ def extract_revenue(timeframe: str, df: pd.DataFrame) -> float:
     if "Q" in timeframe:
         # search DataFrame for quarterly timeframe
         try:
-            return df[df["frame"] == timeframe].iloc[0]["val"]
+            row = df[df["frame"] == timeframe].iloc[0]
+            value = row["val"]
+            return float(value)
         except IndexError:
             return None
     else:

@@ -78,31 +78,26 @@ def screen_revenue_growth(df_index: int) -> None:
 
     symbol = row["Symbol"]
     rs = row["RS"]
-    revenue_data = extract_comparison_revenues(symbol)
+    revenues = extract_comparison_revenues(symbol)
 
-    print(revenue_data)
+    # handle null values from missing data
+    if revenues is None:
+        logs.append(skip_message(symbol, "insufficient data"))
+        failed_symbols.append(symbol)
+        return
 
-    # # handle null values from unsuccessful fetching
-    # if revenue_data is None:
-    #     logs.append(skip_message(symbol, "insufficient data"))
-    #     failed_symbols.append(symbol)
-    #     return
-
-    # q1_revenue_growth = 5
-    # q2_revenue_growth = 5
-
-    # # print revenue growth data to console
-    # if "Q2" in revenue_data:
-    #     logs.append(
-    #         f"""\n{symbol} | Q1 revenue growth: {q1_revenue_growth:.0f}%, Q2 revenue growth: {q2_revenue_growth:.0f}%, RS: {rs}
-    #         Q1 : current revenue: ${revenue_data["Q1"]["Current"]:.0f}M, previous revenue: ${revenue_data["Q1"]["Previous"]:.0f}M
-    #         Q2 : current revenue: ${revenue_data["Q2"]["Current"]:.0f}M, previous revenue: ${revenue_data["Q2"]["Previous"]:.0f}M\n"""
-    #     )
-    # else:
-    #     logs.append(
-    #         f"""\n{symbol} | Q1 revenue growth: {q1_revenue_growth:.0f}%, RS: {rs}
-    #         Q1 : current revenue: ${revenue_data["Q1"]["Current"]:.0f}M, previous revenue: ${revenue_data["Q1"]["Previous"]:.0f}M\n"""
-    #     )
+    # print revenue growth data to console
+    if "Q1" in revenues:
+        logs.append(
+            f"""\n{symbol} | Q1 revenue growth: {revenues["Q1"]["Growth"]:.0f}%, Q2 revenue growth: {revenues["Q2"]["Growth"]:.0f}%, RS: {rs}
+            Q1 : current revenue: ${revenues["Q1"]["Current"]:,.0f}, previous revenue: ${revenues["Q1"]["Previous"]:,.0f}
+            Q2 : current revenue: ${revenues["Q2"]["Current"]:,.0f}, previous revenue: ${revenues["Q2"]["Previous"]:,.0f}\n"""
+        )
+    else:
+        logs.append(
+            f"""\n{symbol} | Q2 revenue growth: {revenues["Q2"]["Growth"]:.0f}%, RS: {rs}
+            Q2 : current revenue: ${revenues["Q2"]["Current"]:,.0f}, previous revenue: ${revenues["Q2"]["Previous"]:,.0f}\n"""
+        )
 
     # # filter out stocks with low quarterly revenue growth
     # if (q1_revenue_growth < min_growth_percent) and (rs < 99):
