@@ -2,6 +2,9 @@ import requests
 from requests.exceptions import JSONDecodeError
 import pandas as pd
 from calculations import percent_change
+from typing import List, Dict
+import time
+from tqdm import tqdm
 
 # constants
 header = {"User-Agent": "name@domain.com"}
@@ -58,6 +61,20 @@ def fetch_revenues(symbol: str) -> pd.DataFrame:
     revenue_df = revenue_df[~pd.isna(revenue_df["frame"])]
 
     return revenue_df
+
+
+def fetch_revenues_bulk(symbols: List[str]) -> Dict[str, pd.DataFrame]:
+    """Fetch quarterly revenue data for multiple stock symbols from SEC filings."""
+    ret = {}
+
+    print("Fetching revenue data . . .\n")
+
+    for symbol in tqdm(symbols):
+        ret[symbol] = fetch_revenues(symbol)
+        # SEC sets maximum API usage rate to 10 calls/sec
+        time.sleep(0.1)
+
+    return ret
 
 
 def subtract_prev_quarters(timeframe: str, df: pd.DataFrame) -> float:
