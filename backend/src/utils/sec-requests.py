@@ -59,26 +59,13 @@ def fetch_revenues(symbol: str) -> pd.DataFrame:
     return revenue_df
 
 
-def revenue_growth(frame: str, df: pd.DataFrame) -> float:
-    revenue = extract_revenue(frame, df)
-    print(revenue)
-    return None
-
-
-def extract_revenue(frame: str, df: pd.DataFrame) -> float:
-    """Return the revenue for a given timeframe from an SEC revenue DataFrame."""
-    if "Q" in frame:
-        try:
-            return df[df["frame"] == frame].iloc[0]["val"]
-        except Exception:
-            return None
-    else:
-        return subtract_prev_quarters(frame, df)
-
-
 def subtract_prev_quarters(frame: str, df: pd.DataFrame) -> float:
     """Convert annual revenue to quarterly revenue by subtracting revenue from the previous three 10-Q SEC filings."""
-    index = df.index.get_loc(df.index[df["frame"] == frame][0])
+    try:
+        index = df.index.get_loc(df.index[df["frame"] == frame][0])
+    except IndexError:
+        return None
+
     quarter_indices = [index - 3, index - 2, index - 1, index]
     revenues = []
 
@@ -97,7 +84,30 @@ def subtract_prev_quarters(frame: str, df: pd.DataFrame) -> float:
     return revenue
 
 
+def extract_revenue(frame: str, df: pd.DataFrame) -> float:
+    """Return the revenue for a given timeframe from an SEC revenue DataFrame."""
+    if "Q" in frame:
+        try:
+            return df[df["frame"] == frame].iloc[0]["val"]
+        except IndexError:
+            return None
+    else:
+        return subtract_prev_quarters(frame, df)
+
+
+def previous_frame(frame: str) -> str:
+    """Return an SEC timeframe that is 1 year earlier than the inputted frame."""
+    year = int(frame[2:6]) - 1
+    quarter = frame[6:]
+    return f"CY{year}{quarter}"
+
+
+def revenue_growth(frame: str, df: pd.DataFrame) -> float:
+    revenue = extract_revenue(frame, df)
+    print(revenue)
+    return None
+
+
 df = fetch_revenues("AAPL")
 print(df)
 print()
-print(revenue_growth("CY2022", df))
