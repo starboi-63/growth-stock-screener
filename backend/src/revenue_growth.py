@@ -51,15 +51,19 @@ def extract_comparison_revenues(symbol: str) -> Dict[str, Dict[str, float]]:
     """Extract revenue from the two most recent financial quarters and their corresponding quarters one year ago."""
     revenue_df = revenue_data[symbol]
 
+    # extract the two lowest rows of the revenues DataFrame
     q1_row = revenue_df.iloc[-2] if (len(revenue_df) >= 2) else None
     q2_row = revenue_df.iloc[-1] if (len(revenue_df) >= 1) else None
 
+    # determine the timeframe of each row's revenue report
     q1_timeframe = q1_row["frame"] if (q1_row is not None) else None
     q2_timeframe = q2_row["frame"] if (q2_row is not None) else None
 
+    # calculate the revenue growth for each timeframe compared to the same timeframe 1 year ago
     q1_growth = revenue_growth(q1_timeframe, revenue_df)
     q2_growth = revenue_growth(q2_timeframe, revenue_df)
 
+    # return revenue details as a dictionary
     if q2_growth is None:
         return None
 
