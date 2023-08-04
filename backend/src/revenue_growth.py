@@ -12,7 +12,7 @@ min_growth_percent = 25
 process_name = "Revenue Growth"
 process_stage = 4
 print_status(process_name, process_stage, True)
-print(f"Minimum quarterly revenue growth to pass: {min_growth_percent}%")
+print(f"Minimum quarterly revenue growth to pass: {min_growth_percent}%\n")
 
 # logging data (printed to console after screen finishes)
 logs = []
@@ -25,7 +25,9 @@ successful_symbols = []
 failed_symbols = []
 
 # fetch revenue data for all symbols
-revenue_data = fetch_revenues_bulk(list(df["Symbol"]))
+symbol_list = list(df["Symbol"])
+symbol_list = [df.iloc[10]["Symbol"]]
+revenue_data = fetch_revenues_bulk(symbol_list)
 
 
 def revenue_growth(timeframe: str, df: pd.DataFrame) -> float:
@@ -48,8 +50,8 @@ def extract_comparison_revenues(symbol: str) -> Dict[str, Dict[str, float]]:
     q1_row = revenue_df.iloc[-2] if (len(revenue_df) >= 2) else None
     q2_row = revenue_df.iloc[-1] if (len(revenue_df) >= 1) else None
 
-    print(q1_row)
-    print(q2_row)
+    q1_timeframe = q1_row["frame"] if (q1_row is not None) else None
+    q2_timeframe = q2_row["frame"] if (q2_row is not None) else None
 
     return None
 
