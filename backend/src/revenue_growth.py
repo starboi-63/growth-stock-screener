@@ -35,13 +35,16 @@ def revenue_growth(timeframe: str, df: pd.DataFrame) -> Dict[str, float]:
     if timeframe is None:
         return None
 
+    # fetch revenues for the inputted timeframe and the same timeframe 1 year ago
     prev_timeframe = previous_timeframe(timeframe)
     revenue = extract_revenue(timeframe, df)
     prev_revenue = extract_revenue(prev_timeframe, df)
 
+    # handle cases where data is unavailable
     if (revenue is None) or (prev_revenue is None):
         return None
 
+    # return a dictionary containing revenue growth data
     growth = percent_change(prev_revenue, revenue)
 
     return {"Current": revenue, "Previous": prev_revenue, "Growth": growth}
