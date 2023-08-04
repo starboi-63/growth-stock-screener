@@ -106,18 +106,18 @@ def screen_revenue_growth(df_index: int) -> None:
             Q2 : current revenue: ${revenues["Q2"]["Current"]:,.0f}, previous revenue: ${revenues["Q2"]["Previous"]:,.0f}\n"""
         )
 
-    # # filter out stocks with low quarterly revenue growth
-    # if (q1_revenue_growth < min_growth_percent) and (rs < 99):
-    #     logs.append(filter_message(symbol))
-    #     return
+    # filter out stocks with low quarterly revenue growth
+    if (revenues["Q2"]["Growth"] < min_growth_percent) and (rs < 99):
+        logs.append(filter_message(symbol))
+        return
 
-    # if (
-    #     (q2_revenue_growth is not None)
-    #     and (q2_revenue_growth < min_growth_percent)
-    #     and (rs < 99)
-    # ):
-    #     logs.append(filter_message(symbol))
-    #     return
+    if (
+        ("Q1" in revenues)
+        and (revenues["Q1"]["Growth"] < min_growth_percent)
+        and (rs < 99)
+    ):
+        logs.append(filter_message(symbol))
+        return
 
     successful_symbols.append(
         {
@@ -127,15 +127,13 @@ def screen_revenue_growth(df_index: int) -> None:
             "RS": rs,
             "Price": row["Price"],
             "Market Cap": row["Market Cap"],
-            # "Revenue Growth % (most recent Q)": q2_revenue_growth,
-            # "Revenue Growth % (previous Q)": q1_revenue_growth,
+            "Revenue Growth % (most recent Q)": revenues["Q2"]["Growth"],
+            "Revenue Growth % (previous Q)": revenues["Q1"]["Growth"],
             "50-day Average Volume": row["50-day Average Volume"],
             "% Below 52-week High": row["% Below 52-week High"],
         }
     )
 
-
-screen_revenue_growth(10)
 
 # create a new dataframe with symbols which satisfied revenue_growth criteria
 screened_df = pd.DataFrame(successful_symbols)
