@@ -2,7 +2,7 @@ import requests
 import pandas as pd
 import json
 from requests.exceptions import Timeout
-from utils.logging import print_status
+from utils.logs import print_status
 from utils.outfiles import create_outfile
 
 # print header message to terminal

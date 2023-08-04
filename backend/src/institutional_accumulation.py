@@ -4,7 +4,7 @@ from selenium.common.exceptions import TimeoutException
 import threading
 import requests
 from typing import Dict
-from utils.logging import *
+from utils.logs import *
 from utils.outfiles import *
 from utils.scraping import *
 from utils.concurrency import *

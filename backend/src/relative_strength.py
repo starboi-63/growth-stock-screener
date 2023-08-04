@@ -1,6 +1,6 @@
 import yfinance as yf
 import pandas as pd
-from utils.logging import *
+from utils.logs import *
 from utils.outfiles import *
 from utils.calculations import *
 

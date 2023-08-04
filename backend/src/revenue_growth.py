@@ -4,7 +4,7 @@ from aiohttp.client import ClientSession
 from tqdm.asyncio import tqdm_asyncio
 import pandas as pd
 from typing import Dict
-from utils.logging import *
+from utils.logs import *
 from utils.outfiles import *
 from utils.calculations import *
 from utils.scraping import *
