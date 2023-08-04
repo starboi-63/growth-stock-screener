@@ -30,17 +30,21 @@ symbol_list = [df.iloc[10]["Symbol"]]
 revenue_data = fetch_revenues_bulk(symbol_list)
 
 
-def revenue_growth(timeframe: str, df: pd.DataFrame) -> float:
+def revenue_growth(timeframe: str, df: pd.DataFrame) -> Dict[str, float]:
     """Calculate the revenue growth for the given timeframe compared to the same timeframe one year earlier."""
-    prev_timeframe = previous_timeframe(timeframe)
+    if timeframe is None:
+        return None
 
+    prev_timeframe = previous_timeframe(timeframe)
     revenue = extract_revenue(timeframe, df)
     prev_revenue = extract_revenue(prev_timeframe, df)
 
     if (revenue is None) or (prev_revenue is None):
         return None
 
-    return percent_change(prev_revenue, revenue)
+    growth = percent_change(prev_revenue, revenue)
+
+    return {"Current": revenue, "Previous": prev_revenue, "Growth": growth}
 
 
 def extract_comparison_revenues(symbol: str) -> Dict[str, Dict[str, float]]:
@@ -53,7 +57,19 @@ def extract_comparison_revenues(symbol: str) -> Dict[str, Dict[str, float]]:
     q1_timeframe = q1_row["frame"] if (q1_row is not None) else None
     q2_timeframe = q2_row["frame"] if (q2_row is not None) else None
 
-    return None
+    q1_growth = revenue_growth(q1_timeframe, revenue_df)
+    q2_growth = revenue_growth(q2_timeframe, revenue_df)
+
+    if q2_growth is None:
+        return None
+
+    if q1_growth is None:
+        return {"Q2": q2_growth}
+
+    return {
+        "Q1": q1_growth,
+        "Q2": q2_growth,
+    }
 
 
 def screen_revenue_growth(df_index: int) -> None:
@@ -63,6 +79,8 @@ def screen_revenue_growth(df_index: int) -> None:
     symbol = row["Symbol"]
     rs = row["RS"]
     revenue_data = extract_comparison_revenues(symbol)
+
+    print(revenue_data)
 
     # # handle null values from unsuccessful fetching
     # if revenue_data is None:
