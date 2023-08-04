@@ -54,6 +54,9 @@ def extract_comparison_revenues(symbol: str) -> Dict[str, Dict[str, float]]:
     """Extract revenue from the two most recent financial quarters and their corresponding quarters one year ago."""
     revenue_df = revenue_data[symbol]
 
+    if revenue_df is None:
+        return None
+
     # extract the two lowest rows of the revenues DataFrame
     q1_row = revenue_df.iloc[-2] if (len(revenue_df) >= 2) else None
     q2_row = revenue_df.iloc[-1] if (len(revenue_df) >= 1) else None
