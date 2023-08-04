@@ -118,7 +118,7 @@ def extract_revenue(timeframe: str, df: pd.DataFrame) -> float:
         return subtract_prev_quarters(timeframe, df)
 
 
-def previous_frame(timeframe: str) -> str:
+def previous_timeframe(timeframe: str) -> str:
     """Return an SEC timeframe that is 1 year earlier than the inputted timeframe."""
     year = int(timeframe[2:6]) - 1
     quarter = timeframe[6:]

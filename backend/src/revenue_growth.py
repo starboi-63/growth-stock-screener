@@ -27,10 +27,10 @@ failed_symbols = []
 
 def revenue_growth(timeframe: str, df: pd.DataFrame) -> float:
     """Calculate the revenue growth for the given timeframe compared to the same timeframe one year earlier."""
-    prev_frame = previous_frame(timeframe)
+    prev_timeframe = previous_timeframe(timeframe)
 
     revenue = extract_revenue(timeframe, df)
-    prev_revenue = extract_revenue(prev_frame, df)
+    prev_revenue = extract_revenue(prev_timeframe, df)
 
     if (revenue is None) or (prev_revenue is None):
         return None
