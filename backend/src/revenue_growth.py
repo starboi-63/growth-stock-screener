@@ -1,5 +1,6 @@
 import pandas as pd
 from typing import Dict
+from tqdm import tqdm
 from utils.logs import *
 from utils.outfiles import *
 from utils.sec_requests import *
@@ -26,7 +27,6 @@ failed_symbols = []
 
 # fetch revenue data for all symbols
 symbol_list = list(df["Symbol"])
-symbol_list = [df.iloc[10]["Symbol"]]
 revenue_data = fetch_revenues_bulk(symbol_list)
 
 
@@ -134,6 +134,11 @@ def screen_revenue_growth(df_index: int) -> None:
         }
     )
 
+
+# screen each stock present in the DataFrame
+print("Screening stocks . . .\n")
+for i in tqdm(range(0, len(df))):
+    screen_revenue_growth(i)
 
 # create a new dataframe with symbols which satisfied revenue_growth criteria
 screened_df = pd.DataFrame(successful_symbols)
