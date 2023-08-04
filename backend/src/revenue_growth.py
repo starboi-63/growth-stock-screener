@@ -28,11 +28,6 @@ failed_symbols = []
 revenue_data = fetch_revenues_bulk(list(df["Symbol"]))
 
 
-def fetch_comparison_revenues(symbol: str) -> Dict[str, Dict[str, float]]:
-    """Fetches two most recent quarters and corresponding quarters one year ago."""
-    return None
-
-
 def revenue_growth(timeframe: str, df: pd.DataFrame) -> float:
     """Calculate the revenue growth for the given timeframe compared to the same timeframe one year earlier."""
     prev_timeframe = previous_timeframe(timeframe)
@@ -46,48 +41,61 @@ def revenue_growth(timeframe: str, df: pd.DataFrame) -> float:
     return percent_change(prev_revenue, revenue)
 
 
+def extract_comparison_revenues(symbol: str) -> Dict[str, Dict[str, float]]:
+    """Extract revenue from the two most recent financial quarters and their corresponding quarters one year ago."""
+    revenue_df = revenue_data[symbol]
+
+    q1_row = revenue_df.iloc[-2] if (len(revenue_df) >= 2) else None
+    q2_row = revenue_df.iloc[-1] if (len(revenue_df) >= 1) else None
+
+    print(q1_row)
+    print(q2_row)
+
+    return None
+
+
 def screen_revenue_growth(df_index: int) -> None:
     """Populate stock data lists based on whether the given dataframe row has strong revenue growth."""
     row = df.iloc[df_index]
 
     symbol = row["Symbol"]
     rs = row["RS"]
-    revenue_data = ...
+    revenue_data = extract_comparison_revenues(symbol)
 
-    # handle null values from unsuccessful fetching
-    if revenue_data is None:
-        logs.append(skip_message(symbol, "insufficient data"))
-        failed_symbols.append(symbol)
-        return
+    # # handle null values from unsuccessful fetching
+    # if revenue_data is None:
+    #     logs.append(skip_message(symbol, "insufficient data"))
+    #     failed_symbols.append(symbol)
+    #     return
 
-    q1_revenue_growth = 5
-    q2_revenue_growth = 5
+    # q1_revenue_growth = 5
+    # q2_revenue_growth = 5
 
-    # print revenue growth data to console
-    if "Q2" in revenue_data:
-        logs.append(
-            f"""\n{symbol} | Q1 revenue growth: {q1_revenue_growth:.0f}%, Q2 revenue growth: {q2_revenue_growth:.0f}%, RS: {rs}
-            Q1 : current revenue: ${revenue_data["Q1"]["Current"]:.0f}M, previous revenue: ${revenue_data["Q1"]["Previous"]:.0f}M
-            Q2 : current revenue: ${revenue_data["Q2"]["Current"]:.0f}M, previous revenue: ${revenue_data["Q2"]["Previous"]:.0f}M\n"""
-        )
-    else:
-        logs.append(
-            f"""\n{symbol} | Q1 revenue growth: {q1_revenue_growth:.0f}%, RS: {rs}
-            Q1 : current revenue: ${revenue_data["Q1"]["Current"]:.0f}M, previous revenue: ${revenue_data["Q1"]["Previous"]:.0f}M\n"""
-        )
+    # # print revenue growth data to console
+    # if "Q2" in revenue_data:
+    #     logs.append(
+    #         f"""\n{symbol} | Q1 revenue growth: {q1_revenue_growth:.0f}%, Q2 revenue growth: {q2_revenue_growth:.0f}%, RS: {rs}
+    #         Q1 : current revenue: ${revenue_data["Q1"]["Current"]:.0f}M, previous revenue: ${revenue_data["Q1"]["Previous"]:.0f}M
+    #         Q2 : current revenue: ${revenue_data["Q2"]["Current"]:.0f}M, previous revenue: ${revenue_data["Q2"]["Previous"]:.0f}M\n"""
+    #     )
+    # else:
+    #     logs.append(
+    #         f"""\n{symbol} | Q1 revenue growth: {q1_revenue_growth:.0f}%, RS: {rs}
+    #         Q1 : current revenue: ${revenue_data["Q1"]["Current"]:.0f}M, previous revenue: ${revenue_data["Q1"]["Previous"]:.0f}M\n"""
+    #     )
 
-    # filter out stocks with low quarterly revenue growth
-    if (q1_revenue_growth < min_growth_percent) and (rs < 99):
-        logs.append(filter_message(symbol))
-        return
+    # # filter out stocks with low quarterly revenue growth
+    # if (q1_revenue_growth < min_growth_percent) and (rs < 99):
+    #     logs.append(filter_message(symbol))
+    #     return
 
-    if (
-        (q2_revenue_growth is not None)
-        and (q2_revenue_growth < min_growth_percent)
-        and (rs < 99)
-    ):
-        logs.append(filter_message(symbol))
-        return
+    # if (
+    #     (q2_revenue_growth is not None)
+    #     and (q2_revenue_growth < min_growth_percent)
+    #     and (rs < 99)
+    # ):
+    #     logs.append(filter_message(symbol))
+    #     return
 
     successful_symbols.append(
         {
@@ -97,13 +105,15 @@ def screen_revenue_growth(df_index: int) -> None:
             "RS": rs,
             "Price": row["Price"],
             "Market Cap": row["Market Cap"],
-            "Revenue Growth % (most recent Q)": q1_revenue_growth,
-            "Revenue Growth % (previous Q)": q2_revenue_growth,
+            # "Revenue Growth % (most recent Q)": q2_revenue_growth,
+            # "Revenue Growth % (previous Q)": q1_revenue_growth,
             "50-day Average Volume": row["50-day Average Volume"],
             "% Below 52-week High": row["% Below 52-week High"],
         }
     )
 
+
+screen_revenue_growth(10)
 
 # create a new dataframe with symbols which satisfied revenue_growth criteria
 screened_df = pd.DataFrame(successful_symbols)

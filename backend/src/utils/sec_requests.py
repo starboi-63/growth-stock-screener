@@ -19,16 +19,23 @@ conversions_df = pd.DataFrame.from_dict(response.json(), orient="index").set_ind
 
 def get_cik(symbol: str) -> str:
     """Convert a stock symbol into a cik used by the SEC for corporate filings."""
-    return conversions_df.loc[symbol]["cik_str"]
+    try:
+        return conversions_df.loc[symbol]["cik_str"]
+    except KeyError:
+        return None
 
 
 def get_concept(symbol: str, concept: str) -> dict:
     """Request concept data for a stock symbol from SEC.gov."""
     # cik's are left-padded with zeroes to a length of 10 characters
-    cik = str(get_cik(symbol)).zfill(10)
-    url = (
-        f"https://data.sec.gov/api/xbrl/companyconcept/CIK{cik}/us-gaap/{concept}.json"
-    )
+    cik = get_cik(symbol)
+
+    if cik is None:
+        return None
+
+    cik_padded = str(cik).zfill(10)
+
+    url = f"https://data.sec.gov/api/xbrl/companyconcept/CIK{cik_padded}/us-gaap/{concept}.json"
 
     try:
         response = requests.get(url, headers=header)
@@ -54,6 +61,8 @@ def fetch_revenues(symbol: str) -> pd.DataFrame:
 
     # store the longest dictionary as the final source of revenue data
     revenue_data = max(concept_data, key=len)
+    if revenue_data == {}:
+        return None
 
     # convert dictionary to pandas DataFrame and remove listings which don't have specified timeframes
     revenue_df = pd.DataFrame.from_dict(revenue_data)
