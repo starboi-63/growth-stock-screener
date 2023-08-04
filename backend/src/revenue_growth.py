@@ -24,6 +24,14 @@ df = open_outfile("trend")
 successful_symbols = []
 failed_symbols = []
 
+# fetch revenue data for all symbols
+revenue_data = fetch_revenues_bulk(list(df["Symbol"]))
+
+
+def fetch_comparison_revenues(symbol: str) -> Dict[str, Dict[str, float]]:
+    """Fetches two most recent quarters and corresponding quarters one year ago."""
+    return None
+
 
 def revenue_growth(timeframe: str, df: pd.DataFrame) -> float:
     """Calculate the revenue growth for the given timeframe compared to the same timeframe one year earlier."""
@@ -36,11 +44,6 @@ def revenue_growth(timeframe: str, df: pd.DataFrame) -> float:
         return None
 
     return percent_change(prev_revenue, revenue)
-
-
-def fetch_comparison_revenues(symbol: str) -> Dict[str, Dict[str, float]]:
-    """Fetches two most recent quarters and corresponding quarters one year ago."""
-    return None
 
 
 def screen_revenue_growth(df_index: int) -> None:
@@ -101,8 +104,6 @@ def screen_revenue_growth(df_index: int) -> None:
         }
     )
 
-
-print(df)
 
 # create a new dataframe with symbols which satisfied revenue_growth criteria
 screened_df = pd.DataFrame(successful_symbols)
