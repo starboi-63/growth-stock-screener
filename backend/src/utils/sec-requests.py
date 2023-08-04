@@ -34,7 +34,7 @@ def get_concept(symbol: str, concept: str) -> dict:
         return None
 
 
-def get_revenues(symbol: str) -> pd.DataFrame:
+def fetch_revenues(symbol: str) -> pd.DataFrame:
     """Fetch quarterly revenue data for a stock symbol from SEC filings."""
     # different companies file revenue with various concepts, and we must check which has the most data
     revenue_concepts = [
@@ -60,19 +60,20 @@ def get_revenues(symbol: str) -> pd.DataFrame:
 
 
 def revenue_growth(frame: str, df: pd.DataFrame) -> float:
-    frame_components = frame.split("Q")
-    year = frame_components[0].replace("CY", "")
-    quarter = None if (len(frame_components) < 2) else frame_components[1]
+    revenue = extract_revenue(frame, df)
+    print(revenue)
+    return None
 
-    if quarter is None:
-        # must convert annual revenue to quarterly revenue by subtracting previous three quarters
+
+def extract_revenue(frame: str, df: pd.DataFrame) -> float:
+    """Return the revenue for a given timeframe from an SEC revenue DataFrame."""
+    if "Q" in frame:
         try:
-            revenue = subtract_prev_quarters(frame, df)
-            print(revenue)
+            return df[df["frame"] == frame].iloc[0]["val"]
         except Exception:
             return None
-
-    return None
+    else:
+        return subtract_prev_quarters(frame, df)
 
 
 def subtract_prev_quarters(frame: str, df: pd.DataFrame) -> float:
@@ -96,7 +97,7 @@ def subtract_prev_quarters(frame: str, df: pd.DataFrame) -> float:
     return revenue
 
 
-df = get_revenues("AAPL")
+df = fetch_revenues("AAPL")
 print(df)
 print()
 print(revenue_growth("CY2022", df))
