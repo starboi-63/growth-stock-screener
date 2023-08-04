@@ -131,7 +131,9 @@ def screen_revenue_growth(df_index: int) -> None:
             "Price": row["Price"],
             "Market Cap": row["Market Cap"],
             "Revenue Growth % (most recent Q)": revenues["Q2"]["Growth"],
-            "Revenue Growth % (previous Q)": revenues["Q1"]["Growth"],
+            "Revenue Growth % (previous Q)": "N/A"
+            if ("Q1" not in revenues)
+            else revenues["Q1"]["Growth"],
             "50-day Average Volume": row["50-day Average Volume"],
             "% Below 52-week High": row["% Below 52-week High"],
         }
