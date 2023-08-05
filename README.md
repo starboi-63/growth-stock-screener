@@ -53,4 +53,4 @@ The current market often factors in _future_ revenue growth; historically, this 
 
 ### Iteration 5: Institutional Accumulation
 
-Any stocks with a _net-decrease_ in institutional-ownership are excluded at this point. Institutional-ownership is measured by the total inflows and outflows in the most recent financial quarter. If institutional inflows exceed outflows, a stock will pass this iteration of the screen as it is under accumulation.
+Any stocks with a _net-increase_ in institutional-ownership are marked as being under accumulation. Institutional-ownership is measured by the difference in total inflows and outflows in the most recently reported financial quarter. Since this information lags behind the current market by a few months, no stocks are outright eliminated based on this screen iteration.
