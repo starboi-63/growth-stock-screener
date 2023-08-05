@@ -3,6 +3,7 @@ from selenium.webdriver.common.by import By
 from selenium.common.exceptions import TimeoutException
 import threading
 import requests
+from tqdm import tqdm
 from typing import Dict
 from utils.logs import *
 from utils.outfiles import *

@@ -1,7 +1,6 @@
 from multiprocessing.pool import ThreadPool
 from tqdm import tqdm
 from typing import List, Callable
-import threading
 from threading import local
 from selenium import webdriver
 from selenium.webdriver.remote.webdriver import WebDriver
