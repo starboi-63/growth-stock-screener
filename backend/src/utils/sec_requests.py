@@ -79,6 +79,8 @@ def fetch_revenues(symbol: str) -> pd.DataFrame:
         "RevenueFromContractWithCustomerIncludingAssessedTax",
         "RevenuesNetOfInterestExpense",
         "RevenuesExcludingInterestAndDividends",
+        "RegulatedAndUnregulatedOperatingRevenue",
+        "InterestAndDividendIncomeOperating",
     ]
     revenue_concept_data = []
 
@@ -132,8 +134,6 @@ def fetch_revenues_bulk(symbols: List[str]) -> Dict[str, pd.DataFrame]:
 
     for symbol in tqdm(symbols):
         ret[symbol] = fetch_revenues(symbol)
-        # SEC sets maximum API usage rate to 10 calls/sec
-        time.sleep(0.1)
 
     return ret
 
@@ -187,3 +187,6 @@ def previous_timeframe(timeframe: str) -> str:
     year = int(timeframe[2:6]) - 1
     quarter = timeframe[6:]
     return f"CY{year}{quarter}"
+
+
+print(fetch_revenues("AMWD"))
