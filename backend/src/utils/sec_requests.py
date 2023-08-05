@@ -103,11 +103,25 @@ def fetch_revenues(symbol: str) -> pd.DataFrame:
     return revenue_df
 
 
-def find_most_updated(dicts: List[Dict]) -> Dict:
-    return dicts[0]
+def find_most_updated(dicts: List[List[Dict]]) -> List[Dict]:
+    """Return the SEC revenue concept which contains the most up-to-date information."""
+    if len(dicts) == 0:
+        return None
 
+    # populate list with the most recent end-date present in the concept dictionary
+    last_dates = []
 
-print(fetch_revenues("RKT"))
+    for dict in dicts:
+        last_row = dict[-1]
+        last_date = last_row["end"]
+        date = datetime.strptime(last_date, "%Y-%m-%d").date()
+        last_dates.append(date)
+
+    # determine the index of the concept dictionary with the most recent listing
+    most_recent_date = max(last_dates)
+    most_updated_index = last_dates.index(most_recent_date)
+
+    return dicts[most_updated_index]
 
 
 def fetch_revenues_bulk(symbols: List[str]) -> Dict[str, pd.DataFrame]:
