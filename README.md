@@ -6,6 +6,11 @@ An automated stock screening system which isolates and ranks top-tier growth com
 
 1. Internet Access
 2. Firefox Installation
+3. Python
+
+## Installation
+
+...
 
 ## Screen Iterations
 
