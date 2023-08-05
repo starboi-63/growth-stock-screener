@@ -8,6 +8,7 @@ from utils.calculations import *
 
 # constants
 min_growth_percent = 25
+protected_rs = 97
 
 # print header message to terminal
 process_name = "Revenue Growth"
@@ -110,14 +111,14 @@ def screen_revenue_growth(df_index: int) -> None:
         )
 
     # filter out stocks with low quarterly revenue growth
-    if (revenues["Q2"]["Growth"] < min_growth_percent) and (rs < 99):
+    if (revenues["Q2"]["Growth"] < min_growth_percent) and (rs < protected_rs):
         logs.append(filter_message(symbol))
         return
 
     if (
         ("Q1" in revenues)
         and (revenues["Q1"]["Growth"] < min_growth_percent)
-        and (rs < 99)
+        and (rs < protected_rs)
     ):
         logs.append(filter_message(symbol))
         return
