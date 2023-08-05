@@ -4,6 +4,7 @@ import pandas as pd
 from typing import List, Dict
 import time
 from tqdm import tqdm
+from datetime import datetime
 
 # constants
 header = {"User-Agent": "name@domain.com"}
@@ -20,22 +21,41 @@ conversions_df = pd.DataFrame.from_dict(response.json(), orient="index").set_ind
 def get_cik(symbol: str) -> str:
     """Convert a stock symbol into a cik used by the SEC for corporate filings."""
     try:
-        return conversions_df.loc[symbol]["cik_str"]
+        cik = conversions_df.loc[symbol]["cik_str"]
+        cik_padded = str(cik).zfill(10)
+        return cik_padded
     except KeyError:
         return None
 
 
 def get_concept(symbol: str, concept: str) -> dict:
     """Request concept data for a stock symbol from SEC.gov."""
-    # cik's are left-padded with zeroes to a length of 10 characters
+    # construct url for request to SEC's API
     cik = get_cik(symbol)
 
     if cik is None:
         return None
 
-    cik_padded = str(cik).zfill(10)
+    url = (
+        f"https://data.sec.gov/api/xbrl/companyconcept/CIK{cik}/us-gaap/{concept}.json"
+    )
 
-    url = f"https://data.sec.gov/api/xbrl/companyconcept/CIK{cik_padded}/us-gaap/{concept}.json"
+    try:
+        response = requests.get(url, headers=header)
+        return response.json()
+    except JSONDecodeError:
+        return None
+
+
+def get_company_facts(symbol: str) -> dict:
+    """Request all available concept data for a stock symbol from SEC.gov"""
+    # construct url for request to SEC's API
+    cik = get_cik(symbol)
+
+    if cik is None:
+        return None
+
+    url = f"https://data.sec.gov/api/xbrl/companyfacts/CIK{cik}.json"
 
     try:
         response = requests.get(url, headers=header)
@@ -46,29 +66,44 @@ def get_concept(symbol: str, concept: str) -> dict:
 
 def fetch_revenues(symbol: str) -> pd.DataFrame:
     """Fetch quarterly revenue data for a stock symbol from SEC filings."""
-    # different companies file revenue with various concepts, and we must check which has the most data
+    # different companies file revenue with various concepts, and we must check which has the most up-to-date data
     revenue_concepts = [
         "Revenues",
+        "RevenueFromContractWithCustomerIncludingAssessedTax",
         "RevenueFromContractWithCustomerExcludingAssessedTax",
+        "RevenuesNetOfInterestExpense",
+        "SalesRevenueNet",
+        "RevenuesExcludingInterestAndDividends",
     ]
 
     concept_data = []
 
-    # iterate over concepts and append data to list if available
-    for concept in revenue_concepts:
-        data = get_concept(symbol, concept)
-        concept_data.append(data["units"]["USD"] if (data is not None) else {})
+    return None
 
-    # store the longest dictionary as the final source of revenue data
-    revenue_data = max(concept_data, key=len)
-    if revenue_data == {}:
+    # # iterate over concepts and append data to list if available
+    # for concept in revenue_concepts:
+    #     data = get_concept(symbol, concept)
+
+    #     if data is not None:
+    #         concept_data.append(data["units"]["USD"])
+
+    # # store the dictionary with the most recent listings as the final source of revenue data
+    # revenue_data = find_most_updated(concept_data)
+    # # if revenue_data == {}:
+    # #     return None
+
+    # # convert dictionary to pandas DataFrame and remove listings which don't have specified timeframes
+    # revenue_df = pd.DataFrame.from_dict(revenue_data)
+    # revenue_df = revenue_df[~pd.isna(revenue_df["frame"])]
+
+    # return revenue_df
+
+
+def find_most_updated(dicts: List[Dict]) -> Dict:
+    if len(dicts) == 0:
         return None
 
-    # convert dictionary to pandas DataFrame and remove listings which don't have specified timeframes
-    revenue_df = pd.DataFrame.from_dict(revenue_data)
-    revenue_df = revenue_df[~pd.isna(revenue_df["frame"])]
-
-    return revenue_df
+    largest_date = dicts[0].values()[-1]
 
 
 def fetch_revenues_bulk(symbols: List[str]) -> Dict[str, pd.DataFrame]:
