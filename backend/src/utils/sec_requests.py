@@ -110,18 +110,24 @@ def find_most_updated(dicts: List[List[Dict]]) -> List[Dict]:
     if len(dicts) == 0:
         return None
 
-    # populate list with the most recent end-date present in the concept dictionary
+    # populate lists with the most recent end-dates and listings present in the concept dictionary
     last_dates = []
+    listing_counts = []
 
     for dict in dicts:
         last_row = dict[-1]
         last_date = last_row["end"]
         date = datetime.strptime(last_date, "%Y-%m-%d").date()
         last_dates.append(date)
+        listing_counts.append(len(dict))
 
     # determine the index of the concept dictionary with the most recent listing
+    # if multiple revenue concepts are equally up-to-date, choose the concept with the most listings
     most_recent_date = max(last_dates)
-    most_updated_index = last_dates.index(most_recent_date)
+    most_updated_indices = [
+        i for i in range(len(last_dates)) if last_dates[i] == most_recent_date
+    ]
+    most_updated_index = max(most_updated_indices, key=lambda i: listing_counts[i])
 
     return dicts[most_updated_index]
 
@@ -187,6 +193,3 @@ def previous_timeframe(timeframe: str) -> str:
     year = int(timeframe[2:6]) - 1
     quarter = timeframe[6:]
     return f"CY{year}{quarter}"
-
-
-print(fetch_revenues("AMWD"))
