@@ -31,6 +31,7 @@ df = open_outfile("revenue_growth")
 # populate these lists while iterating through symbols
 successful_symbols = []
 failed_symbols = []
+symbols_under_accumulation = []
 drivers = []
 
 # store local thread data
@@ -104,21 +105,25 @@ def screen_institutional_accumulation(df_index: int) -> None:
 
     # check for failed GET requests
     if holdings_data is None:
+        logs.append(
+            message(f"No institutional inflow/outflow data found for {symbol} . . .")
+        )
         failed_symbols.append(symbol)
-        return
+    else:
+        net_inflows = holdings_data["Inflows"] - holdings_data["Outflows"]
 
-    net_inflows = holdings_data["Inflows"] - holdings_data["Outflows"]
+        # add institutional holdings info to logs
+        logs.append(
+            f"""\n{symbol} | Net Institutional Inflows (most recent Q): ${net_inflows:,.0f} 
+            Inflows: ${holdings_data["Inflows"]:,.0f}, Outflows: ${holdings_data["Outflows"]:,.0f}\n"""
+        )
 
-    # add institutional holdings info to logs
-    logs.append(
-        f"""\n{symbol} | Net Institutional Inflows (most recent Q): ${net_inflows:,.0f} 
-        Inflows: ${holdings_data["Inflows"]:,.0f}, Outflows: ${holdings_data["Outflows"]:,.0f}\n"""
-    )
-
-    # filter out stocks which are not under institutional accumulation
-    if net_inflows < 0:
-        logs.append(filter_message(symbol))
-        return
+        # mark stocks which are under institutional accumulation
+        if net_inflows >= 0:
+            logs.append(
+                message(f"{symbol} was under institutional accumulation last quarter.")
+            )
+            symbols_under_accumulation.append(symbol)
 
     successful_symbols.append(
         {
@@ -128,7 +133,9 @@ def screen_institutional_accumulation(df_index: int) -> None:
             "RS": row["RS"],
             "Price": row["Price"],
             "Market Cap": row["Market Cap"],
-            "Net Institutional Inflows": net_inflows,
+            "Net Institutional Inflows": None
+            if (holdings_data is None)
+            else net_inflows,
             "Revenue Growth % (most recent Q)": row["Revenue Growth % (most recent Q)"],
             "Revenue Growth % (previous Q)": row["Revenue Growth % (previous Q)"],
             "50-day Average Volume": row["50-day Average Volume"],
@@ -158,7 +165,10 @@ print("".join(logs))
 # print footer message to terminal
 print(f"{len(failed_symbols)} symbols failed (insufficient data).")
 print(
-    f"{len(df) - len(screened_df) - len(failed_symbols)} symbols filtered (not under institutional accumulation)."
+    f"{len(symbols_under_accumulation)} symbols were under institutional accumulation last quarter."
+)
+print(
+    f"{len(df) - len(failed_symbols) - len(symbols_under_accumulation)} symbols were not under institutional accumulation last quarter."
 )
 print(f"{len(screened_df)} symbols passed.")
 print_status(process_name, process_stage, False)
