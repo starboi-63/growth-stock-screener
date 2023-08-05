@@ -60,7 +60,7 @@ def get_company_facts(symbol: str) -> dict:
     try:
         response = requests.get(url, headers=header)
         return response.json()["facts"]["us-gaap"]
-    except JSONDecodeError:
+    except (JSONDecodeError, KeyError):
         return None
 
 
