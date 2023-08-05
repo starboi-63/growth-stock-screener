@@ -40,9 +40,15 @@ for symbol in price_df:
     end_index = len(col) - 1
 
     # eliminate symbol if it has not traded for 1yr
-    if end_index < 251:
-        logs.append(skip_message(symbol, "insufficient data"))
-        failed_symbols.append(symbol)
+    first_valid_index = 0
+
+    for i in range(len(col)):
+        if not pd.isna(col[i]):
+            first_valid_index = i
+            break
+
+    if (end_index < 251) or ((end_index - first_valid_index + 1) < 252):
+        logs.append(skip_message(symbol, "stock has not traded long enough"))
         continue
 
     # calculate raw relative strength using the following formula:
@@ -118,11 +124,9 @@ create_outfile(rs_df, "relative_strengths")
 print("".join(logs))
 
 # print footer message to terminal
+print(f"{len(failed_symbols)} symbols failed (insufficient data).")
 print(
-    f"{len(failed_symbols)} symbols failed (stock has traded for less than a year or insufficient data)."
-)
-print(
-    f"{len(symbol_list) - len(rs_df) - len(failed_symbols)} symbols filtered (RS below {min_rs})."
+    f"{len(symbol_list) - len(rs_df) - len(failed_symbols)} symbols filtered (RS below {min_rs} or stock too young)."
 )
 print(f"{len(rs_df)} symbols passed.")
 print_status(process_name, process_stage, False)
