@@ -59,51 +59,55 @@ def get_company_facts(symbol: str) -> dict:
 
     try:
         response = requests.get(url, headers=header)
-        return response.json()
+        return response.json()["facts"]["us-gaap"]
     except JSONDecodeError:
         return None
 
 
 def fetch_revenues(symbol: str) -> pd.DataFrame:
     """Fetch quarterly revenue data for a stock symbol from SEC filings."""
-    # different companies file revenue with various concepts, and we must check which has the most up-to-date data
+    # get all available SEC data on company
+    data = get_company_facts(symbol)
+
+    if data is None:
+        return None
+
+    # different companies file revenue with varying concepts, and we must check which concept has the most up-to-date data
     revenue_concepts = [
         "Revenues",
-        "RevenueFromContractWithCustomerIncludingAssessedTax",
         "RevenueFromContractWithCustomerExcludingAssessedTax",
+        "RevenueFromContractWithCustomerIncludingAssessedTax",
         "RevenuesNetOfInterestExpense",
-        "SalesRevenueNet",
         "RevenuesExcludingInterestAndDividends",
     ]
+    revenue_concept_data = []
 
-    concept_data = []
+    # add available revenue concept dictionaries to list
+    for concept in revenue_concepts:
+        if concept in data:
+            try:
+                revenue_concept_data.append(data[concept]["units"]["USD"])
+            except KeyError:
+                continue
 
-    return None
+    # determine which revenue concept dictionary to use for revenue data
+    revenue_data = find_most_updated(revenue_concept_data)
 
-    # # iterate over concepts and append data to list if available
-    # for concept in revenue_concepts:
-    #     data = get_concept(symbol, concept)
+    if revenue_data is None:
+        return None
 
-    #     if data is not None:
-    #         concept_data.append(data["units"]["USD"])
+    # convert dictionary to pandas DataFrame and remove listings which don't have specified timeframes
+    revenue_df = pd.DataFrame.from_dict(revenue_data)
+    revenue_df = revenue_df[~pd.isna(revenue_df["frame"])]
 
-    # # store the dictionary with the most recent listings as the final source of revenue data
-    # revenue_data = find_most_updated(concept_data)
-    # # if revenue_data == {}:
-    # #     return None
-
-    # # convert dictionary to pandas DataFrame and remove listings which don't have specified timeframes
-    # revenue_df = pd.DataFrame.from_dict(revenue_data)
-    # revenue_df = revenue_df[~pd.isna(revenue_df["frame"])]
-
-    # return revenue_df
+    return revenue_df
 
 
 def find_most_updated(dicts: List[Dict]) -> Dict:
-    if len(dicts) == 0:
-        return None
+    return dicts[0]
 
-    largest_date = dicts[0].values()[-1]
+
+print(fetch_revenues("RKT"))
 
 
 def fetch_revenues_bulk(symbols: List[str]) -> Dict[str, pd.DataFrame]:
