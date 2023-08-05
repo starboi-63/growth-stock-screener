@@ -58,6 +58,9 @@ def extract_comparison_revenues(symbol: str) -> Dict[str, Dict[str, float]]:
     if revenue_df is None:
         return None
 
+    if "Foreign Stock" in revenue_df:
+        return {"Foreign Stock": {}}
+
     # extract the two lowest rows of the revenues DataFrame
     q1_row = revenue_df.iloc[-2] if (len(revenue_df) >= 2) else None
     q2_row = revenue_df.iloc[-1] if (len(revenue_df) >= 1) else None
@@ -95,6 +98,10 @@ def screen_revenue_growth(df_index: int) -> None:
     if revenues is None:
         logs.append(skip_message(symbol, "insufficient data"))
         failed_symbols.append(symbol)
+        return
+
+    if "Foreign Stock" in revenues:
+        logs.append(skip_message(symbol, "foreign stock"))
         return
 
     # print revenue growth data to console
@@ -142,7 +149,7 @@ def screen_revenue_growth(df_index: int) -> None:
 
 
 # screen each stock present in the DataFrame
-print("Screening stocks . . .\n")
+print("\nScreening stocks . . .\n")
 for i in tqdm(range(0, len(df))):
     screen_revenue_growth(i)
 
@@ -158,7 +165,7 @@ print("".join(logs))
 # print footer message to terminal
 print(f"{len(failed_symbols)} symbols failed (insufficient revenue reports).")
 print(
-    f"{len(df) - len(screened_df) - len(failed_symbols)} symbols filtered (revenue growth too low)."
+    f"{len(df) - len(screened_df) - len(failed_symbols)} symbols filtered (revenue growth too low or foreign stock)."
 )
 print(f"{len(screened_df)} symbols passed.")
 print_status(process_name, process_stage, False)

@@ -59,7 +59,12 @@ def get_company_facts(symbol: str) -> dict:
 
     try:
         response = requests.get(url, headers=header)
-        return response.json()["facts"]["us-gaap"]
+        company_facts = response.json()["facts"]
+
+        if "us-gaap" not in company_facts:
+            return {"Foreign Stock": True}
+
+        return company_facts["us-gaap"]
     except (JSONDecodeError, KeyError):
         return None
 
@@ -71,6 +76,9 @@ def fetch_revenues(symbol: str) -> pd.DataFrame:
 
     if data is None:
         return None
+
+    if "Foreign Stock" in data:
+        return pd.DataFrame.from_dict([data])
 
     # different companies file revenue with varying concepts, and we must check which concept has the most up-to-date data
     revenue_concepts = [
@@ -88,7 +96,13 @@ def fetch_revenues(symbol: str) -> pd.DataFrame:
     for concept in revenue_concepts:
         if concept in data:
             try:
-                revenue_concept_data.append(data[concept]["units"]["USD"])
+                rows = data[concept]["units"]["USD"]
+
+                # check for foreign stocks
+                if (len(rows) > 0) and (rows[0]["form"] == "20-F"):
+                    return pd.DataFrame.from_dict([{"Foreign Stock": True}])
+
+                revenue_concept_data.append(rows)
             except KeyError:
                 continue
 
