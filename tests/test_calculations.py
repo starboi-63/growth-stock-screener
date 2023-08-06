@@ -1,6 +1,6 @@
 import unittest
 import math
-from ..src.growth_stock_screener.utils import *
+from growth_stock_screener.iterations.utils import *
 
 
 class TestPercentChange(unittest.TestCase):

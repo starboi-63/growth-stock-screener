@@ -2,7 +2,7 @@ import requests
 import pandas as pd
 import json
 from requests.exceptions import Timeout
-from .utils import *
+from utils import *
 
 # print header message to terminal
 process_name = "NASDAQ Listings"
