@@ -11,13 +11,13 @@ First, ensure that you have [Python](https://www.python.org/) and [Firefox](http
 #### Install Python Dependencies:
 
 ```bash
-pip3 install .
+pip install -r requirements.txt
 ```
 
 #### Run Screen:
 
 ```bash
-python3 app.py
+python growth_stock_screener/run_screen.py
 ```
 
 ## Screen Iterations

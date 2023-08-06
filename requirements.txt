@@ -1,0 +1,10 @@
+Flask
+flask-cors
+pyinstaller
+selenium
+requests
+lxml
+tqdm
+pandas
+yfinance
+aiohttp
