@@ -2,15 +2,23 @@
 
 An automated stock screening system which isolates and ranks top-tier growth companies based on relative strength, liquidity, trend, revenue growth, and institutional demand.
 
-## Prerequisites
-
-1. Internet Access
-2. Firefox Installation
-3. Python
-
 ## Installation
 
-...
+#### Prerequisites
+
+First, ensure that you have [Python](https://www.python.org/) and [Firefox](https://www.mozilla.org/en-US/firefox/new/) installed. Clone this repository, navigate to its root directory on your computer, and run the following commands in a terminal application:
+
+#### Install Python Dependencies:
+
+```bash
+pip3 install -r requirements.txt
+```
+
+#### Run Screen:
+
+```bash
+python3 app.py
+```
 
 ## Screen Iterations
 
