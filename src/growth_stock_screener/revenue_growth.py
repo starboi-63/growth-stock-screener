@@ -1,7 +1,7 @@
 import pandas as pd
 from typing import Dict
 from tqdm import tqdm
-from utils import *
+from .utils import *
 
 # constants
 min_growth_percent = 25

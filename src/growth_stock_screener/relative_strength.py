@@ -1,6 +1,6 @@
 import yfinance as yf
 import pandas as pd
-from utils import *
+from .utils import *
 
 # minimum RS required to pass this screen
 min_rs = 90
