@@ -2,7 +2,7 @@
 
 An automated stock screening system which isolates and ranks top-tier growth companies based on relative strength, liquidity, trend, revenue growth, and institutional demand.
 
-## Installation
+## Usage
 
 #### Prerequisites
 
@@ -19,6 +19,10 @@ pip install -r requirements.txt
 ```bash
 python growth_stock_screener/run_screen.py
 ```
+
+#### Viewing Results:
+
+Screen results are saved in .csv format in the project root directory, and can be opened with software like Excel.
 
 ## Screen Iterations
 
