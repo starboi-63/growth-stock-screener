@@ -2,7 +2,6 @@ import requests
 from requests.exceptions import JSONDecodeError
 import pandas as pd
 from typing import List, Dict
-import time
 from tqdm import tqdm
 from datetime import datetime
 
