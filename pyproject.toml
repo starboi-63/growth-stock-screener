@@ -1,0 +1,16 @@
+[project]
+name = "Growth-Stock-Screener"
+version = "1.0"
+description = "An automated stock screening system which isolates and ranks top-tier growth companies based on relative strength, liquidity, trend, revenue growth, and institutional demand."
+dependencies = [
+"Flask",
+"flask-cors",
+"pyinstaller",
+"selenium",
+"requests",
+"lxml",
+"tqdm",
+"pandas",
+"yfinance",
+"aiohttp"
+]

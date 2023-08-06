@@ -5,10 +5,7 @@ import threading
 import requests
 from tqdm import tqdm
 from typing import Dict
-from utils.logs import *
-from utils.outfiles import *
-from utils.scraping import *
-from utils.concurrency import *
+from utils import *
 
 # constants
 threads = 5  # number of concurrent Selenium browser instances to fetch data

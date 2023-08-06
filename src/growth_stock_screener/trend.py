@@ -6,11 +6,7 @@ import requests
 from lxml import html
 from typing import Dict
 from tqdm import tqdm
-from utils.logs import *
-from utils.outfiles import *
-from utils.calculations import *
-from utils.scraping import *
-from utils.concurrency import *
+from utils import *
 
 # constants
 threads = 10  # number of concurrent Selenium browser instances to fetch data

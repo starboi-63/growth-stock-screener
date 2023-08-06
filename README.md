@@ -11,7 +11,7 @@ First, ensure that you have [Python](https://www.python.org/) and [Firefox](http
 #### Install Python Dependencies:
 
 ```bash
-pip3 install -r requirements.txt
+pip3 install .
 ```
 
 #### Run Screen:
