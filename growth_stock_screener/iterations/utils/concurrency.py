@@ -3,7 +3,12 @@ from tqdm import tqdm
 from typing import List, Callable
 from threading import local
 from selenium import webdriver
+from selenium.webdriver.firefox.options import Options
+from selenium.webdriver.firefox.service import Service
 from selenium.webdriver.remote.webdriver import WebDriver
+from webdriver_manager.firefox import GeckoDriverManager
+
+gecko_driver_path = GeckoDriverManager().install()
 
 
 def get_driver(thread_local: local, drivers: List[WebDriver]) -> WebDriver:
@@ -13,11 +18,12 @@ def get_driver(thread_local: local, drivers: List[WebDriver]) -> WebDriver:
 
     if driver is None:
         # construct new web broswer driver
-        options = webdriver.FirefoxOptions()
+        options = Options()
+        service = Service(executable_path=gecko_driver_path)
         options.add_argument("--headless")
         options.add_argument("--disable-gpu")
         options.page_load_strategy = "eager"
-        driver = webdriver.Firefox(options=options)
+        driver = webdriver.Firefox(options=options, service=service)
         setattr(thread_local, "driver", driver)
         drivers.append(driver)
 

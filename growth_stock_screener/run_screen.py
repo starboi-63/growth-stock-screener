@@ -17,7 +17,7 @@ time = datetime.now()
 time_string = time.strftime("%Y-%m-%d %H-%M-%S")
 
 # create a .csv outfile
-outfile_name = f"screen_results {time_string}"
+outfile_name = f"screen_results {time_string}.csv"
 df.to_csv(outfile_name)
 
-print(f"\nDONE! (created {outfile_name}.csv)")
+print(f"\nDONE! (created {outfile_name})")

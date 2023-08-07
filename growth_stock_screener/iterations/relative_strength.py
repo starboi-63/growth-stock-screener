@@ -2,8 +2,9 @@ import yfinance as yf
 import pandas as pd
 from .utils import *
 
-# minimum RS required to pass this screen
+# constants
 min_rs = 90
+timeout = 30
 
 # print header message to terminal
 process_name = "Relative Strength"
@@ -23,7 +24,7 @@ symbol_list = df["Symbol"].values.tolist()
 
 # download all historical price data at once
 print("Fetching historical price data . . .\n")
-tickers = yf.download(symbol_list, period="2y", timeout=10)
+tickers = yf.download(symbol_list, period="2y", timeout=timeout)
 price_df = tickers["Adj Close"]
 
 # populate these lists while iterating through symbols
