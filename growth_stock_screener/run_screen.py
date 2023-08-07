@@ -1,7 +1,7 @@
 # run screen iterations
-import iterations.nasdaq_listings
-import iterations.relative_strength
-import iterations.liquidity
+# import iterations.nasdaq_listings
+# import iterations.relative_strength
+# import iterations.liquidity
 import iterations.trend
 import iterations.revenue_growth
 import iterations.institutional_accumulation
