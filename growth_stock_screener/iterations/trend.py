@@ -9,7 +9,7 @@ from tqdm import tqdm
 from .utils import *
 
 # constants
-threads = 5  # number of concurrent Selenium browser instances to fetch data
+threads = 10  # number of concurrent Selenium browser instances to fetch data
 timeout = 30
 sma_10_xpath = "/html/body/div[3]/div[4]/div[2]/div[2]/div/section/div/div[6]/div[2]/div[2]/table/tbody/tr[3]/td[2]"
 sma_20_xpath = "/html/body/div[3]/div[4]/div[2]/div[2]/div/section/div/div[6]/div[2]/div[2]/table/tbody/tr[5]/td[2]"
