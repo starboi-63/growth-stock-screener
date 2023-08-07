@@ -8,6 +8,8 @@ from selenium.webdriver.firefox.service import Service
 from selenium.webdriver.remote.webdriver import WebDriver
 from webdriver_manager.firefox import GeckoDriverManager
 
+gecko_driver_path = GeckoDriverManager().install()
+
 
 def get_driver(thread_local: local, drivers: List[WebDriver]) -> WebDriver:
     """Return the web driver attributed to a thread. Create a new web driver if no driver is found."""
@@ -17,7 +19,7 @@ def get_driver(thread_local: local, drivers: List[WebDriver]) -> WebDriver:
     if driver is None:
         # construct new web broswer driver
         options = Options()
-        service = Service(GeckoDriverManager().install())
+        service = Service(executable_path=gecko_driver_path)
         options.add_argument("--headless")
         options.add_argument("--disable-gpu")
         options.page_load_strategy = "eager"
