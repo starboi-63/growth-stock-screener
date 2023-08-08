@@ -24,7 +24,7 @@ def print_minimums(criteria: Dict[str, int]) -> None:
     """Print minimum values needed to pass screen iterations."""
     for key, value in criteria.items():
         print(
-            colored(f"Minimum {key} to pass: ", "dark_grey"),
+            colored(f"Minimum {key} to pass: ", "cyan"),
             colored(f"{value}", "green"),
             sep="",
         )
