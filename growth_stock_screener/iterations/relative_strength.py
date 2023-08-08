@@ -1,5 +1,6 @@
 import yfinance as yf
 import pandas as pd
+from termcolor import colored, cprint
 from .utils import *
 
 # constants
@@ -10,7 +11,7 @@ timeout = 30
 process_name = "Relative Strength"
 process_stage = 1
 print_status(process_name, process_stage, True)
-print(f"Minimum Relative Strength to Pass: {min_rs}\n")
+print_minimums({"relative strength": min_rs})
 
 # logging data (printed to console after screen finishes)
 logs = []
@@ -21,6 +22,7 @@ df_index = 0
 
 # extract symbols from dataframe
 symbol_list = df["Symbol"].values.tolist()
+symbol_list = ["NVDA", "FLSR", "AI", "PLTR"]
 
 # download all historical price data at once
 print("Fetching historical price data . . .\n")
@@ -127,5 +129,6 @@ print(f"{len(failed_symbols)} symbols failed (insufficient data).")
 print(
     f"{len(symbol_list) - len(rs_df) - len(failed_symbols)} symbols filtered (RS below {min_rs} or stock too young)."
 )
-print(f"{len(rs_df)} symbols passed.")
+cprint(f"{len(rs_df)} symbols passed.", "green")
 print_status(process_name, process_stage, False)
+print_divider()

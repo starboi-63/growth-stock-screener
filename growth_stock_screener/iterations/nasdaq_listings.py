@@ -8,6 +8,7 @@ from .utils import *
 # print header message to terminal
 process_name = "NASDAQ Listings"
 process_stage = 0
+print_divider()
 print_status(process_name, process_stage, True)
 
 # request nasdaq listing data
@@ -16,7 +17,7 @@ headers = {
     "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:109.0) Gecko/20100101 Firefox/115.0"
 }
 
-cprint("Fetching stock symbols from NASDAQ . . .", "cyan")
+print("Fetching stock symbols from NASDAQ . . .")
 # extract symbols from response
 try:
     response = requests.get(url, headers=headers, timeout=15)
@@ -52,3 +53,4 @@ create_outfile(df, "nasdaq_listings")
 # print footer message to terminal
 cprint(f"{len(df)} symbols extracted.", "green")
 print_status(process_name, process_stage, False)
+print_divider()

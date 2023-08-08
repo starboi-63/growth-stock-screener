@@ -33,6 +33,10 @@ def print_minimums(criteria: Dict[str, int]) -> None:
     print()
 
 
+def print_divider() -> None:
+    cprint("⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯", "red")
+
+
 def skip_message(symbol: str, message: str) -> str:
     """Return a custom message logging screening errors."""
     return colored(f"\nSkipping {symbol} ({message}) . . .\n", "red")
