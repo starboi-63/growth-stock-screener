@@ -9,3 +9,4 @@ tqdm
 pandas
 yfinance
 aiohttp
+termcolor
