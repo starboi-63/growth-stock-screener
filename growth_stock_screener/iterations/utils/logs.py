@@ -1,14 +1,27 @@
+from termcolor import colored, cprint
+
+
 def print_status(process: str, stage: int, starting: bool) -> None:
     """Print a header or footer for each screen iteration."""
     if starting:
-        print(f"\n****** Begin Stage {stage} [{process}] ******\n")
+        print(
+            colored(f"\n****** Begin Stage {stage} [", "green"),
+            colored(f"{process}", "white"),
+            colored("] ******\n", "green"),
+            sep="",
+        )
     else:
-        print(f"\n****** Stage {stage} [{process}] Finished ******\n")
+        print(
+            colored(f"\n****** Stage {stage} [", "green"),
+            colored(f"{process}", "white"),
+            colored("] Finished ******\n", "green"),
+            sep="",
+        )
 
 
 def skip_message(symbol: str, message: str) -> str:
     """Return a custom message logging screening errors."""
-    return f"\nSkipping {symbol} ({message}) . . .\n"
+    return colored(f"\nSkipping {symbol} ({message}) . . .\n", "red")
 
 
 def filter_message(symbol: str) -> str:
