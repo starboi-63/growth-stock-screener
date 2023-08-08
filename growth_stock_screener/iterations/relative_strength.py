@@ -125,9 +125,10 @@ create_outfile(rs_df, "relative_strengths")
 print("".join(logs))
 
 # print footer message to terminal
-print(f"{len(failed_symbols)} symbols failed (insufficient data).")
-print(
-    f"{len(symbol_list) - len(rs_df) - len(failed_symbols)} symbols filtered (RS below {min_rs} or stock too young)."
+cprint(f"{len(failed_symbols)} symbols failed (insufficient data).", "dark_grey")
+cprint(
+    f"{len(symbol_list) - len(rs_df) - len(failed_symbols)} symbols filtered (RS below {min_rs} or stock too young).",
+    "dark_grey",
 )
 cprint(f"{len(rs_df)} symbols passed.", "green")
 print_status(process_name, process_stage, False)
