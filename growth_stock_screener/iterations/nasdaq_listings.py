@@ -2,6 +2,7 @@ import requests
 import pandas as pd
 import json
 from requests.exceptions import Timeout
+from termcolor import cprint, colored
 from .utils import *
 
 # print header message to terminal
@@ -48,5 +49,5 @@ df = df[~(df["Symbol"].str.contains("/") | df["Symbol"].str.contains("\^"))]
 create_outfile(df, "nasdaq_listings")
 
 # print footer message to terminal
-print(f"{len(df)} symbols extracted.")
+cprint(f"{len(df)} symbols extracted.", "green")
 print_status(process_name, process_stage, False)

@@ -5,16 +5,16 @@ def print_status(process: str, stage: int, starting: bool) -> None:
     """Print a header or footer for each screen iteration."""
     if starting:
         print(
-            colored(f"\n****** Begin Stage {stage} [", "green"),
+            colored(f"\n****** Begin Stage {stage} [", "cyan"),
             colored(f"{process}", "white"),
-            colored("] ******\n", "green"),
+            colored("] ******\n", "cyan"),
             sep="",
         )
     else:
         print(
-            colored(f"\n****** Stage {stage} [", "green"),
+            colored(f"\n****** Stage {stage} [", "cyan"),
             colored(f"{process}", "white"),
-            colored("] Finished ******\n", "green"),
+            colored("] Finished ******\n", "cyan"),
             sep="",
         )
 
