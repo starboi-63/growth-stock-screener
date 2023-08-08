@@ -1,4 +1,5 @@
 from termcolor import colored, cprint
+from typing import Dict
 
 
 def print_status(process: str, stage: int, starting: bool) -> None:
@@ -17,6 +18,19 @@ def print_status(process: str, stage: int, starting: bool) -> None:
             colored("] Finished ******\n", "cyan"),
             sep="",
         )
+
+
+def print_minimums(criteria: Dict[str, int]) -> None:
+    """Print minimum values needed to pass screen iterations."""
+    for key, value in criteria.items():
+        print(
+            colored(f"Minimum {key} to pass: ", "cyan"),
+            colored(f"{value}", "red"),
+            sep="",
+        )
+
+    # add newline
+    print()
 
 
 def skip_message(symbol: str, message: str) -> str:
