@@ -6,7 +6,7 @@ from termcolor import cprint, colored
 print_banner()
 time = datetime.now()
 print(
-    colored("\t\t\t\t\tGrowth Stock Screener:", "cyan"),
+    colored("\t\t\t\t\t Growth Stock Screener:", "cyan"),
     colored(time.strftime("%m/%d/%Y %H:%M:%S"), "cyan"),
 )
 
