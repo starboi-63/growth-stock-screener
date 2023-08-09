@@ -47,7 +47,7 @@ def skip_message(symbol: str, message: str) -> str:
 
 def filter_message(symbol: str) -> str:
     """Return a custom message for logging when a stock is filtered out by a screen."""
-    return f"\n{symbol} filtered out.\n"
+    return colored(f"\n{symbol} filtered out.\n", "dark_grey")
 
 
 def message(message: str) -> str:
