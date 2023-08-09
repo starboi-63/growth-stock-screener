@@ -4,3 +4,4 @@ from .logs import *
 from .outfiles import *
 from .scraping import *
 from .sec_requests import *
+from .startup import *
