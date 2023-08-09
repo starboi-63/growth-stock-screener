@@ -2,9 +2,9 @@ import yfinance as yf
 import pandas as pd
 from termcolor import colored, cprint
 from .utils import *
+from ..settings import min_rs
 
 # constants
-min_rs = 90
 timeout = 30
 
 # print header message to terminal

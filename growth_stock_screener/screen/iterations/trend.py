@@ -7,6 +7,7 @@ from lxml import html
 from typing import Dict
 from tqdm import tqdm
 from .utils import *
+from ..settings import trend_settings
 
 # constants
 threads = 10  # number of concurrent Selenium browser instances to fetch data
@@ -129,6 +130,10 @@ def screen_trend(df_index: int) -> None:
         f"""\n{symbol} | 10-day SMA: ${sma_10}, 20-day SMA: ${sma_20}, 50-day SMA: ${sma_50}, 200-day SMA: ${sma_200}
         Current Price: ${price:.2f}, 52-week high: ${high_52_week}, Percent Below 52-week High: {percent_below_high:.0f}%\n"""
     )
+
+    # set up screen criteria based on global settings
+    # criteria = True
+    # if trend_settings["Price >= 50-day SMA"]
 
     # filter out stocks which are not in a stage-2 uptrend
     if (

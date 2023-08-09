@@ -1,4 +1,4 @@
-from iterations.utils import *
+from screen.iterations.utils import *
 from datetime import datetime
 from termcolor import cprint, colored
 
@@ -11,9 +11,9 @@ print(
 )
 
 # run screen iterations
-import iterations.nasdaq_listings
-import iterations.relative_strength
-import iterations.liquidity
+import screen.iterations.nasdaq_listings
+import screen.iterations.relative_strength
+import screen.iterations.liquidity
 
 # import iterations.trend
 # import iterations.revenue_growth
