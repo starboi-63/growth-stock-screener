@@ -152,12 +152,10 @@ def print_banner() -> None:
         colored(
             "              Targeting sequence initiated . . .",
             "dark_grey",
-            attrs=["bold"],
         ),
         colored(
             "\n                              Locking on to tickers [###-----]",
             "dark_grey",
-            attrs=["bold"],
         ),
         colored(
             "\n                                                                          .",
