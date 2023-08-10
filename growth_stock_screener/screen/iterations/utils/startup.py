@@ -17,7 +17,7 @@ min_volume = 100000  # minimum 50-day average volume to pass in shares
 trend_settings = {
     "Price >= 50-day SMA": True,
     "Price >= 200-day SMA": False,
-    "10-day SMA >= 20-day SMA": True,
+    "10-day SMA >= 20-day SMA": False,
     "20-day SMA >= 50-day SMA": True,
     "Price within 50pct of 52-week High": True,
 }
@@ -197,9 +197,14 @@ def print_banner() -> None:
 
 
 def print_heading() -> None:
+    """Print a heading displaying screen settings."""
+    main_color = "blue"
+    setting_name_color = "dark_grey"
+    setting_value_color = "white"
+
     main_time = " ".join(
         [
-            colored("Growth Stock Screener:", "blue", attrs=["bold"]),
+            colored("Growth Stock Screener:", main_color, attrs=["bold"]),
             "time goes here"
             # colored(time.strftime("%m/%d/%Y %H:%M:%S"), "white"),
         ]
@@ -207,39 +212,45 @@ def print_heading() -> None:
 
     rs = " ".join(
         [
-            colored("Minimum RS rating:", "dark_grey"),
-            colored(min_rs, "white"),
+            colored("Minimum RS rating:", setting_name_color),
+            colored(min_rs, setting_value_color),
         ]
     )
 
     liquidity_1 = " ".join(
         [
-            colored("Minimum Market Cap:", "dark_grey"),
-            colored(f"${min_market_cap:,.0f}", "white"),
+            colored("Minimum Market Cap:", setting_name_color),
+            colored(f"${min_market_cap:,.0f}", setting_value_color),
             "|",
-            colored("Minimum Price:", "dark_grey"),
-            colored(f"${min_price:,.2f}", "white"),
+            colored("Minimum Price:", setting_name_color),
+            colored(f"${min_price:,.2f}", setting_value_color),
         ]
     )
 
     liquidity_2 = " ".join(
         [
-            colored("Minimum 50-day Average Volume:", "dark_grey"),
-            colored(f"{min_volume:,.0f} shares", "white"),
+            colored("Minimum 50-day Average Volume:", setting_name_color),
+            colored(f"{min_volume:,.0f} shares", setting_value_color),
         ]
     )
 
     trend_1 = " ".join(
         [
-            colored("Price >= 50-day SMA:", "dark_grey"),
-            colored("Enabled", "green")
-            if trend_settings["Price >= 50-day SMA"]
-            else colored("Disabled", "red"),
+            colored("Price >= 50-day SMA:", setting_name_color),
+            status(trend_settings["Price >= 50-day SMA"]),
             "|",
-            colored("Price >= 200-day SMA:", "dark_grey"),
-            colored("Enabled", "green")
-            if trend_settings["Price >= 200-day SMA"]
-            else colored("Disabled", "red"),
+            colored("Price >= 200-day SMA:", setting_name_color),
+            status(trend_settings["Price >= 200-day SMA"]),
+        ]
+    )
+
+    trend_2 = " ".join(
+        [
+            colored("10-day SMA >= 20-day SMA:", setting_name_color),
+            status(trend_settings["10-day SMA >= 20-day SMA"]),
+            "|",
+            colored("20-day SMA >= 50-day SMA:", setting_name_color),
+            status(trend_settings["20-day SMA >= 50-day SMA"]),
         ]
     )
 
@@ -250,6 +261,12 @@ def print_heading() -> None:
     print("=[", liquidity_1, "]")
     print("=[", liquidity_2, "]")
     print("=[", trend_1, "]")
+    print("=[", trend_2, "]")
+
+
+def status(is_enabled: bool) -> str:
+    """Return a colored string denoting whether a setting is enabled or disabled."""
+    return colored("Enabled", "green") if is_enabled else colored("Disabled", "red")
 
 
 print_banner()
