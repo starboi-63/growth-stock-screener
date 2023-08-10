@@ -1,5 +1,6 @@
 from termcolor import cprint, colored
 from datetime import datetime
+from ...settings import *
 
 
 def print_banner() -> None:
@@ -170,6 +171,6 @@ def print_banner() -> None:
 
 def print_heading(time: datetime) -> None:
     print(
-        colored("\t\t\t Growth Stock Screener:", "blue", attrs=["bold"]),
-        colored(time.strftime("%m/%d/%Y %H:%M:%S"), "white", attrs=["bold"]),
+        colored("\t\t\t Growth Stock Screener:", "blue"),
+        colored(time.strftime("%m/%d/%Y %H:%M:%S"), "white"),
     )
