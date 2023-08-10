@@ -19,7 +19,7 @@ trend_settings = {
     "Price >= 200-day SMA": False,
     "10-day SMA >= 20-day SMA": False,
     "20-day SMA >= 50-day SMA": True,
-    "Price within 50pct of 52-week High": True,
+    "Price within 50% of 52-week High": True,
 }
 
 # Iteration 4: Revenue Growth
@@ -254,7 +254,16 @@ def print_heading() -> None:
         ]
     )
 
-    longest_length = len(liquidity_1)
+    trend_3 = " ".join(
+        [
+            colored("Price Within 50% of 52-week High:", setting_name_color),
+            status(trend_settings["Price within 50% of 52-week High"]),
+        ]
+    )
+
+    longest_length = max(
+        main_time, rs, liquidity_1, liquidity_2, trend_1, trend_2, trend_3, key=len
+    )
 
     print("=[", main_time, "]")
     print("=[", rs, "]")
@@ -262,6 +271,7 @@ def print_heading() -> None:
     print("=[", liquidity_2, "]")
     print("=[", trend_1, "]")
     print("=[", trend_2, "]")
+    print("=[", trend_3, "]")
 
 
 def status(is_enabled: bool) -> str:

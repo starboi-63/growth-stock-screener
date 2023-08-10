@@ -14,7 +14,7 @@ trend_settings = {
     "Price >= 200-day SMA": True,
     "10-day SMA >= 20-day SMA": True,
     "20-day SMA >= 50-day SMA": True,
-    "Price within 50pct of 52-week High": True,
+    "Price within 50% of 52-week High": True,
 }
 
 # Iteration 4: Revenue Growth
