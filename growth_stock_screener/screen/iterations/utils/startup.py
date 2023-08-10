@@ -16,7 +16,7 @@ min_volume = 100000  # minimum 50-day average volume to pass in shares
 # Iteration 3: Trend
 trend_settings = {
     "Price >= 50-day SMA": True,
-    "Price >= 200-day SMA": True,
+    "Price >= 200-day SMA": False,
     "10-day SMA >= 20-day SMA": True,
     "20-day SMA >= 50-day SMA": True,
     "Price within 50pct of 52-week High": True,
@@ -199,7 +199,7 @@ def print_banner() -> None:
 def print_heading() -> None:
     main_time = " ".join(
         [
-            colored("Growth Stock Screener:", "blue"),
+            colored("Growth Stock Screener:", "blue", attrs=["bold"]),
             "time goes here"
             # colored(time.strftime("%m/%d/%Y %H:%M:%S"), "white"),
         ]
@@ -225,7 +225,21 @@ def print_heading() -> None:
     liquidity_2 = " ".join(
         [
             colored("Minimum 50-day Average Volume:", "dark_grey"),
-            colored(f"{min_volume:,.0f} shares"),
+            colored(f"{min_volume:,.0f} shares", "white"),
+        ]
+    )
+
+    trend_1 = " ".join(
+        [
+            colored("Price >= 50-day SMA:", "dark_grey"),
+            colored("Enabled", "green")
+            if trend_settings["Price >= 50-day SMA"]
+            else colored("Disabled", "red"),
+            "|",
+            colored("Price >= 200-day SMA:", "dark_grey"),
+            colored("Enabled", "green")
+            if trend_settings["Price >= 200-day SMA"]
+            else colored("Disabled", "red"),
         ]
     )
 
@@ -235,6 +249,7 @@ def print_heading() -> None:
     print("=[", rs, "]")
     print("=[", liquidity_1, "]")
     print("=[", liquidity_2, "]")
+    print("=[", trend_1, "]")
 
 
 print_banner()
