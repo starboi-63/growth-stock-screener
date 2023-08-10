@@ -58,6 +58,3 @@ def print_banner() -> None:
     ]
 
     cprint("".join(banner), attrs=["bold"])
-
-
-print_banner()
