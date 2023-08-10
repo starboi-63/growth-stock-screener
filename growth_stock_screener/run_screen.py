@@ -5,10 +5,7 @@ from termcolor import cprint, colored
 # print banner
 print_banner()
 time = datetime.now()
-print(
-    colored("\t\t\t\t\t Growth Stock Screener:", "cyan"),
-    colored(time.strftime("%m/%d/%Y %H:%M:%S"), "cyan"),
-)
+print_heading(time)
 
 # run screen iterations
 import screen.iterations.nasdaq_listings
