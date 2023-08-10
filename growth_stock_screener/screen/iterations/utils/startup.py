@@ -3,31 +3,52 @@ from termcolor import cprint, colored
 
 def print_banner() -> None:
     """Print an ASCII art banner for the growth stock screener."""
-    banner = """                                                                                                                
-                                                                                                                            
-                                                                                         .    .!YGY                         
-                                                                                       ^BP      ^@B                         
-                                 :!!!!^~:  ^7J! ^77^    ^!!77^   .^7?^     !^    :!: ::7@P:::    #G :~7?!.                  
-                               :PG!::~B@! ^!!#@J!?#J  7BY~^^?&B^ ~~!&&:  .5@B    7@P ~~J@P~!^    ##77!7P@5           ~^     
-                              .#&.    P@^    5@^  .  ~@P     7@G    J@7 :Y^J@!   .&?   ~@Y      .#G    .&G      .^75#@J     
-                              !@G     P@^    5@:     J@Y     ~@B    ^@Y^5: .&#. .Y7    ~@Y      .&P    .&G   :7YB@@@@@J     
-                              :&@?. .^G@^    G@:     ^&@~   .P@!    .&@5.   7@5!J^     ~@B:.^^  :@P    :@#::~.  ?@@@B@P     
-                        :~~.   ^NVDA?!B@:    55.      ^5GY??YJ^      Y5.     5P~       .YBPJ!.  :G7     Y#P?^  7@@@? ^J.    
-                     ~AI&@@#?        ^@P        :7??7    ...               .^?J            .^J?...            7@@@Y         
-                  :J#@@#@@@@5  YB7^~7PJ.        G@@@@P.            ..:~!?5B&@#P^   ..^~7JPB&@#G##&BY~.       ~@@@B          
-               .7G@&5!^5@@@5   .~7!~^.    ^~^~7GROWTH@#7        YBBSTOCKS5J!^.  PBB##BBBG5J!:  7@@@@@#5~     B@@@!          
-             ^5&#5~. ^G@@@J            ~5B@@@B57^^P@@@@@B7.     ^!&@B~?7        ^?@@G7~         ?@@@&@@@G!  !@@@B           
-          .7B&P!.  .J@@@&7           ^G@@@BJ^.    :&@@5Y&@&Y^    J#@@&G? .^!?YPGGG&@@&7  .^7J5NET@@@B~Y&@@P:5@@@?           
-        :J##J:     AMZN?:     ..:::.^&@@&?         J@@B .~JB@BJ^ !?&@@?JB&@#GY7~^.!@@&?5B&@#PY7~^?#@7  :P@@&&@@@^           
-      .Y&G!       ..:^~!7JY5PPPGPPP5P@@@P      :   ^@@@^    5@@@B^ #@@@@G?^.      :@@@@@P7^       .^     7&@@@@#.           
-     ~#@5^^~!?Y5GGBGPP5YY?~^::..    ~@@@@!   ^5@5   #@@CRWD#PLTRJ: ?JYJ:          .?JY?:                  :^~!??            
-    ~@@@@@@@&ELF?~:. ~J#&&G~      .J&@@@@@#B#@@#J   B@@7:#@@G                                                               
-    :JYJ?7~:.          J@@@#    .?#@@#J^7J55Y?~.   .#@@! ^&@@P                                                              
-                       !@@@B  :Y&@@G7.              J5P^  ~#@@G:                                                            
-                       P@@@7~P@@BJ^                        :P@@&7                                                           
-                      ?@@@&#@#Y~                             7#@@G~                                                         
-                     ^&@@@GJ^                                 .7G@@B?:                                                      
-                      .^!~                                       :7YP57^                                                    
-                                                                                 
-    """
-    cprint(banner, "cyan")
+    banner = []
+    banner.append("\n")
+    banner.append("\n                              o")
+    banner.append("\n")
+    banner.append(
+        "\n        .                                                              ."
+    )
+    banner.append("\n                .")
+    banner.append("\n .")
+    banner.append(
+        "\n                                                                               o"
+    )
+    banner.append("\n     dBBBBBb dBBBBb   dBBBBP dB'dB'dB'dBBBBBBP dB',BP")
+    banner.append("\n                ,BP  dB',BP dB'dB'dB'         dB',BP  .")
+    banner.append("\n   dB' dBB' dBBBBP  dB',BP dB'dB'dB'   dBp   dBBBBP")
+    banner.append("\n  dB'  ,B' dBP BB  dB',BP dB'dB'dB'   dBP   dB',BP")
+    banner.append("\n dBBBBBB' dBP  BB dBBBBP dBBBBBBP    dBP   dB'.BP")
+    banner.append("\n")
+    banner.append(
+        "\n                                             dBBBBBP dBBBB BBBBBb   dBBBP  dBBBP  dBBB  ,BP"
+    )
+    banner.append(
+        "\n                                .                   dB'       ,BP                dB'BB ,BP"
+    )
+    banner.append(
+        "\n                   .               |       dBBBBBP dB'    dBBBBP  dBBP   dBBP   dB' BB,BP"
+    )
+    banner.append(
+        "\n                                 --o--        ,BP dB'    dBP BB  dBP    dBP    dB'  B,BP"
+    )
+    banner.append(
+        "\n                                   |     dBBBBBP dBBBBP dBP  BB dBBBBP dBBBBP dB'   BBP"
+    )
+    banner.append("\n")
+    banner.append(
+        "\n                                                                                  ."
+    )
+    banner.append("\n                      .")
+    banner.append("\n              o              Targeting sequence initiated . . .")
+    banner.append("\n                              Locking on to tickers [###-----]")
+    banner.append(
+        "\n                                                                          ."
+    )
+    banner.append("\n")
+
+    cprint("".join(banner), attrs=["bold"])
+
+
+print_banner()
