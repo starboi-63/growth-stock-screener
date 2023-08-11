@@ -7,6 +7,10 @@ print_banner()
 time = datetime.now()
 print_heading(time)
 
+# wait for user to press enter
+print_divider()
+input(colored("Press Enter to run screen . . .", "dark_grey"))
+
 # run screen iterations
 import screen.iterations.nasdaq_listings
 import screen.iterations.relative_strength

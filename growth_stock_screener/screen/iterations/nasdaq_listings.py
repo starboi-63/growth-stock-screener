@@ -8,7 +8,6 @@ from .utils import *
 # print header message to terminal
 process_name = "NASDAQ Listings"
 process_stage = 0
-print_divider()
 print_status(process_name, process_stage, True)
 
 # request nasdaq listing data
