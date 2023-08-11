@@ -201,14 +201,17 @@ def print_heading() -> None:
     main_color = "blue"
     setting_name_color = "dark_grey"
     setting_value_color = "white"
+    color_length = 9
+    bold_length = 4
 
     main_time = " ".join(
         [
             colored("Growth Stock Screener:", main_color, attrs=["bold"]),
-            "time goes here"
+            colored("time goes here", "white")
             # colored(time.strftime("%m/%d/%Y %H:%M:%S"), "white"),
         ]
     )
+    main_time_length = len(main_time) - (2 * color_length) - bold_length
 
     rs = " ".join(
         [
@@ -216,6 +219,7 @@ def print_heading() -> None:
             colored(min_rs, setting_value_color),
         ]
     )
+    rs_length = len(rs) - (2 * color_length)
 
     liquidity_1 = " ".join(
         [
@@ -226,6 +230,7 @@ def print_heading() -> None:
             colored(f"${min_price:,.2f}", setting_value_color),
         ]
     )
+    liquidity_1_length = len(liquidity_1) - (4 * color_length)
 
     liquidity_2 = " ".join(
         [
@@ -233,6 +238,7 @@ def print_heading() -> None:
             colored(f"{min_volume:,.0f} shares", setting_value_color),
         ]
     )
+    liquidity_2_length = len(liquidity_2) - (2 * color_length)
 
     trend_1 = " ".join(
         [
@@ -243,6 +249,7 @@ def print_heading() -> None:
             status(trend_settings["Price >= 200-day SMA"]),
         ]
     )
+    trend_1_length = len(trend_1) - (4 * color_length)
 
     trend_2 = " ".join(
         [
@@ -253,6 +260,7 @@ def print_heading() -> None:
             status(trend_settings["20-day SMA >= 50-day SMA"]),
         ]
     )
+    trend_2_length = len(trend_2) - (4 * color_length)
 
     trend_3 = " ".join(
         [
@@ -260,23 +268,30 @@ def print_heading() -> None:
             status(trend_settings["Price within 50% of 52-week High"]),
         ]
     )
+    trend_3_length = len(trend_3) - (2 * color_length)
 
-    longest_length = max(
-        main_time, rs, liquidity_1, liquidity_2, trend_1, trend_2, trend_3, key=len
-    )
+    lengths = [
+        main_time_length,
+        rs_length,
+        liquidity_1_length,
+        liquidity_2_length,
+        trend_1_length,
+        trend_2_length,
+        trend_3_length,
+    ]
+    longest_length = max(lengths)
 
-    print("=[", main_time, "]")
-    print("=[", rs, "]")
-    print("=[", liquidity_1, "]")
-    print("=[", liquidity_2, "]")
-    print("=[", trend_1, "]")
-    print("=[", trend_2, "]")
-    print("=[", trend_3, "]")
+    print("=[", append_spaces(main_time, (longest_length - main_time_length)), "]")
 
 
 def status(is_enabled: bool) -> str:
     """Return a colored string denoting whether a setting is enabled or disabled."""
     return colored("Enabled", "green") if is_enabled else colored("Disabled", "red")
+
+
+def append_spaces(input: str, n: int) -> str:
+    """Append whitespace to the end of a string."""
+    return "".join([input, "".join([" " for i in range(n)])])
 
 
 print_banner()
