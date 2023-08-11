@@ -201,8 +201,8 @@ def print_heading() -> None:
     main_color = "blue"
     setting_name_color = "dark_grey"
     setting_value_color = "light_grey"
-    color_length = 9
-    bold_length = 4
+    color_len = 9
+    bold_len = 4
 
     main_time = " ".join(
         [
@@ -211,7 +211,7 @@ def print_heading() -> None:
             # colored(time.strftime("%m/%d/%Y %H:%M:%S"), "white"),
         ]
     )
-    main_time_length = len(main_time) - (2 * color_length) - bold_length
+    main_time_len = len(main_time) - (2 * color_len) - bold_len
 
     rs = " ".join(
         [
@@ -222,7 +222,7 @@ def print_heading() -> None:
             colored(protected_rs, setting_value_color),
         ]
     )
-    rs_length = len(rs) - (4 * color_length)
+    rs_len = len(rs) - (4 * color_len)
 
     liquidity_1 = " ".join(
         [
@@ -233,7 +233,7 @@ def print_heading() -> None:
             colored(f"${min_price:,.2f}", setting_value_color),
         ]
     )
-    liquidity_1_length = len(liquidity_1) - (4 * color_length)
+    liquidity_1_len = len(liquidity_1) - (4 * color_len)
 
     liquidity_2 = " ".join(
         [
@@ -241,7 +241,7 @@ def print_heading() -> None:
             colored(f"{min_volume:,.0f} shares", setting_value_color),
         ]
     )
-    liquidity_2_length = len(liquidity_2) - (2 * color_length)
+    liquidity_2_len = len(liquidity_2) - (2 * color_len)
 
     trend_1 = " ".join(
         [
@@ -252,7 +252,7 @@ def print_heading() -> None:
             status(trend_settings["Price >= 200-day SMA"]),
         ]
     )
-    trend_1_length = len(trend_1) - (4 * color_length)
+    trend_1_len = len(trend_1) - (4 * color_len)
 
     trend_2 = " ".join(
         [
@@ -263,7 +263,7 @@ def print_heading() -> None:
             status(trend_settings["20-day SMA >= 50-day SMA"]),
         ]
     )
-    trend_2_length = len(trend_2) - (4 * color_length)
+    trend_2_len = len(trend_2) - (4 * color_len)
 
     trend_3 = " ".join(
         [
@@ -271,7 +271,7 @@ def print_heading() -> None:
             status(trend_settings["Price within 50% of 52-week High"]),
         ]
     )
-    trend_3_length = len(trend_3) - (2 * color_length)
+    trend_3_len = len(trend_3) - (2 * color_len)
 
     revenue = " ".join(
         [
@@ -279,27 +279,27 @@ def print_heading() -> None:
             colored(min_growth_percent, setting_value_color),
         ]
     )
-    revenue_length = len(revenue) - (2 * color_length)
+    revenue_len = len(revenue) - (2 * color_len)
 
     lengths = [
-        main_time_length,
-        rs_length,
-        liquidity_1_length,
-        liquidity_2_length,
-        trend_1_length,
-        trend_2_length,
-        trend_3_length,
+        main_time_len,
+        rs_len,
+        liquidity_1_len,
+        liquidity_2_len,
+        trend_1_len,
+        trend_2_len,
+        trend_3_len,
     ]
-    max_length = max(lengths)
+    max_len = max(lengths)
 
-    print("=[", append_spaces(main_time, max_length - main_time_length), "]")
-    print("=[", append_spaces(rs, max_length - rs_length), "]")
-    print("=[", append_spaces(liquidity_1, max_length - liquidity_1_length), "]")
-    print("=[", append_spaces(liquidity_2, max_length - liquidity_2_length), "]")
-    print("=[", append_spaces(trend_1, max_length - trend_1_length), "]")
-    print("=[", append_spaces(trend_2, max_length - trend_2_length), "]")
-    print("=[", append_spaces(trend_3, max_length - trend_3_length), "]")
-    print("=[", append_spaces(revenue, max_length - revenue_length), "]")
+    print("         [", append_spaces(main_time, max_len - main_time_len), "]")
+    print("--------=[", append_spaces(rs, max_len - rs_len), "]")
+    print("--------=[", append_spaces(liquidity_1, max_len - liquidity_1_len), "]")
+    print("--------=[", append_spaces(liquidity_2, max_len - liquidity_2_len), "]")
+    print("--------=[", append_spaces(trend_1, max_len - trend_1_len), "]")
+    print("--------=[", append_spaces(trend_2, max_len - trend_2_len), "]")
+    print("--------=[", append_spaces(trend_3, max_len - trend_3_len), "]")
+    print("--------=[", append_spaces(revenue, max_len - revenue_len), "]")
     print()
     print(
         colored(
