@@ -7,13 +7,13 @@ def print_status(process: str, stage: int, starting: bool) -> None:
     if starting:
         print(
             colored(f"\n[$] ", "blue", attrs=["bold"]),
-            colored(f"Begin Stage {stage} [{process}]\n", attrs=["bold"]),
+            colored(f"Begin Stage {stage} [{process}]\n"),
             sep="",
         )
     else:
         print(
             colored(f"\n[$] ", "blue", attrs=["bold"]),
-            colored(f"Stage {stage} [{process}] Finished\n", attrs=["bold"]),
+            colored(f"Stage {stage} [{process}] Finished\n"),
             sep="",
         )
 

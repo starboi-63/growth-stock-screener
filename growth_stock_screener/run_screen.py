@@ -8,9 +8,9 @@ time = datetime.now()
 print_heading(time)
 
 # run screen iterations
-# import screen.iterations.nasdaq_listings
-# import screen.iterations.relative_strength
-# import screen.iterations.liquidity
+import screen.iterations.nasdaq_listings
+import screen.iterations.relative_strength
+import screen.iterations.liquidity
 
 # import iterations.trend
 # import iterations.revenue_growth

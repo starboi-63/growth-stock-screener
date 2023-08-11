@@ -1,33 +1,6 @@
 from termcolor import cprint, colored
 from datetime import datetime
-
-# from ...settings import *
-
-# modify these values as desired
-
-# Iteration 1: Relative Strength
-min_rs = 90  # minimum RS rating to pass (must be an integer from 0-100)
-
-# Iteration 2: Liquidity
-min_market_cap = 1000000000  # minimum market cap to pass in USD
-min_price = 10  # minimum price to pass in USD
-min_volume = 100000  # minimum 50-day average volume to pass in shares
-
-# Iteration 3: Trend
-trend_settings = {
-    "Price >= 50-day SMA": True,
-    "Price >= 200-day SMA": True,
-    "10-day SMA >= 20-day SMA": True,
-    "20-day SMA >= 50-day SMA": True,
-    "Price within 50% of 52-week High": True,
-}
-
-# Iteration 4: Revenue Growth
-min_growth_percent = 25
-protected_rs = 97
-
-# Iteration 5: Institutional Accumulation
-# (no parameters to modify)
+from ...settings import *
 
 
 def print_banner() -> None:
@@ -196,7 +169,7 @@ def print_banner() -> None:
     print("".join(banner))
 
 
-def print_heading() -> None:
+def print_heading(time: datetime) -> None:
     """Print a heading displaying screen settings."""
     main_color = "blue"
     setting_name_color = "dark_grey"
@@ -207,8 +180,7 @@ def print_heading() -> None:
     main_time = " ".join(
         [
             colored("Growth Stock Screener:", main_color, attrs=["bold"]),
-            colored("time goes here", "white")
-            # colored(time.strftime("%m/%d/%Y %H:%M:%S"), "white"),
+            colored(time.strftime("%m/%d/%Y %H:%M:%S"), "white"),
         ]
     )
     main_time_len = len(main_time) - (2 * color_len) - bold_len
@@ -317,7 +289,3 @@ def status(is_enabled: bool) -> str:
 def append_spaces(input: str, n: int) -> str:
     """Append whitespace to the end of a string."""
     return "".join([input, "".join([" " for i in range(n)])])
-
-
-print_banner()
-print_heading()
