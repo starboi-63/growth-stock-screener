@@ -300,6 +300,13 @@ def print_heading() -> None:
     print("=[", append_spaces(trend_2, max_length - trend_2_length), "]")
     print("=[", append_spaces(trend_3, max_length - trend_3_length), "]")
     print("=[", append_spaces(revenue, max_length - revenue_length), "]")
+    print()
+    print(
+        colored(
+            "Change screen settings in growth_stock_screener/screen/settings.py",
+            "dark_grey",
+        )
+    )
 
 
 def status(is_enabled: bool) -> str:
