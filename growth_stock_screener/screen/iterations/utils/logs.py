@@ -23,7 +23,7 @@ def print_minimums(criteria: Dict[str, int]) -> None:
     for key, value in criteria.items():
         print(
             colored(f"Minimum {key} to pass: ", "dark_grey"),
-            colored(f"{value}", "white"),
+            colored(f"{value}", "light_grey"),
             sep="",
         )
 

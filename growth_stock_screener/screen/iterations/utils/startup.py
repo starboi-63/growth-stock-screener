@@ -16,8 +16,8 @@ min_volume = 100000  # minimum 50-day average volume to pass in shares
 # Iteration 3: Trend
 trend_settings = {
     "Price >= 50-day SMA": True,
-    "Price >= 200-day SMA": False,
-    "10-day SMA >= 20-day SMA": False,
+    "Price >= 200-day SMA": True,
+    "10-day SMA >= 20-day SMA": True,
     "20-day SMA >= 50-day SMA": True,
     "Price within 50% of 52-week High": True,
 }
@@ -200,7 +200,7 @@ def print_heading() -> None:
     """Print a heading displaying screen settings."""
     main_color = "blue"
     setting_name_color = "dark_grey"
-    setting_value_color = "white"
+    setting_value_color = "light_grey"
     color_length = 9
     bold_length = 4
 
@@ -215,11 +215,14 @@ def print_heading() -> None:
 
     rs = " ".join(
         [
-            colored("Minimum RS rating:", setting_name_color),
+            colored("Minimum RS Rating:", setting_name_color),
             colored(min_rs, setting_value_color),
+            "|",
+            colored("Minimum RS Rating to Bypass Revenue Screen:", setting_name_color),
+            colored(protected_rs, setting_value_color),
         ]
     )
-    rs_length = len(rs) - (2 * color_length)
+    rs_length = len(rs) - (4 * color_length)
 
     liquidity_1 = " ".join(
         [
@@ -270,6 +273,14 @@ def print_heading() -> None:
     )
     trend_3_length = len(trend_3) - (2 * color_length)
 
+    revenue = " ".join(
+        [
+            colored("Minimum Quarterly Revenue Growth:", setting_name_color),
+            colored(min_growth_percent, setting_value_color),
+        ]
+    )
+    revenue_length = len(revenue) - (2 * color_length)
+
     lengths = [
         main_time_length,
         rs_length,
@@ -279,9 +290,16 @@ def print_heading() -> None:
         trend_2_length,
         trend_3_length,
     ]
-    longest_length = max(lengths)
+    max_length = max(lengths)
 
-    print("=[", append_spaces(main_time, (longest_length - main_time_length)), "]")
+    print("=[", append_spaces(main_time, max_length - main_time_length), "]")
+    print("=[", append_spaces(rs, max_length - rs_length), "]")
+    print("=[", append_spaces(liquidity_1, max_length - liquidity_1_length), "]")
+    print("=[", append_spaces(liquidity_2, max_length - liquidity_2_length), "]")
+    print("=[", append_spaces(trend_1, max_length - trend_1_length), "]")
+    print("=[", append_spaces(trend_2, max_length - trend_2_length), "]")
+    print("=[", append_spaces(trend_3, max_length - trend_3_length), "]")
+    print("=[", append_spaces(revenue, max_length - revenue_length), "]")
 
 
 def status(is_enabled: bool) -> str:
