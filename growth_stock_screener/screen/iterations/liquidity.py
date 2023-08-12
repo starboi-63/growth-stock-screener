@@ -72,7 +72,7 @@ async def screen_liquidity(df_index: int, session: ClientSession) -> None:
 
     # print volume info to console
     logs.append(
-        f"\n{symbol} | Market Cap: ${market_cap / 1000000000:.1f}B | Price: ${price:.2f} | 50-day Avg. Volume: {volume} shares\n"
+        f"\n{symbol} | Market Cap: ${market_cap / 1000000000:.1f}B | Price: ${price:,.2f} | 50-day Avg. Volume: {volume:,.0f} shares\n"
     )
 
     # filter out illiquid stocks

@@ -22,7 +22,7 @@ df_index = 0
 
 # extract symbols from dataframe
 symbol_list = df["Symbol"].values.tolist()
-symbol_list = ["NVDA", "FLSR", "AI", "PLTR"]
+symbol_list = ["NVDA", "FLSR", "AI", "PLTR", "ELF", "SYM", "IONQ"]
 
 # download all historical price data at once
 print("Fetching historical price data . . .\n")

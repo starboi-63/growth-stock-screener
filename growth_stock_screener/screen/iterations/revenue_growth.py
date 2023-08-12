@@ -15,9 +15,15 @@ print_status(process_name, process_stage, True)
 print_minimums(
     {
         "quarterly revenue growth": f"{min_growth_percent}%",
-        "RS rating": f"{protected_rs}",
-    }
+    },
+    newline=False,
 )
+print(
+    colored("Minimum RS rating to bypass revenue screen:", "dark_grey"),
+    colored(protected_rs, "light_grey"),
+    "\n",
+)
+
 
 # logging data (printed to console after screen finishes)
 logs = []
@@ -30,7 +36,7 @@ successful_symbols = []
 failed_symbols = []
 
 # fetch revenue data for all symbols
-symbol_list = list(df["Symbol"])
+symbol_list = [] if ("Symbol" not in df) else list(df["Symbol"])
 revenue_data = fetch_revenues_bulk(symbol_list)
 
 
