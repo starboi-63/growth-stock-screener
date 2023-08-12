@@ -1,6 +1,7 @@
 import pandas as pd
 from typing import Dict
 from tqdm import tqdm
+from termcolor import cprint, colored
 from .utils import *
 
 # constants
@@ -11,7 +12,9 @@ protected_rs = 97
 process_name = "Revenue Growth"
 process_stage = 4
 print_status(process_name, process_stage, True)
-print(f"Minimum quarterly revenue growth to pass: {min_growth_percent}%\n")
+print_minimums(
+    {"quarterly revenue growth (%)": min_growth_percent, "RS rating": protected_rs}
+)
 
 # logging data (printed to console after screen finishes)
 logs = []
@@ -160,9 +163,13 @@ create_outfile(screened_df, "revenue_growth")
 print("".join(logs))
 
 # print footer message to terminal
-print(f"{len(failed_symbols)} symbols failed (insufficient revenue reports).")
-print(
-    f"{len(df) - len(screened_df) - len(failed_symbols)} symbols filtered (revenue growth too low or foreign stock)."
+cprint(
+    f"{len(failed_symbols)} symbols failed (insufficient revenue reports).", "dark_grey"
 )
-print(f"{len(screened_df)} symbols passed.")
+cprint(
+    f"{len(df) - len(screened_df) - len(failed_symbols)} symbols filtered (revenue growth too low or foreign stock).",
+    "dark_grey",
+)
+cprint(f"{len(screened_df)} symbols passed.", "green")
 print_status(process_name, process_stage, False)
+print_divider()

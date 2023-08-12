@@ -21,8 +21,9 @@ print("Fetching stock symbols from NASDAQ . . .")
 try:
     response = requests.get(url, headers=headers, timeout=15)
 except Timeout:
-    print(
-        "Failed to download stock-list from NASDAQ (are you connected to the internet?)"
+    cprint(
+        "Failed to download stock-list from NASDAQ (are you connected to the internet?)",
+        "red",
     )
     raise SystemExit
 
