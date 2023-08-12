@@ -22,7 +22,7 @@ def print_status(process: str, stage: int, starting: bool) -> None:
         )
 
 
-def print_minimums(criteria: Dict[str, int]) -> None:
+def print_minimums(criteria: Dict[str, str]) -> None:
     """Print minimum values needed to pass screen iterations."""
     for key, value in criteria.items():
         print(

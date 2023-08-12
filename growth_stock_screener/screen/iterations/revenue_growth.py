@@ -13,7 +13,10 @@ process_name = "Revenue Growth"
 process_stage = 4
 print_status(process_name, process_stage, True)
 print_minimums(
-    {"quarterly revenue growth (%)": min_growth_percent, "RS rating": protected_rs}
+    {
+        "quarterly revenue growth": f"{min_growth_percent}%",
+        "RS rating": f"{protected_rs}",
+    }
 )
 
 # logging data (printed to console after screen finishes)
