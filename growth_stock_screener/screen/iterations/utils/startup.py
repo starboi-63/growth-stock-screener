@@ -248,7 +248,7 @@ def print_heading(time: datetime) -> None:
     revenue = " ".join(
         [
             colored("Minimum Quarterly Revenue Growth:", setting_name_color),
-            colored(min_growth_percent, setting_value_color),
+            colored(f"{min_growth_percent}%", setting_value_color),
         ]
     )
     revenue_len = len(revenue) - (2 * color_len)
