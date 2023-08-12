@@ -15,8 +15,8 @@ input(colored("Press Enter to run screen . . .", "dark_grey"))
 import screen.iterations.nasdaq_listings
 import screen.iterations.relative_strength
 import screen.iterations.liquidity
+import screen.iterations.trend
 
-# import iterations.trend
 # import iterations.revenue_growth
 # import iterations.institutional_accumulation
 

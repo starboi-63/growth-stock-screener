@@ -6,6 +6,7 @@ import requests
 from lxml import html
 from typing import Dict
 from tqdm import tqdm
+from termcolor import cprint, colored
 from .utils import *
 from ..settings import trend_settings
 
@@ -22,6 +23,39 @@ high_52_week_xpath = "/html/body/div[2]/div/div[1]/div[3]/div/div/div[1]/div[5]/
 process_name = "Trend"
 process_stage = 3
 print_status(process_name, process_stage, True)
+
+# print trend iteration settings to terminal
+setting_name_color = "dark_grey"
+setting_value_color = "light_grey"
+
+trend_1 = " ".join(
+    [
+        colored("Price >= 50-day SMA:", setting_name_color),
+        status(trend_settings["Price >= 50-day SMA"]),
+        "|",
+        colored("Price >= 200-day SMA:", setting_name_color),
+        status(trend_settings["Price >= 200-day SMA"]),
+    ]
+)
+
+trend_2 = " ".join(
+    [
+        colored("10-day SMA >= 20-day SMA:", setting_name_color),
+        status(trend_settings["10-day SMA >= 20-day SMA"]),
+        "|",
+        colored("20-day SMA >= 50-day SMA:", setting_name_color),
+        status(trend_settings["20-day SMA >= 50-day SMA"]),
+    ]
+)
+
+trend_3 = " ".join(
+    [
+        colored("Price Within 50% of 52-week High:", setting_name_color),
+        status(trend_settings["Price within 50% of 52-week High"]),
+    ]
+)
+
+print("\n".join([trend_1, trend_2, trend_3]))
 
 # logging data (printed to console after screen finishes)
 logs = []
@@ -132,17 +166,20 @@ def screen_trend(df_index: int) -> None:
     )
 
     # set up screen criteria based on global settings
-    # criteria = True
-    # if trend_settings["Price >= 50-day SMA"]
+    fails = False
+    if trend_settings["Price >= 50-day SMA"]:
+        fails = fails or (price < sma_50)
+    if trend_settings["Price >= 200-day SMA"]:
+        fails = fails or (price < sma_200)
+    if trend_settings["10-day SMA >= 20-day SMA"]:
+        fails = fails or (sma_10 < sma_20)
+    if trend_settings["20-day SMA >= 50-day SMA"]:
+        fails = fails or (sma_20 < sma_50)
+    if trend_settings["Price within 50% of 52-week High"]:
+        fails = fails or (percent_below_high > 50)
 
     # filter out stocks which are not in a stage-2 uptrend
-    if (
-        (price < sma_50)
-        or (price < sma_200)
-        or (sma_10 < sma_20)
-        or (sma_20 < sma_50)
-        or (percent_below_high > 50)
-    ):
+    if fails:
         logs.append(filter_message(symbol))
         return
 
@@ -179,9 +216,11 @@ create_outfile(screened_df, "trend")
 print("".join(logs))
 
 # print footer message to terminal
-print(f"{len(failed_symbols)} symbols failed (insufficient data).")
-print(
-    f"{len(df) - len(screened_df) - len(failed_symbols)} symbols filtered (not in stage-2 uptrend)."
+cprint(f"{len(failed_symbols)} symbols failed (insufficient data).", "dark_grey")
+cprint(
+    f"{len(df) - len(screened_df) - len(failed_symbols)} symbols filtered (not in stage-2 uptrend).",
+    "dark_grey",
 )
-print(f"{len(screened_df)} symbols passed.")
+cprint(f"{len(screened_df)} symbols passed.", "green")
 print_status(process_name, process_stage, False)
+print_divider()

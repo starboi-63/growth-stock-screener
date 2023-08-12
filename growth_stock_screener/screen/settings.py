@@ -9,6 +9,7 @@ min_price = 10  # minimum price to pass in USD
 min_volume = 100000  # minimum 50-day average volume to pass in shares
 
 # Iteration 3: Trend
+# set values to 'True' or 'False' to enable or disable checks
 trend_settings = {
     "Price >= 50-day SMA": True,
     "Price >= 200-day SMA": True,
@@ -18,8 +19,8 @@ trend_settings = {
 }
 
 # Iteration 4: Revenue Growth
-min_growth_percent = 25
-protected_rs = 97
+min_growth_percent = 25  # minimum revenue growth percent for a quarter compared to the same quarter 1 year ago
+protected_rs = 97  # minimum RS rating to bypass revenue screen iteration (see README)
 
 # Iteration 5: Institutional Accumulation
 # (no parameters to modify)
