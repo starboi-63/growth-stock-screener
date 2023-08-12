@@ -5,6 +5,7 @@ import threading
 import requests
 from tqdm import tqdm
 from typing import Dict
+from termcolor import colored, cprint
 from .utils import *
 
 # constants
@@ -103,7 +104,12 @@ def screen_institutional_accumulation(df_index: int) -> None:
     # check for failed GET requests
     if holdings_data is None:
         logs.append(
-            message(f"No institutional inflow/outflow data found for {symbol} . . .")
+            message(
+                colored(
+                    f"No institutional inflow/outflow data found for {symbol} . . .",
+                    "red",
+                )
+            )
         )
         failed_symbols.append(symbol)
     else:
@@ -118,7 +124,12 @@ def screen_institutional_accumulation(df_index: int) -> None:
         # mark stocks which are under institutional accumulation
         if net_inflows >= 0:
             logs.append(
-                message(f"{symbol} was under institutional accumulation last quarter.")
+                message(
+                    colored(
+                        f"{symbol} was under institutional accumulation last quarter.",
+                        "green",
+                    )
+                )
             )
             symbols_under_accumulation.append(symbol)
 
@@ -160,12 +171,15 @@ create_outfile(screened_df, "institutional_accumulation")
 print("".join(logs))
 
 # print footer message to terminal
-print(f"{len(failed_symbols)} symbols failed (insufficient data).")
-print(
-    f"{len(symbols_under_accumulation)} symbols were under institutional accumulation last quarter."
+cprint(f"{len(failed_symbols)} symbols failed (insufficient data).", "dark_grey")
+cprint(
+    f"{len(df) - len(failed_symbols) - len(symbols_under_accumulation)} symbols were not under institutional accumulation last quarter.",
+    "dark_grey",
 )
-print(
-    f"{len(df) - len(failed_symbols) - len(symbols_under_accumulation)} symbols were not under institutional accumulation last quarter."
+cprint(
+    f"{len(symbols_under_accumulation)} symbols were under institutional accumulation last quarter.",
+    "green",
 )
-print(f"{len(screened_df)} symbols passed.")
+cprint(f"{len(screened_df)} symbols passed.", "green")
 print_status(process_name, process_stage, False)
+print_divider()
