@@ -265,13 +265,13 @@ def print_heading(time: datetime) -> None:
     max_len = max(lengths)
 
     print("         [", append_spaces(main_time, max_len - main_time_len), "]")
-    print("--------=[", append_spaces(rs, max_len - rs_len), "]")
-    print("--------=[", append_spaces(liquidity_1, max_len - liquidity_1_len), "]")
-    print("--------=[", append_spaces(liquidity_2, max_len - liquidity_2_len), "]")
-    print("--------=[", append_spaces(trend_1, max_len - trend_1_len), "]")
-    print("--------=[", append_spaces(trend_2, max_len - trend_2_len), "]")
-    print("--------=[", append_spaces(trend_3, max_len - trend_3_len), "]")
-    print("--------=[", append_spaces(revenue, max_len - revenue_len), "]")
+    print("+-------=[", append_spaces(rs, max_len - rs_len), "]")
+    print("+-------=[", append_spaces(liquidity_1, max_len - liquidity_1_len), "]")
+    print("+-------=[", append_spaces(liquidity_2, max_len - liquidity_2_len), "]")
+    print("+-------=[", append_spaces(trend_1, max_len - trend_1_len), "]")
+    print("+-------=[", append_spaces(trend_2, max_len - trend_2_len), "]")
+    print("+-------=[", append_spaces(trend_3, max_len - trend_3_len), "]")
+    print("+-------=[", append_spaces(revenue, max_len - revenue_len), "]")
     print()
     print(
         colored(

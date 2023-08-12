@@ -51,7 +51,7 @@ def revenue_growth(timeframe: str, df: pd.DataFrame) -> Dict[str, float]:
     prev_revenue = extract_revenue(prev_timeframe, df)
 
     # handle cases where data is unavailable
-    if (revenue is None) or (prev_revenue is None):
+    if (revenue is None) or (prev_revenue is None) or (prev_revenue == 0):
         return None
 
     # return a dictionary containing revenue growth data

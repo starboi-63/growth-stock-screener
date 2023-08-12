@@ -19,16 +19,13 @@ import screen.iterations.trend
 import screen.iterations.revenue_growth
 import screen.iterations.institutional_accumulation
 
+# open screen results as a DataFrame
+final_iteration = "institutional_accumulation"
+df = open_outfile(final_iteration)
 
-# # open screen results as a DataFrame
-# final_iteration = "institutional_accumulation"
-# df = open_outfile(final_iteration)
-
-
+# create a .csv outfile
 time_string = time.strftime("%Y-%m-%d %H-%M-%S")
+outfile_name = f"screen_results {time_string}.csv"
+df.to_csv(outfile_name)
 
-# # create a .csv outfile
-# outfile_name = f"screen_results {time_string}.csv"
-# df.to_csv(outfile_name)
-
-# print(f"\nDONE! (created {outfile_name})")
+cprint(f"\nDONE! (created {outfile_name})", "green", attrs=["bold"])

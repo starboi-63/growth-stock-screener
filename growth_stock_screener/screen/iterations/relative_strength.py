@@ -1,6 +1,7 @@
 import yfinance as yf
 import pandas as pd
 from termcolor import colored, cprint
+from tqdm import tqdm
 from .utils import *
 from ..settings import min_rs
 
@@ -11,7 +12,7 @@ timeout = 30
 process_name = "Relative Strength"
 process_stage = 1
 print_status(process_name, process_stage, True)
-print_minimums({"relative strength": min_rs})
+print_minimums({"RS rating": min_rs})
 
 # logging data (printed to console after screen finishes)
 logs = []
@@ -22,7 +23,6 @@ df_index = 0
 
 # extract symbols from dataframe
 symbol_list = df["Symbol"].values.tolist()
-symbol_list = ["NVDA", "FLSR", "AI", "PLTR", "ELF", "SYM", "IONQ"]
 
 # download all historical price data at once
 print("Fetching historical price data . . .\n")
@@ -33,10 +33,9 @@ price_df = tickers["Adj Close"]
 successful_symbols = []
 failed_symbols = []
 
-# add empty line
-print()
-
-for symbol in price_df:
+# run screen
+print("\nComputing RS ratings . . .")
+for symbol in tqdm(price_df):
     col = price_df[symbol]
     end_index = len(col) - 1
 
