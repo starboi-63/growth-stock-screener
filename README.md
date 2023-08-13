@@ -2,7 +2,7 @@
 
 An automated stock screening system which isolates and ranks top-tier growth companies based on relative strength, liquidity, trend, revenue growth, and institutional demand.
 
-![Growth Stock Screener](screenshot.png)
+![Growth Stock Screener](screenshots/screenshot_1.png)
 
 ## Usage
 
