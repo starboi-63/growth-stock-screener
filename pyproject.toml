@@ -15,4 +15,5 @@ dependencies = [
     "pandas",
     "yfinance",
     "aiohttp",
+    "termcolor",
 ]

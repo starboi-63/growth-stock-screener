@@ -2,11 +2,13 @@ import requests
 import pandas as pd
 import json
 from requests.exceptions import Timeout
+from termcolor import cprint, colored
 from .utils import *
 
 # print header message to terminal
 process_name = "NASDAQ Listings"
 process_stage = 0
+print_divider()
 print_status(process_name, process_stage, True)
 
 # request nasdaq listing data
@@ -15,12 +17,14 @@ headers = {
     "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:109.0) Gecko/20100101 Firefox/115.0"
 }
 
+print("Fetching stock symbols from NASDAQ . . .")
 # extract symbols from response
 try:
     response = requests.get(url, headers=headers, timeout=15)
 except Timeout:
-    print(
-        "Failed to download stock-list from NASDAQ (are you connected to the internet?)"
+    cprint(
+        "Failed to download stock-list from NASDAQ (are you connected to the internet?)",
+        "red",
     )
     raise SystemExit
 
@@ -48,5 +52,6 @@ df = df[~(df["Symbol"].str.contains("/") | df["Symbol"].str.contains("\^"))]
 create_outfile(df, "nasdaq_listings")
 
 # print footer message to terminal
-print(f"{len(df)} symbols extracted.")
+cprint(f"{len(df)} symbols extracted.", "green")
 print_status(process_name, process_stage, False)
+print_divider()

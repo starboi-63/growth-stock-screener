@@ -1,6 +1,7 @@
 import pandas as pd
 from typing import Dict
 from tqdm import tqdm
+from termcolor import cprint, colored
 from .utils import *
 
 # constants
@@ -11,7 +12,18 @@ protected_rs = 97
 process_name = "Revenue Growth"
 process_stage = 4
 print_status(process_name, process_stage, True)
-print(f"Minimum quarterly revenue growth to pass: {min_growth_percent}%\n")
+print_minimums(
+    {
+        "quarterly revenue growth": f"{min_growth_percent}%",
+    },
+    newline=False,
+)
+print(
+    colored("Minimum RS rating to bypass revenue screen:", "dark_grey"),
+    colored(protected_rs, "light_grey"),
+    "\n",
+)
+
 
 # logging data (printed to console after screen finishes)
 logs = []
@@ -24,7 +36,7 @@ successful_symbols = []
 failed_symbols = []
 
 # fetch revenue data for all symbols
-symbol_list = list(df["Symbol"])
+symbol_list = [] if ("Symbol" not in df) else list(df["Symbol"])
 revenue_data = fetch_revenues_bulk(symbol_list)
 
 
@@ -39,7 +51,7 @@ def revenue_growth(timeframe: str, df: pd.DataFrame) -> Dict[str, float]:
     prev_revenue = extract_revenue(prev_timeframe, df)
 
     # handle cases where data is unavailable
-    if (revenue is None) or (prev_revenue is None):
+    if (revenue is None) or (prev_revenue is None) or (prev_revenue == 0):
         return None
 
     # return a dictionary containing revenue growth data
@@ -160,9 +172,13 @@ create_outfile(screened_df, "revenue_growth")
 print("".join(logs))
 
 # print footer message to terminal
-print(f"{len(failed_symbols)} symbols failed (insufficient revenue reports).")
-print(
-    f"{len(df) - len(screened_df) - len(failed_symbols)} symbols filtered (revenue growth too low or foreign stock)."
+cprint(
+    f"{len(failed_symbols)} symbols failed (insufficient revenue reports).", "dark_grey"
 )
-print(f"{len(screened_df)} symbols passed.")
+cprint(
+    f"{len(df) - len(screened_df) - len(failed_symbols)} symbols filtered (revenue growth too low or foreign stock).",
+    "dark_grey",
+)
+cprint(f"{len(screened_df)} symbols passed.", "green")
 print_status(process_name, process_stage, False)
+print_divider()

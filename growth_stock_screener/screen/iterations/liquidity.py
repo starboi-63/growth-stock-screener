@@ -3,23 +3,23 @@ import asyncio
 import aiohttp
 from aiohttp.client import ClientSession
 from tqdm.asyncio import tqdm_asyncio
+from termcolor import cprint, colored
 from .utils import *
+from ..settings import min_market_cap, min_price, min_volume
 
 # constants
-min_market_cap = 1000000000
-min_price = 10
-min_volume = 100000
 volume_xpath = "/html/body/main/div/div[2]/div[2]/div/div[2]/div/div/div/div[2]/div/div[1]/barchart-table-scroll/table/tbody/tr[3]/td[5]"
 
 # print header message to terminal
 process_name = "Liquidity"
 process_stage = 2
 print_status(process_name, process_stage, True)
-print(
-    f"""Minimum market cap to pass: ${min_market_cap / 1000000000:.0f}B
-Minimum price to pass: ${min_price:.2f}
-Minimum average volume to pass: {min_volume} shares\n
-"""
+print_minimums(
+    {
+        "market cap": f"${min_market_cap:,.0f}",
+        "price": f"${min_price:,.2f}",
+        "50-day average volume": f"{min_volume:,.0f} shares",
+    }
 )
 
 # logging data (printed to console after screen finishes)
@@ -72,7 +72,7 @@ async def screen_liquidity(df_index: int, session: ClientSession) -> None:
 
     # print volume info to console
     logs.append(
-        f"\n{symbol} | Market Cap: ${market_cap / 1000000000:.1f}B | Price: ${price:.2f} | 50-day Avg. Volume: {volume} shares\n"
+        f"\n{symbol} | Market Cap: ${market_cap / 1000000000:.1f}B | Price: ${price:,.2f} | 50-day Avg. Volume: {volume:,.0f} shares\n"
     )
 
     # filter out illiquid stocks
@@ -101,7 +101,7 @@ async def main() -> None:
         )
 
 
-print("\nFetching liquidity data . . .\n")
+print("Fetching liquidity data . . .\n")
 asyncio.run(main())
 
 # create a new dataframe with symbols which satisfied liquidity criteria
@@ -114,9 +114,11 @@ create_outfile(screened_df, "liquidity")
 print("".join(logs))
 
 # print footer message to terminal
-print(f"{len(failed_symbols)} symbols failed (insufficient data).")
-print(
-    f"{len(df) - len(screened_df) - len(failed_symbols)} symbols filtered (thinly traded or penny stock)."
+cprint(f"{len(failed_symbols)} symbols failed (insufficient data).", "dark_grey")
+cprint(
+    f"{len(df) - len(screened_df) - len(failed_symbols)} symbols filtered (thinly traded or penny stock).",
+    "dark_grey",
 )
-print(f"{len(screened_df)} symbols passed.")
+cprint(f"{len(screened_df)} symbols passed.", "green")
 print_status(process_name, process_stage, False)
+print_divider()
