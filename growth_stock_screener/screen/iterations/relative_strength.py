@@ -1,7 +1,6 @@
 import yfinance as yf
 import pandas as pd
 from termcolor import colored, cprint
-from tqdm import tqdm
 from .utils import *
 from ..settings import min_rs
 
@@ -33,9 +32,10 @@ price_df = tickers["Adj Close"]
 successful_symbols = []
 failed_symbols = []
 
-# run screen
-print("\nComputing RS ratings . . .")
-for symbol in tqdm(price_df):
+# add empty line
+print()
+
+for symbol in price_df:
     col = price_df[symbol]
     end_index = len(col) - 1
 
