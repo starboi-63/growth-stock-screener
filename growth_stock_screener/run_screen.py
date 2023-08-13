@@ -11,11 +11,11 @@ print_heading(time)
 input("Press Enter to run screen . . .")
 
 # run screen iterations
-# import screen.iterations.nasdaq_listings
-# import screen.iterations.relative_strength
-# import screen.iterations.liquidity
-# import screen.iterations.trend
-# import screen.iterations.revenue_growth
+import screen.iterations.nasdaq_listings
+import screen.iterations.relative_strength
+import screen.iterations.liquidity
+import screen.iterations.trend
+import screen.iterations.revenue_growth
 import screen.iterations.institutional_accumulation
 
 # open screen results as a DataFrame
