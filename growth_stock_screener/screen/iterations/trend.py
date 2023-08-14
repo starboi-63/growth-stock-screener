@@ -124,9 +124,9 @@ def fetch_moving_averages(symbol: str) -> Dict[str, float]:
 def fetch_52_week_high(symbol: str) -> float:
     """Fetch the 52-week high of the given stock symbol from cnbc.com."""
     url = f"https://www.cnbc.com/quotes/{symbol}"
-    response = requests.get(url)
 
     try:
+        response = requests.get(url)
         high_52_week = extract_float(
             extract_element(high_52_week_xpath, response.content)
         )
