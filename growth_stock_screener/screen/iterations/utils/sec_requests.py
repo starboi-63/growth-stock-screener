@@ -31,25 +31,6 @@ def get_cik(symbol: str) -> str:
         return None
 
 
-def get_concept(symbol: str, concept: str) -> dict:
-    """Request concept data for a stock symbol from SEC.gov."""
-    # construct url for request to SEC's API
-    cik = get_cik(symbol)
-
-    if cik is None:
-        return None
-
-    url = (
-        f"https://data.sec.gov/api/xbrl/companyconcept/CIK{cik}/us-gaap/{concept}.json"
-    )
-
-    try:
-        response = requests.get(url, headers=header)
-        return response.json()
-    except JSONDecodeError:
-        return None
-
-
 def get_company_facts(symbol: str) -> dict:
     """Request all available concept data for a stock symbol from SEC.gov"""
     # construct url for request to SEC's API
