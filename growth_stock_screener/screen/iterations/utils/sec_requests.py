@@ -4,6 +4,10 @@ import pandas as pd
 from typing import List, Dict
 from tqdm import tqdm
 from datetime import datetime
+import asyncio
+import aiohttp
+from aiohttp.client import ClientSession
+from .scraping import get
 
 # constants
 header = {"User-Agent": "name@domain.com"}
