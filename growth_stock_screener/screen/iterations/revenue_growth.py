@@ -3,10 +3,7 @@ from typing import Dict
 from tqdm import tqdm
 from termcolor import cprint, colored
 from .utils import *
-
-# constants
-min_growth_percent = 25
-protected_rs = 97
+from ..settings import min_growth_percent, protected_rs
 
 # print header message to terminal
 process_name = "Revenue Growth"
