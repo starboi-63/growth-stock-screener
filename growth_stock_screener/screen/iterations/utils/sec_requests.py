@@ -42,9 +42,10 @@ async def get_company_facts(symbol: str, session: ClientSession) -> dict:
 
     url = f"https://data.sec.gov/api/xbrl/companyfacts/CIK{cik}.json"
 
+    # attempt GET request and return company facts
     try:
-        response = await get(url, session, headers=header)
-        company_facts = response.json()["facts"]
+        response = await get(url, session, headers=header, json=True)
+        company_facts = response["facts"]
 
         if "us-gaap" not in company_facts:
             return {"Foreign Stock": True}
@@ -141,22 +142,34 @@ def fetch_all_revenues(symbols: List[str]) -> Dict[str, pd.DataFrame]:
 
         print("Fetching revenue data . . .\n")
 
-        with tqdm(remaining_symbols) as progress_bar:
+        # create a progress bar and aiohttp session
+        with tqdm(total=remaining_symbols) as progress_bar:
             async with aiohttp.ClientSession() as session:
+                # launch up to 10 concurrent requests every second
                 while remaining_symbols > 0:
-                    for i in range(min(10, remaining_symbols)):
-                        symbol = symbols[index]
-                        ret[symbol] = await fetch_revenues(symbol, session)
+                    async with asyncio.TaskGroup() as tg:
+                        iterations = min(10, remaining_symbols)
+                        for i in range(iterations):
+                            # add a fetch revenues task to the task group
+                            tg.create_task(
+                                add_revenue_to_dict(symbols[index], ret, session)
+                            )
+                            # update counters
+                            index += 1
+                            remaining_symbols -= 1
+                            progress_bar.update()
 
-                        index += 1
-                        remaining_symbols -= 1
-                        progress_bar.update()
-
+                    # wait 1 second before sending the next batch of requests
                     time.sleep(1)
 
         return ret
 
     return asyncio.run(helper(symbols))
+
+
+async def add_revenue_to_dict(symbol: str, dict: dict, session: ClientSession) -> None:
+    """Fetch revenue data for a given symbol and insert the result into a dictionary."""
+    dict[symbol] = await fetch_revenues(symbol, session)
 
 
 def subtract_prev_quarters(timeframe: str, df: pd.DataFrame) -> float:
