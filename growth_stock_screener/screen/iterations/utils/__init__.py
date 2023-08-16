@@ -5,3 +5,4 @@ from .outfiles import *
 from .scraping import *
 from .sec_requests import *
 from .startup import *
+from .version_checking import *
