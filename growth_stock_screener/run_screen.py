@@ -2,9 +2,11 @@ from screen.iterations.utils import *
 from datetime import datetime
 from termcolor import cprint, colored
 
-# print banner
-print_banner()
+# constants
 time = datetime.now()
+
+# print banner and heading
+print_banner()
 print_heading(time)
 
 # wait for user to press enter

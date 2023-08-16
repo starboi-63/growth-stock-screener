@@ -4,6 +4,11 @@ import pandas as pd
 from typing import List, Dict
 from tqdm import tqdm
 from datetime import datetime
+import asyncio
+import aiohttp
+from aiohttp.client import ClientSession
+import time
+from .scraping import get
 
 # constants
 header = {"User-Agent": "name@domain.com"}
@@ -27,26 +32,7 @@ def get_cik(symbol: str) -> str:
         return None
 
 
-def get_concept(symbol: str, concept: str) -> dict:
-    """Request concept data for a stock symbol from SEC.gov."""
-    # construct url for request to SEC's API
-    cik = get_cik(symbol)
-
-    if cik is None:
-        return None
-
-    url = (
-        f"https://data.sec.gov/api/xbrl/companyconcept/CIK{cik}/us-gaap/{concept}.json"
-    )
-
-    try:
-        response = requests.get(url, headers=header)
-        return response.json()
-    except JSONDecodeError:
-        return None
-
-
-def get_company_facts(symbol: str) -> dict:
+async def get_company_facts(symbol: str, session: ClientSession) -> dict:
     """Request all available concept data for a stock symbol from SEC.gov"""
     # construct url for request to SEC's API
     cik = get_cik(symbol)
@@ -56,22 +42,23 @@ def get_company_facts(symbol: str) -> dict:
 
     url = f"https://data.sec.gov/api/xbrl/companyfacts/CIK{cik}.json"
 
+    # attempt GET request and return company facts
     try:
-        response = requests.get(url, headers=header)
-        company_facts = response.json()["facts"]
+        response = await get(url, session, headers=header, json=True)
+        company_facts = response["facts"]
 
         if "us-gaap" not in company_facts:
             return {"Foreign Stock": True}
 
         return company_facts["us-gaap"]
-    except (JSONDecodeError, KeyError):
+    except Exception:
         return None
 
 
-def fetch_revenues(symbol: str) -> pd.DataFrame:
+async def fetch_revenues(symbol: str, session: ClientSession) -> pd.DataFrame:
     """Fetch quarterly revenue data for a stock symbol from SEC filings."""
     # get all available SEC data on company
-    data = get_company_facts(symbol)
+    data = await get_company_facts(symbol, session)
 
     if data is None:
         return None
@@ -145,16 +132,50 @@ def find_most_updated(dicts: List[List[Dict]]) -> List[Dict]:
     return dicts[most_updated_index]
 
 
-def fetch_revenues_bulk(symbols: List[str]) -> Dict[str, pd.DataFrame]:
+def fetch_all_revenues(symbols: List[str]) -> Dict[str, pd.DataFrame]:
     """Fetch quarterly revenue data for multiple stock symbols from SEC filings."""
-    ret = {}
 
-    print("Fetching revenue data . . .\n")
+    async def helper(symbols: List[str]) -> Dict[str, pd.DataFrame]:
+        ret = {}
+        remaining_symbols = len(symbols)
+        index = 0
 
-    for symbol in tqdm(symbols):
-        ret[symbol] = fetch_revenues(symbol)
+        print("Fetching revenue data . . .\n")
 
-    return ret
+        # create a progress bar and aiohttp session
+        with tqdm(total=remaining_symbols) as progress_bar:
+            async with aiohttp.ClientSession() as session:
+                # launch batches of requests until all revenue data has been fetched
+                while remaining_symbols > 0:
+                    # record start time
+                    start = time.perf_counter()
+                    # launch up to 10 concurrent requests to fetch revenue
+                    async with asyncio.TaskGroup() as tg:
+                        iterations = min(10, remaining_symbols)
+                        for i in range(iterations):
+                            # add a fetch revenue task to the task group
+                            tg.create_task(
+                                add_revenue_to_dict(symbols[index], ret, session)
+                            )
+                            # update counters
+                            index += 1
+                            remaining_symbols -= 1
+                            progress_bar.update()
+
+                    # record end time
+                    end = time.perf_counter()
+                    # wait to ensure that the average request rate doesn't exceed 10 requests/second
+                    elapsed_time = end - start
+                    time.sleep(max(0, 1 - elapsed_time))
+
+        return ret
+
+    return asyncio.run(helper(symbols))
+
+
+async def add_revenue_to_dict(symbol: str, dict: dict, session: ClientSession) -> None:
+    """Fetch revenue data for a given symbol and insert the result into a dictionary."""
+    dict[symbol] = await fetch_revenues(symbol, session)
 
 
 def subtract_prev_quarters(timeframe: str, df: pd.DataFrame) -> float:

@@ -103,14 +103,6 @@ def screen_institutional_accumulation(df_index: int) -> None:
 
     # check for failed GET requests
     if holdings_data is None:
-        logs.append(
-            message(
-                colored(
-                    f"No institutional inflow/outflow data found for {symbol} . . .",
-                    "red",
-                )
-            )
-        )
         failed_symbols.append(symbol)
     else:
         net_inflows = holdings_data["Inflows"] - holdings_data["Outflows"]
@@ -127,7 +119,7 @@ def screen_institutional_accumulation(df_index: int) -> None:
                 message(
                     colored(
                         f"{symbol} was under institutional accumulation last quarter.",
-                        "green",
+                        "dark_grey",
                     )
                 )
             )

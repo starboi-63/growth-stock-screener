@@ -37,7 +37,7 @@ failed_symbols = []
 
 # fetch revenue data for all symbols
 symbol_list = [] if ("Symbol" not in df) else list(df["Symbol"])
-revenue_data = fetch_revenues_bulk(symbol_list)
+revenue_data = fetch_all_revenues(symbol_list)
 
 
 def revenue_growth(timeframe: str, df: pd.DataFrame) -> Dict[str, float]:
