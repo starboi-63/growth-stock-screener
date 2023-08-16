@@ -8,10 +8,10 @@ from lxml import html
 import re
 
 
-async def get(url: str, session: ClientSession) -> str:
+async def get(url: str, session: ClientSession, headers=None) -> str:
     """Send a GET request for the given url and return the response as a string."""
     try:
-        async with session.get(url) as response:
+        async with session.get(url, headers=headers) as response:
             return await response.text()
     except Exception:
         return None
