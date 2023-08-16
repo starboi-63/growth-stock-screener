@@ -130,7 +130,7 @@ def find_most_updated(dicts: List[List[Dict]]) -> List[Dict]:
     return dicts[most_updated_index]
 
 
-def fetch_revenues_bulk(symbols: List[str]) -> Dict[str, pd.DataFrame]:
+def fetch_all_revenues(symbols: List[str]) -> Dict[str, pd.DataFrame]:
     """Fetch quarterly revenue data for multiple stock symbols from SEC filings."""
 
     async def helper(symbols: List[str]) -> Dict[str, pd.DataFrame]:
