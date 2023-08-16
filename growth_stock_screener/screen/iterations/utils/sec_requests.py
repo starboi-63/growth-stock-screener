@@ -146,7 +146,7 @@ def fetch_all_revenues(symbols: List[str]) -> Dict[str, pd.DataFrame]:
                 while remaining_symbols > 0:
                     for i in range(min(10, remaining_symbols)):
                         symbol = symbols[index]
-                        ret[symbol] = fetch_revenues(symbol, session)
+                        ret[symbol] = await fetch_revenues(symbol, session)
 
                         index += 1
                         remaining_symbols -= 1
