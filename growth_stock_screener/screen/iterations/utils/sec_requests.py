@@ -7,6 +7,7 @@ from datetime import datetime
 import asyncio
 import aiohttp
 from aiohttp.client import ClientSession
+import time
 from .scraping import get
 
 # constants
@@ -135,15 +136,27 @@ def fetch_all_revenues(symbols: List[str]) -> Dict[str, pd.DataFrame]:
 
     async def helper(symbols: List[str]) -> Dict[str, pd.DataFrame]:
         ret = {}
+        remaining_symbols = len(symbols)
+        index = 0
 
         print("Fetching revenue data . . .\n")
 
-        for symbol in tqdm(symbols):
-            ret[symbol] = fetch_revenues(symbol)
+        with tqdm(remaining_symbols) as progress_bar:
+            async with aiohttp.ClientSession() as session:
+                while remaining_symbols > 0:
+                    for i in range(min(10, remaining_symbols)):
+                        symbol = symbols[index]
+                        ret[symbol] = fetch_revenues(symbol, session)
+
+                        index += 1
+                        remaining_symbols -= 1
+                        progress_bar.update()
+
+                    time.sleep(1)
 
         return ret
 
-    return helper(symbols)
+    return asyncio.run(helper(symbols))
 
 
 def subtract_prev_quarters(timeframe: str, df: pd.DataFrame) -> float:
