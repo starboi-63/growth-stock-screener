@@ -8,16 +8,19 @@ def python_version() -> str:
 
 def assert_python_updated(min_version: str) -> bool:
     """Assert whether Python is up-to-date with an inputted version number of the form 'x.x.x...'"""
-    version = python_version()
+    return version_greater(python_version(), min_version)
 
-    version_components = version.split(".")
-    min_version_components = min_version.split(".")
-    min_len = min(len(version_components), len(min_version_components))
+
+def version_greater(vnum_a: str, vnum_b: str) -> bool:
+    "Returns 'True' if version 'a.a.a...' > 'b.b.b...'"
+    a_components = vnum_a.split(".")
+    b_components = vnum_b.split(".")
+    min_len = min(len(a_components), len(b_components))
 
     for i in range(min_len):
-        if version_components[i] > min_version_components[i]:
+        if a_components[i] > b_components[i]:
             return True
-        elif version_components[i] < min_version_components[i]:
+        elif a_components[i] < b_components[i]:
             return False
 
     return True
