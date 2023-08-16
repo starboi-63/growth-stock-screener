@@ -8,7 +8,7 @@ An automated stock screening system which isolates and ranks top-tier growth com
 
 #### Prerequisites
 
-First, ensure that you have [Python](https://www.python.org/) and [Firefox](https://www.mozilla.org/en-US/firefox/new/) installed. Clone this repository, navigate to its root directory on your computer, and run the following commands in a terminal application:
+First, ensure that you have [Python 3.11+](https://www.python.org/) and [Firefox](https://www.mozilla.org/en-US/firefox/new/) installed. Clone this repository, navigate to its root directory on your computer, and run the following commands in a terminal application:
 
 > **_Note for Linux users:_** _the 'snap' version of Firefox that comes pre-installed may cause issues when running Selenium. To troubleshoot, follow [these instructions](https://www.omgubuntu.co.uk/2022/04/how-to-install-firefox-deb-apt-ubuntu-22-04) to install Firefox via 'apt' (not snap)._
 
