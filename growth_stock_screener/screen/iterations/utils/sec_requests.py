@@ -31,7 +31,7 @@ def get_cik(symbol: str) -> str:
         return None
 
 
-def get_company_facts(symbol: str) -> dict:
+async def get_company_facts(symbol: str, session: ClientSession) -> dict:
     """Request all available concept data for a stock symbol from SEC.gov"""
     # construct url for request to SEC's API
     cik = get_cik(symbol)
@@ -42,14 +42,14 @@ def get_company_facts(symbol: str) -> dict:
     url = f"https://data.sec.gov/api/xbrl/companyfacts/CIK{cik}.json"
 
     try:
-        response = requests.get(url, headers=header)
+        response = await get(url, session, headers=header)
         company_facts = response.json()["facts"]
 
         if "us-gaap" not in company_facts:
             return {"Foreign Stock": True}
 
         return company_facts["us-gaap"]
-    except (JSONDecodeError, KeyError):
+    except Exception:
         return None
 
 
