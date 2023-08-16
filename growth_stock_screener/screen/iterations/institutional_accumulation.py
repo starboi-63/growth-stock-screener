@@ -119,7 +119,7 @@ def screen_institutional_accumulation(df_index: int) -> None:
                 message(
                     colored(
                         f"{symbol} was under institutional accumulation last quarter.",
-                        "green",
+                        "dark_grey",
                     )
                 )
             )
