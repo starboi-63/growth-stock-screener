@@ -132,14 +132,18 @@ def find_most_updated(dicts: List[List[Dict]]) -> List[Dict]:
 
 def fetch_revenues_bulk(symbols: List[str]) -> Dict[str, pd.DataFrame]:
     """Fetch quarterly revenue data for multiple stock symbols from SEC filings."""
-    ret = {}
 
-    print("Fetching revenue data . . .\n")
+    async def helper(symbols: List[str]) -> Dict[str, pd.DataFrame]:
+        ret = {}
 
-    for symbol in tqdm(symbols):
-        ret[symbol] = fetch_revenues(symbol)
+        print("Fetching revenue data . . .\n")
 
-    return ret
+        for symbol in tqdm(symbols):
+            ret[symbol] = fetch_revenues(symbol)
+
+        return ret
+
+    return helper(symbols)
 
 
 def subtract_prev_quarters(timeframe: str, df: pd.DataFrame) -> float:
