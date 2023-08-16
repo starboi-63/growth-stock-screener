@@ -145,12 +145,15 @@ def fetch_all_revenues(symbols: List[str]) -> Dict[str, pd.DataFrame]:
         # create a progress bar and aiohttp session
         with tqdm(total=remaining_symbols) as progress_bar:
             async with aiohttp.ClientSession() as session:
-                # launch up to 10 concurrent requests every second
+                # launch batches of requests until all revenue data has been fetched
                 while remaining_symbols > 0:
+                    # record start time
+                    start = time.perf_counter()
+                    # launch up to 10 concurrent requests to fetch revenue
                     async with asyncio.TaskGroup() as tg:
                         iterations = min(10, remaining_symbols)
                         for i in range(iterations):
-                            # add a fetch revenues task to the task group
+                            # add a fetch revenue task to the task group
                             tg.create_task(
                                 add_revenue_to_dict(symbols[index], ret, session)
                             )
@@ -159,8 +162,11 @@ def fetch_all_revenues(symbols: List[str]) -> Dict[str, pd.DataFrame]:
                             remaining_symbols -= 1
                             progress_bar.update()
 
-                    # wait 1 second before sending the next batch of requests
-                    time.sleep(1)
+                    # record end time
+                    end = time.perf_counter()
+                    # wait to ensure that the average request rate doesn't exceed 10 requests/second
+                    elapsed_time = end - start
+                    time.sleep(max(0, 1 - elapsed_time))
 
         return ret
 
