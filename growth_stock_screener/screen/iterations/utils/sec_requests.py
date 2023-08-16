@@ -53,10 +53,10 @@ async def get_company_facts(symbol: str, session: ClientSession) -> dict:
         return None
 
 
-def fetch_revenues(symbol: str) -> pd.DataFrame:
+async def fetch_revenues(symbol: str, session: ClientSession) -> pd.DataFrame:
     """Fetch quarterly revenue data for a stock symbol from SEC filings."""
     # get all available SEC data on company
-    data = get_company_facts(symbol)
+    data = await get_company_facts(symbol, session)
 
     if data is None:
         return None
