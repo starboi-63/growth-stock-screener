@@ -8,10 +8,6 @@ class TestVersionGeq(unittest.TestCase):
         expected = True
         self.assertEqual(result, expected)
 
-        result = version_geq("1", "1")
-        expected = True
-        self.assertEqual(result, expected)
-
         result = version_geq("10", "1")
         expected = True
         self.assertEqual(result, expected)
@@ -28,20 +24,34 @@ class TestVersionGeq(unittest.TestCase):
         expected = False
         self.assertEqual(result, expected)
 
+    def test_versions_identical(self):
+        result = version_geq("1", "1")
+        expected = True
+        self.assertEqual(result, expected)
+
+        result = version_geq("6.3", "6.3")
+        expected = True
+        self.assertEqual(result, expected)
+
+        result = version_geq("3.6.3", "3.6.3")
+        expected = True
+        self.assertEqual(result, expected)
+
+        result = version_geq("11.12.13", "11.12.13")
+        expected = True
+        self.assertEqual(result, expected)
+
+    def test_versions_zero(self):
+        result = version_geq("0.0", "0.0")
+        expected = True
+        self.assertEqual(result, expected)
+
     def test_versions_two_places(self):
         result = version_geq("1.0", "0.1")
         expected = True
         self.assertEqual(result, expected)
 
         result = version_geq("6.3", "3.4")
-        expected = True
-        self.assertEqual(result, expected)
-
-        result = version_geq("0.0", "0.0")
-        expected = True
-        self.assertEqual(result, expected)
-
-        result = version_geq("6.3", "6.3")
         expected = True
         self.assertEqual(result, expected)
 
@@ -82,11 +92,23 @@ class TestVersionGeq(unittest.TestCase):
         expected = True
         self.assertEqual(result, expected)
 
-        result = version_geq("3.6.3", "3.6.3")
-        expected = True
+        result = version_geq("3.6.3", "3.6.30")
+        expected = False
         self.assertEqual(result, expected)
 
-        result = version_geq("3.6.3", "3.6.30")
+        result = version_geq("3.5.4", "3.6.3")
+        expected = False
+        self.assertEqual(result, expected)
+
+        result = version_geq("3.5.3", "3.6.3")
+        expected = False
+        self.assertEqual(result, expected)
+
+        result = version_geq("2.5.3", "3.4.2")
+        expected = False
+        self.assertEqual(result, expected)
+
+        result = version_geq("2.5.3", "3.4.4")
         expected = False
         self.assertEqual(result, expected)
 
@@ -99,6 +121,35 @@ class TestVersionGeq(unittest.TestCase):
         self.assertEqual(result, expected)
 
         result = version_geq("0.0.1", "00.00.2")
+        expected = False
+        self.assertEqual(result, expected)
+
+    def test_versions_double_digits(self):
+        result = version_geq("11.12.13", "11.12.12")
+        expected = True
+        self.assertEqual(result, expected)
+
+        result = version_geq("11.12.13", "11.11.13")
+        expected = True
+        self.assertEqual(result, expected)
+
+        result = version_geq("11.12.13", "10.12.13")
+        expected = True
+        self.assertEqual(result, expected)
+
+        result = version_geq("11.12.12", "11.12.13")
+        expected = False
+        self.assertEqual(result, expected)
+
+        result = version_geq("11.11.13", "11.12.13")
+        expected = False
+        self.assertEqual(result, expected)
+
+        result = version_geq("10.12.13", "11.12.13")
+        expected = False
+        self.assertEqual(result, expected)
+
+        result = version_geq("10.13.14", "11.12.13")
         expected = False
         self.assertEqual(result, expected)
 
