@@ -11,12 +11,7 @@ print_heading(time)
 
 # check Python version
 min_python_version = "3.11"
-if not assert_python_updated(min_python_version):
-    cprint(
-        f"Python {python_version()} is out-of-date! Growth-Stock-Screener requires Python {min_python_version}+.",
-        "red",
-    )
-    raise SystemExit
+assert_python_updated(min_python_version)
 
 # wait for user to press enter
 input("Press Enter to run screen . . .")

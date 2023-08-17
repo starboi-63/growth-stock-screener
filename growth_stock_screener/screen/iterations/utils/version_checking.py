@@ -1,4 +1,5 @@
 import sys
+from termcolor import cprint, colored
 
 
 def python_version() -> str:
@@ -6,9 +7,15 @@ def python_version() -> str:
     return sys.version.split()[0]
 
 
-def assert_python_updated(min_version: str) -> bool:
+def assert_python_updated(min_version: str) -> None:
     """Assert whether Python is up-to-date with an inputted version number of the form 'x.x.x...'"""
-    return version_geq(python_version(), min_version)
+    if not version_geq(python_version(), min_version):
+        cprint(
+            f"Python {python_version()} is out-of-date! Growth-Stock-Screener requires Python {min_version}+.",
+            "red",
+            attrs=["bold"],
+        )
+        raise SystemExit
 
 
 def version_geq(vnum_a: str, vnum_b: str) -> bool:
