@@ -9,6 +9,10 @@ time = datetime.now()
 print_banner()
 print_heading(time)
 
+# check Python version
+min_python_version = "3.11"
+assert_python_updated(min_python_version)
+
 # wait for user to press enter
 input("Press Enter to run screen . . .")
 
