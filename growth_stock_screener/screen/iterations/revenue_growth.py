@@ -2,6 +2,7 @@ import pandas as pd
 from typing import Dict
 from tqdm import tqdm
 from termcolor import cprint, colored
+import time
 from .utils import *
 from ..settings import min_growth_percent, protected_rs
 
@@ -21,6 +22,8 @@ print(
     "\n",
 )
 
+# record start time
+start = time.perf_counter()
 
 # logging data (printed to console after screen finishes)
 logs = []
@@ -168,6 +171,9 @@ create_outfile(screened_df, "revenue_growth")
 # print log
 print("".join(logs))
 
+# record end time
+end = time.perf_counter()
+
 # print footer message to terminal
 cprint(
     f"{len(failed_symbols)} symbols failed (insufficient revenue reports).", "dark_grey"
@@ -177,5 +183,5 @@ cprint(
     "dark_grey",
 )
 cprint(f"{len(screened_df)} symbols passed.", "green")
-print_status(process_name, process_stage, False)
+print_status(process_name, process_stage, False, end - start)
 print_divider()
