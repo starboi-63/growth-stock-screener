@@ -2,7 +2,9 @@ from termcolor import colored, cprint
 from typing import Dict
 
 
-def print_status(process: str, stage: int, starting: bool) -> None:
+def print_status(
+    process: str, stage: int, starting: bool, elapsed_time: float = None
+) -> None:
     """Print a header or footer for each screen iteration."""
     if starting:
         print(
@@ -17,7 +19,7 @@ def print_status(process: str, stage: int, starting: bool) -> None:
             colored(f"\n[$] ", "blue", attrs=["bold"]),
             f"Stage {stage} [",
             colored(f"{process}", "blue"),
-            "] Finished\n",
+            f"] Finished In {elapsed_time}\n",
             sep="",
         )
 
