@@ -19,7 +19,9 @@ def print_status(
             colored(f"\n[$] ", "blue", attrs=["bold"]),
             f"Stage {stage} [",
             colored(f"{process}", "blue"),
-            f"] Finished In {format_seconds(elapsed_time)}\n",
+            "] Finished [",
+            colored(f"{format_seconds(elapsed_time)}", "blue"),
+            "]\n",
             sep="",
         )
 
