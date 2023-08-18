@@ -8,7 +8,7 @@ current_time = datetime.now()
 
 # print banner and heading
 print_banner()
-print_heading(current_time)
+print_settings(current_time)
 
 # check Python version
 min_python_version = "3.11"

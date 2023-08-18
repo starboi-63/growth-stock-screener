@@ -169,7 +169,7 @@ def print_banner() -> None:
     print("".join(banner))
 
 
-def print_heading(time: datetime) -> None:
+def print_settings(time: datetime) -> None:
     """Print a heading displaying screen settings."""
     main_color = "blue"
     setting_name_color = "dark_grey"
