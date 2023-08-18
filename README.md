@@ -55,7 +55,9 @@ Screen results are saved in .csv format in the project root directory, and can b
 ## Screen Iterations
 
 An initial list of stocks from which to screen is sourced from _NASDAQ_.
+
 ![NASDAQ Listings](screenshots/nasdaq_listings.png)
+
 Then, the following screen iterations are executed sequentially:
 
 ### Iteration 1: Relative Strength
