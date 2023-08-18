@@ -4,13 +4,27 @@
 
 An automated stock screening system which isolates and ranks top-tier growth companies based on relative strength, liquidity, trend, revenue growth, and institutional demand.
 
-## Usage
+## Installation
 
 #### Prerequisites
 
-First, ensure that you have [Python 3.11+](https://www.python.org/) and [Firefox](https://www.mozilla.org/en-US/firefox/new/) installed. Clone this repository, navigate to its root directory on your computer, and run the following commands in a terminal application:
+First, ensure that you have [Python 3.11+](https://www.python.org/) and [Firefox](https://www.mozilla.org/en-US/firefox/new/) installed.
 
 > **_Note for Linux users:_** _the 'snap' version of Firefox that comes pre-installed may cause issues when running Selenium. To troubleshoot, follow [these instructions](https://www.omgubuntu.co.uk/2022/04/how-to-install-firefox-deb-apt-ubuntu-22-04) to install Firefox via 'apt' (not snap)._
+
+Next, navigate to the directory where you would like to install the screener, and run the following commands in a terminal application:
+
+#### Clone the Growth-Stock-Screener Repository:
+
+```bash
+git clone https://github.com/starboi-63/growth-stock-screener.git
+```
+
+#### Navigate to the Root Directory:
+
+```bash
+cd growth-stock-screener
+```
 
 #### Install Python Dependencies:
 
@@ -18,15 +32,25 @@ First, ensure that you have [Python 3.11+](https://www.python.org/) and [Firefox
 pip3 install -r requirements.txt
 ```
 
+## Usage
+
 #### Run Screen:
+
+To run the screener, execute the following command from the root directory of the repository.
 
 ```bash
 python3 growth_stock_screener/run_screen.py
 ```
 
+#### Modify Screen Settings:
+
+To customize screen settings, modify values in [settings.py](growth_stock_screener/screen/settings.py).
+
 #### Viewing Results:
 
 Screen results are saved in .csv format in the project root directory, and can be opened with software like Excel.
+
+![Screen Results](screenshots/done.png)
 
 ## Screen Iterations
 
