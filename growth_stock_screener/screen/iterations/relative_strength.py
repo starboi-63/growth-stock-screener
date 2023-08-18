@@ -1,6 +1,7 @@
 import yfinance as yf
 import pandas as pd
 from termcolor import colored, cprint
+import time
 from .utils import *
 from ..settings import min_rs
 
@@ -12,6 +13,9 @@ process_name = "Relative Strength"
 process_stage = 1
 print_status(process_name, process_stage, True)
 print_minimums({"RS rating": min_rs})
+
+# record start time
+start = time.perf_counter()
 
 # logging data (printed to console after screen finishes)
 logs = []
@@ -123,6 +127,9 @@ create_outfile(rs_df, "relative_strengths")
 # print log
 print("".join(logs))
 
+# record end time
+end = time.perf_counter()
+
 # print footer message to terminal
 cprint(f"{len(failed_symbols)} symbols failed (insufficient data).", "dark_grey")
 cprint(
@@ -130,5 +137,5 @@ cprint(
     "dark_grey",
 )
 cprint(f"{len(rs_df)} symbols passed.", "green")
-print_status(process_name, process_stage, False)
+print_status(process_name, process_stage, False, end - start)
 print_divider()
