@@ -2,31 +2,29 @@ from termcolor import colored, cprint
 from typing import Dict
 
 
-def heading_icon() -> str:
+def heading_icon(color: str) -> str:
     """Return an icon used to emphasize headings"""
-    return colored(f"\n[$]", "blue", attrs=["bold"])
+    return colored(f"\n[$]", color, attrs=["bold"])
 
 
 def print_status(
-    process: str, stage: int, starting: bool, elapsed_time: float = None
+    process: str, stage: int, starting: bool, elapsed_seconds: float = None
 ) -> None:
     """Print a header or footer for each screen iteration. Setting 'starting' to 'True' prints a header; prints a footer otherwise."""
     if starting:
         print(
-            heading_icon(),
-            f" Begin Stage {stage} [",
+            heading_icon("blue"),
+            f" Begin stage {stage} [",
             colored(f"{process}", "blue"),
             "]\n",
             sep="",
         )
     else:
         print(
-            heading_icon(),
-            f" Stage {stage} [",
+            heading_icon("blue"),
+            f" Completed stage {stage} [",
             colored(f"{process}", "blue"),
-            "] Finished [",
-            colored(f"{format_seconds(elapsed_time)}", "blue"),
-            "]\n",
+            f"] in {format_seconds(elapsed_seconds)}\n",
             sep="",
         )
 
@@ -79,10 +77,8 @@ def message(message: str) -> str:
 
 def print_done_message(elapsed_seconds: float, outfile_name: str) -> None:
     print(
-        heading_icon(),
-        " Done! [total execution time: ",
-        colored(f"{format_seconds(elapsed_seconds)}", "blue"),
-        "]",
-        colored(f"\nCreated {outfile_name}.", "green"),
+        heading_icon("green"),
+        f" Done in {format_seconds(elapsed_seconds)}!",
+        colored(f'\n\nCreated "{outfile_name}".\n', "green"),
         sep="",
     )
