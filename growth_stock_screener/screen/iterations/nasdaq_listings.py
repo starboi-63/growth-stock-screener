@@ -12,6 +12,9 @@ process_stage = 0
 print_divider()
 print_status(process_name, process_stage, True)
 
+# record start time
+start = time.perf_counter
+
 # request nasdaq listing data
 url = "https://api.nasdaq.com/api/screener/stocks?tableonly=true&limit=25&offset=0&download=true"
 headers = {
@@ -51,6 +54,9 @@ df = df[~(df["Symbol"].str.contains("/") | df["Symbol"].str.contains("\^"))]
 
 # serialize data in JSON format and save on machine
 create_outfile(df, "nasdaq_listings")
+
+# record end time
+end = time.perf_counter
 
 # print footer message to terminal
 cprint(f"{len(df)} symbols extracted.", "green")
