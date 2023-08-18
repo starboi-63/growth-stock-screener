@@ -5,7 +5,7 @@ from typing import Dict
 def print_status(
     process: str, stage: int, starting: bool, elapsed_time: float = None
 ) -> None:
-    """Print a header or footer for each screen iteration."""
+    """Print a header or footer for each screen iteration. Setting 'starting' to 'True' prints a header; prints a footer otherwise."""
     if starting:
         print(
             colored(f"\n[$] ", "blue", attrs=["bold"]),
@@ -19,9 +19,19 @@ def print_status(
             colored(f"\n[$] ", "blue", attrs=["bold"]),
             f"Stage {stage} [",
             colored(f"{process}", "blue"),
-            f"] Finished In {elapsed_time}\n",
+            f"] Finished In {format_seconds(elapsed_time)}\n",
             sep="",
         )
+
+
+def format_seconds(seconds: float) -> str:
+    """Format a raw float value representing elapsed seconds into a printable string."""
+    if seconds < 60:
+        return f"{seconds:.2f} sec"
+    else:
+        minute_component = seconds // 60
+        second_component = seconds % 60
+        return f"{minute_component} min {second_component:.2f} sec"
 
 
 def print_minimums(criteria: Dict[str, str], newline=True) -> None:
