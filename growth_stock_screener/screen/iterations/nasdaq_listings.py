@@ -3,6 +3,7 @@ import pandas as pd
 import json
 from requests.exceptions import Timeout
 from termcolor import cprint, colored
+import time
 from .utils import *
 
 # print header message to terminal
