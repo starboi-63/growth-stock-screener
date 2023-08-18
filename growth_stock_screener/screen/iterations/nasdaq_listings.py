@@ -4,6 +4,7 @@ import json
 from requests.exceptions import Timeout
 from termcolor import cprint, colored
 import time
+from datetime import datetime
 from .utils import *
 
 # print header message to terminal
@@ -13,7 +14,7 @@ print_divider()
 print_status(process_name, process_stage, True)
 
 # record start time
-start = time.perf_counter
+start = time.perf_counter()
 
 # request nasdaq listing data
 url = "https://api.nasdaq.com/api/screener/stocks?tableonly=true&limit=25&offset=0&download=true"
@@ -56,9 +57,9 @@ df = df[~(df["Symbol"].str.contains("/") | df["Symbol"].str.contains("\^"))]
 create_outfile(df, "nasdaq_listings")
 
 # record end time
-end = time.perf_counter
+end = time.perf_counter()
 
 # print footer message to terminal
 cprint(f"{len(df)} symbols extracted.", "green")
-print_status(process_name, process_stage, False)
+print_status(process_name, process_stage, False, end - start)
 print_divider()
