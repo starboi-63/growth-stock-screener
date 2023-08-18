@@ -2,22 +2,27 @@ from termcolor import colored, cprint
 from typing import Dict
 
 
+def heading_icon() -> str:
+    """Return an icon used to emphasize headings"""
+    return colored(f"\n[$]", "blue", attrs=["bold"])
+
+
 def print_status(
     process: str, stage: int, starting: bool, elapsed_time: float = None
 ) -> None:
     """Print a header or footer for each screen iteration. Setting 'starting' to 'True' prints a header; prints a footer otherwise."""
     if starting:
         print(
-            colored(f"\n[$] ", "blue", attrs=["bold"]),
-            f"Begin Stage {stage} [",
+            heading_icon(),
+            f" Begin Stage {stage} [",
             colored(f"{process}", "blue"),
             "]\n",
             sep="",
         )
     else:
         print(
-            colored(f"\n[$] ", "blue", attrs=["bold"]),
-            f"Stage {stage} [",
+            heading_icon(),
+            f" Stage {stage} [",
             colored(f"{process}", "blue"),
             "] Finished [",
             colored(f"{format_seconds(elapsed_time)}", "blue"),
@@ -70,3 +75,14 @@ def filter_message(symbol: str) -> str:
 def message(message: str) -> str:
     """Return a custom message for logging purposes."""
     return f"\n{message}\n"
+
+
+def print_done_message(elapsed_seconds: float, outfile_name: str) -> None:
+    print(
+        heading_icon(),
+        " Done! [total execution time: ",
+        colored(f"{format_seconds(elapsed_seconds)}", "blue"),
+        "]",
+        colored(f"\nCreated {outfile_name}.", "green"),
+        sep="",
+    )

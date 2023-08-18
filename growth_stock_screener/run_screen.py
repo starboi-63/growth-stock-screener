@@ -1,13 +1,14 @@
 from screen.iterations.utils import *
 from datetime import datetime
+import time
 from termcolor import cprint, colored
 
 # constants
-time = datetime.now()
+current_time = datetime.now()
 
 # print banner and heading
 print_banner()
-print_heading(time)
+print_heading(current_time)
 
 # check Python version
 min_python_version = "3.11"
@@ -15,6 +16,9 @@ assert_python_updated(min_python_version)
 
 # wait for user to press enter
 input("Press Enter to run screen . . .")
+
+# track start time
+start = time.perf_counter()
 
 # run screen iterations
 import screen.iterations.nasdaq_listings
@@ -30,8 +34,12 @@ final_iteration = "institutional_accumulation"
 df = open_outfile(final_iteration)
 
 # create a .csv outfile
-time_string = time.strftime("%Y-%m-%d %H-%M-%S")
+time_string = current_time.strftime("%Y-%m-%d %H-%M-%S")
 outfile_name = f"screen_results {time_string}.csv"
 df.to_csv(outfile_name)
 
-cprint(f"\nDONE! (created {outfile_name})", "green", attrs=["bold"])
+# track end time
+end = time.perf_counter()
+
+# notify user when finished
+print_done_message(end - start, outfile_name)
