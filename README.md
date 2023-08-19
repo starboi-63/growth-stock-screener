@@ -9,7 +9,7 @@ An automated stock screening system which isolates and ranks top-tier growth com
 - _Five_ distinct [screen iterations](#screen-iterations) based on time-tested criteria for predicting super-performance.
   - RS Rating calculations using methodology from [William O'Neil Securities](https://www.williamoneil.com/proprietary-ratings-and-rankings/).
   - Stage-2 uptrend criteria derived from strategies of U.S. investing champions Mark Minnervini and Oliver Kell.
-  - Revenue Growth sourced directly from the [SEC](https://www.sec.gov/)'s EDGAR [XBRL data APIs](https://www.sec.gov/edgar/sec-api-documentation).
+  - Revenue Growth sourced directly from the SEC's EDGAR [XBRL data APIs](https://www.sec.gov/edgar/sec-api-documentation).
 - _Customizable_ screen [settings](growth_stock_screener/screen/settings.py) for fine-tuning.
 - _Rapid_ web scraping using asynchronous requests.
   - Utilization of [aiohttp](https://docs.aiohttp.org/en/stable/) and multithreaded [Selenium](https://docs.aiohttp.org/en/stable/) browsers for concurrent data extraction.
