@@ -6,16 +6,16 @@ An automated stock screening system which isolates and ranks top-tier growth com
 
 ### Features:
 
-- _Five_ distinct [screen iterations](#screen-iterations) based on time-tested criteria for predicting super-performance.
+- **Five** distinct [screen iterations](#screen-iterations) based on time-tested criteria for predicting super-performance.
   - RS Rating calculations using methodology from [William O'Neil Securities](https://www.williamoneil.com/proprietary-ratings-and-rankings/).
   - Stage-2 uptrend criteria derived from strategies of U.S. investing champions Mark Minnervini and Oliver Kell.
   - Revenue growth sourced directly from the SEC's EDGAR [XBRL data APIs](https://www.sec.gov/edgar/sec-api-documentation).
-- _Customizable_ screen [settings](growth_stock_screener/screen/settings.py) for fine-tuning.
-- _Rapid_ web scraping using asynchronous requests.
+- **Customizable** screen [settings](growth_stock_screener/screen/settings.py) for fine-tuning.
+- **Rapid** web scraping using asynchronous requests.
   - Utilization of [aiohttp](https://docs.aiohttp.org/en/stable/) and multithreaded [Selenium](https://www.selenium.dev/) browsers for concurrent data extraction.
-- _Parsable_ [JSON outfiles](growth_stock_screener/json/README.md) for evaluation of screen criteria.
-- _Colorful_ logging in the terminal.
-- _Easy-to-access_ .csv outfiles storing screen results.
+- **Parsable** [JSON outfiles](growth_stock_screener/json/README.md) for evaluation of screen criteria.
+- **Colorful** logging in the terminal.
+- **Easy-to-access** .csv outfiles storing screen results.
 
 ## Installation
 
