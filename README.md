@@ -27,7 +27,7 @@ First, ensure that you have [Python 3.11+](https://www.python.org/) and [Firefox
 
 Next, navigate to the directory where you would like to install the screener, and run the following commands in a terminal application:
 
-#### Clone the Growth-Stock-Screener Repository:
+#### Clone this Repository:
 
 ```bash
 git clone https://github.com/starboi-63/growth-stock-screener.git
@@ -47,15 +47,15 @@ pip3 install -r requirements.txt
 
 ## Usage
 
-#### Run Screen:
-
-To run the screener, execute the following command from the root directory of the repository.
+#### Running the Screener:
 
 ```bash
 python3 growth_stock_screener/run_screen.py
 ```
 
-#### Modify Screen Settings:
+> **_Note:_** _this command must be executed from the repository's root directory._
+
+#### Modifying Screen Settings:
 
 To customize screen settings, modify values in [settings.py](growth_stock_screener/screen/settings.py).
 
