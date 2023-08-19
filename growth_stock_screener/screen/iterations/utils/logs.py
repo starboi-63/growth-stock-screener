@@ -36,7 +36,7 @@ def format_seconds(seconds: float) -> str:
     else:
         minute_component = seconds // 60
         second_component = seconds % 60
-        return f"{minute_component:.0f} min {second_component:.2f} sec"
+        return f"{minute_component:.0f} min {second_component:.0f} sec"
 
 
 def print_minimums(criteria: Dict[str, str], newline=True) -> None:
