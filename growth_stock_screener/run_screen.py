@@ -22,12 +22,11 @@ start = time.perf_counter()
 
 # run screen iterations
 import screen.iterations.nasdaq_listings
-
-# import screen.iterations.relative_strength
-# import screen.iterations.liquidity
-# import screen.iterations.trend
-# import screen.iterations.revenue_growth
-# import screen.iterations.institutional_accumulation
+import screen.iterations.relative_strength
+import screen.iterations.liquidity
+import screen.iterations.trend
+import screen.iterations.revenue_growth
+import screen.iterations.institutional_accumulation
 
 # open screen results as a DataFrame
 final_iteration = "institutional_accumulation"
