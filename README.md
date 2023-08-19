@@ -12,7 +12,7 @@ An automated stock screening system which isolates and ranks top-tier growth com
   - Revenue growth sourced directly from the SEC's EDGAR [XBRL data APIs](https://www.sec.gov/edgar/sec-api-documentation).
 - _Customizable_ screen [settings](growth_stock_screener/screen/settings.py) for fine-tuning.
 - _Rapid_ web scraping using asynchronous requests.
-  - Utilization of [aiohttp](https://docs.aiohttp.org/en/stable/) and multithreaded [Selenium](https://docs.aiohttp.org/en/stable/) browsers for concurrent data extraction.
+  - Utilization of [aiohttp](https://docs.aiohttp.org/en/stable/) and multithreaded [Selenium](https://www.selenium.dev/) browsers for concurrent data extraction.
 - _Parsable_ [JSON outfiles](growth_stock_screener/json/README.md) for evaluation of screen criteria.
 - _Colorful_ logging in the terminal.
 - _Easy-to-access_ .csv outfiles to store screen results.
