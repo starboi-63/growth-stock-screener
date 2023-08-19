@@ -15,7 +15,7 @@ An automated stock screening system which isolates and ranks top-tier growth com
   - Utilization of [aiohttp](https://docs.aiohttp.org/en/stable/) and multithreaded [Selenium](https://www.selenium.dev/) browsers for concurrent data extraction.
 - _Parsable_ [JSON outfiles](growth_stock_screener/json/README.md) for evaluation of screen criteria.
 - _Colorful_ logging in the terminal.
-- _Easy-to-access_ .csv outfiles to store screen results.
+- _Easy-to-access_ .csv outfiles storing screen results.
 
 ## Installation
 
