@@ -7,6 +7,7 @@ from lxml import html
 from typing import Dict
 from tqdm import tqdm
 from termcolor import cprint, colored
+import time
 from .utils import *
 from ..settings import trend_settings
 
@@ -56,6 +57,9 @@ trend_3 = " ".join(
 )
 
 print("\n".join([trend_1, trend_2, trend_3]))
+
+# record start time
+start = time.perf_counter()
 
 # logging data (printed to console after screen finishes)
 logs = []
@@ -215,6 +219,9 @@ create_outfile(screened_df, "trend")
 # print log
 print("".join(logs))
 
+# record end time
+end = time.perf_counter()
+
 # print footer message to terminal
 cprint(f"{len(failed_symbols)} symbols failed (insufficient data).", "dark_grey")
 cprint(
@@ -222,5 +229,5 @@ cprint(
     "dark_grey",
 )
 cprint(f"{len(screened_df)} symbols passed.", "green")
-print_status(process_name, process_stage, False)
+print_status(process_name, process_stage, False, end - start)
 print_divider()

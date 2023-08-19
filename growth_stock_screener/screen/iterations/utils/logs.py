@@ -2,24 +2,41 @@ from termcolor import colored, cprint
 from typing import Dict
 
 
-def print_status(process: str, stage: int, starting: bool) -> None:
-    """Print a header or footer for each screen iteration."""
+def heading_icon(color: str) -> str:
+    """Return an icon used to emphasize headings"""
+    return colored(f"\n[$]", color, attrs=["bold"])
+
+
+def print_status(
+    process: str, stage: int, starting: bool, elapsed_seconds: float = None
+) -> None:
+    """Print a header or footer for each screen iteration. Setting 'starting' to 'True' prints a header; prints a footer otherwise."""
     if starting:
         print(
-            colored(f"\n[$] ", "blue", attrs=["bold"]),
-            f"Begin Stage {stage} [",
+            heading_icon("blue"),
+            f" Begin stage {stage} [",
             colored(f"{process}", "blue"),
             "]\n",
             sep="",
         )
     else:
         print(
-            colored(f"\n[$] ", "blue", attrs=["bold"]),
-            f"Stage {stage} [",
+            heading_icon("blue"),
+            f" Completed stage {stage} [",
             colored(f"{process}", "blue"),
-            "] Finished\n",
+            f"] in {format_seconds(elapsed_seconds)}\n",
             sep="",
         )
+
+
+def format_seconds(seconds: float) -> str:
+    """Format a raw float value representing elapsed seconds into a printable string."""
+    if seconds < 60:
+        return f"{seconds:.2f} sec"
+    else:
+        minute_component = seconds // 60
+        second_component = seconds % 60
+        return f"{minute_component:.0f} min {second_component:.0f} sec"
 
 
 def print_minimums(criteria: Dict[str, str], newline=True) -> None:
@@ -56,3 +73,12 @@ def filter_message(symbol: str) -> str:
 def message(message: str) -> str:
     """Return a custom message for logging purposes."""
     return f"\n{message}\n"
+
+
+def print_done_message(elapsed_seconds: float, outfile_name: str) -> None:
+    print(
+        heading_icon("green"),
+        f" Done in {format_seconds(elapsed_seconds)}!",
+        colored(f'\n\nCreated "{outfile_name}".\n', "green"),
+        sep="",
+    )

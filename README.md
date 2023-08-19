@@ -4,13 +4,41 @@
 
 An automated stock screening system which isolates and ranks top-tier growth companies based on relative strength, liquidity, trend, revenue growth, and institutional demand.
 
-## Usage
+### Features:
+
+- **Five** distinct [screen iterations](#screen-iterations) based on time-tested criteria for predicting stock super-performance.
+  - RS Ratings calculated using methodology from [William O'Neil Securities](https://www.williamoneil.com/proprietary-ratings-and-rankings/).
+  - Stage-2 uptrend criteria derived from strategies of U.S. investing champions Mark Minnervini and Oliver Kell.
+  - Revenue growth sourced directly from the SEC's EDGAR [XBRL data APIs](https://www.sec.gov/edgar/sec-api-documentation).
+- **Customizable** screen [settings](growth_stock_screener/screen/settings.py) for fine-tuning.
+- **Rapid** web scraping using asynchronous requests.
+  - Utilize [aiohttp](https://docs.aiohttp.org/en/stable/) and [asyncio](https://docs.python.org/3/library/asyncio.html) when desired data is present in a website's initial HTML structure.
+  - Deploy a thread pool to launch concurrent [Selenium](https://www.selenium.dev/) browser instances when desired data is dynamically added to the DOM by JavaScript.
+- **Parsable** [JSON outfiles](growth_stock_screener/json/README.md) for evaluation of screen criteria.
+- **Colorful** logging in the terminal.
+- **Easy-to-access** .csv outfiles storing [screen results](#viewing-results).
+
+## Installation
 
 #### Prerequisites
 
-First, ensure that you have [Python 3.11+](https://www.python.org/) and [Firefox](https://www.mozilla.org/en-US/firefox/new/) installed. Clone this repository, navigate to its root directory on your computer, and run the following commands in a terminal application:
+First, ensure that you have [Python 3.11+](https://www.python.org/) and [Firefox](https://www.mozilla.org/en-US/firefox/new/) installed.
 
 > **_Note for Linux users:_** _the 'snap' version of Firefox that comes pre-installed may cause issues when running Selenium. To troubleshoot, follow [these instructions](https://www.omgubuntu.co.uk/2022/04/how-to-install-firefox-deb-apt-ubuntu-22-04) to install Firefox via 'apt' (not snap)._
+
+Next, navigate to the directory where you would like to install the screener, and run the following commands in a terminal application:
+
+#### Clone this Repository:
+
+```bash
+git clone https://github.com/starboi-63/growth-stock-screener.git
+```
+
+#### Navigate to the Root Directory:
+
+```bash
+cd growth-stock-screener
+```
 
 #### Install Python Dependencies:
 
@@ -18,20 +46,32 @@ First, ensure that you have [Python 3.11+](https://www.python.org/) and [Firefox
 pip3 install -r requirements.txt
 ```
 
-#### Run Screen:
+## Usage
+
+#### Running the Screener:
 
 ```bash
 python3 growth_stock_screener/run_screen.py
 ```
 
+> **_Note:_** _this command must be executed from the repository's root directory._
+
+#### Modifying Screen Settings:
+
+To customize screen settings, modify values in [settings.py](growth_stock_screener/screen/settings.py).
+
 #### Viewing Results:
 
 Screen results are saved in .csv format in the project root directory, and can be opened with software like Excel.
 
+![Screen Results](screenshots/done.png)
+
 ## Screen Iterations
 
 An initial list of stocks from which to screen is sourced from _NASDAQ_.
+
 ![NASDAQ Listings](screenshots/nasdaq_listings.png)
+
 Then, the following screen iterations are executed sequentially:
 
 ### Iteration 1: Relative Strength

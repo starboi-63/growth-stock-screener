@@ -5,6 +5,7 @@ import threading
 import requests
 from tqdm import tqdm
 from typing import Dict
+import time
 from termcolor import colored, cprint
 from .utils import *
 
@@ -19,6 +20,9 @@ outflows_css = ".info-slider-sold-text > tspan:nth-child(2)"
 process_name = "Institutional Accumulation"
 process_stage = 5
 print_status(process_name, process_stage, True)
+
+# record start time
+start = time.perf_counter()
 
 # logging data (printed to console after screen finishes)
 logs = []
@@ -162,6 +166,9 @@ create_outfile(screened_df, "institutional_accumulation")
 # print log
 print("".join(logs))
 
+# record end time
+end = time.perf_counter()
+
 # print footer message to terminal
 cprint(f"{len(failed_symbols)} symbols failed (insufficient data).", "dark_grey")
 cprint(
@@ -173,5 +180,5 @@ cprint(
     "green",
 )
 cprint(f"{len(screened_df)} symbols passed.", "green")
-print_status(process_name, process_stage, False)
+print_status(process_name, process_stage, False, end - start)
 print_divider()

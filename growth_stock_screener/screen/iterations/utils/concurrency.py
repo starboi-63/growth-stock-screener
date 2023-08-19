@@ -7,7 +7,13 @@ from selenium.webdriver.firefox.options import Options
 from selenium.webdriver.firefox.service import Service
 from selenium.webdriver.remote.webdriver import WebDriver
 from webdriver_manager.firefox import GeckoDriverManager
+import logging
+import os
 
+# disable webdriver-manager logs``
+os.environ["WDM_LOG"] = str(logging.NOTSET)
+
+# install GeckoDriver if needed
 gecko_driver_path = GeckoDriverManager().install()
 
 
