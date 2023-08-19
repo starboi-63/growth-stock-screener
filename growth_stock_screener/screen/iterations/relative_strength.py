@@ -2,6 +2,7 @@ import yfinance as yf
 import pandas as pd
 from termcolor import colored, cprint
 import time
+import logging
 from .utils import *
 from ..settings import min_rs
 
@@ -19,6 +20,10 @@ start = time.perf_counter()
 
 # logging data (printed to console after screen finishes)
 logs = []
+
+# disable yfinance logging output
+yf_logger = logging.getLogger("yfinance")
+yf_logger.setLevel(logging.CRITICAL)
 
 # open json data extracted from nasdaq as pandas dataframe
 df = open_outfile("nasdaq_listings")
