@@ -32,7 +32,6 @@ df_index = 0
 
 # extract symbols from dataframe
 symbol_list = df["Symbol"].values.tolist()
-symbol_list = [symbol_list[i] for i in range(100)]
 
 # download all historical price data at once
 # if on Mac OS, split download into chunks to prevent runtime thread creation errors
