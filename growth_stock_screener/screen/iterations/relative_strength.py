@@ -42,8 +42,6 @@ else:
     tickers = yf.download(symbol_list, period="2y", timeout=timeout)
     price_df = tickers["Adj Close"]
 
-print(price_df)
-
 # populate these lists while iterating through symbols
 successful_symbols = []
 failed_symbols = []
