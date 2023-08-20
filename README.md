@@ -26,6 +26,8 @@ First, ensure that you have [Python 3.11+](https://www.python.org/) and [Firefox
 
 > **_Note for Linux users:_** _the 'snap' version of Firefox that comes pre-installed may cause issues when running Selenium. To troubleshoot, follow [these instructions](https://www.omgubuntu.co.uk/2022/04/how-to-install-firefox-deb-apt-ubuntu-22-04) to install Firefox via 'apt' (not snap)._
 
+> **_Note for Mac users:_** _Python now includes its own private copy of OpenSSL and no longer uses Apple-supplied OpenSSL libraries. After installing Python, navigate to your `Applications/Python X.XX/` folder and double-click `Install Certificates.command`._
+
 Next, navigate to the directory where you would like to install the screener, and run the following commands in a terminal application:
 
 #### Clone this Repository:
