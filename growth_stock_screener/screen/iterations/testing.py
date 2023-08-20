@@ -29,7 +29,7 @@ def yf_download_batches(
 ) -> pd.DataFrame:
     def download_batch(start: int, end: int) -> pd.DataFrame:
         print(
-            f"Batch {batch_number}: Symbols {start + 1} to {end} ({symbol_list[start]}—{symbol_list[end - 1]})"
+            f"Batch {batch_number}: Symbols {start + 1} to {end} ({symbol_list[start]} — {symbol_list[end - 1]})"
         )
         batch = yf.download(
             [symbol_list[i] for i in range(start, end)], period="2y", timeout=timeout
