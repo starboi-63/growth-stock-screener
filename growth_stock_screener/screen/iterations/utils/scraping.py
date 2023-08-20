@@ -6,6 +6,8 @@ from typing import Callable, List
 from aiohttp.client import ClientSession
 from lxml import html
 import re
+import yfinance as yf
+import pandas as pd
 
 
 async def get(url: str, session: ClientSession, headers=None, json=False) -> str:
@@ -100,3 +102,38 @@ class WaitForAll:
             return True
         except StaleElementReferenceException:
             return False
+
+
+def yf_download_batches(
+    batch_size: int, symbol_list: List[str], timeout: int
+) -> pd.DataFrame:
+    def download_batch(start: int, end: int) -> pd.DataFrame:
+        print(
+            f"Batch {batch_number}: Symbols {start + 1} to {end} ({symbol_list[start]} — {symbol_list[end - 1]})"
+        )
+        batch = yf.download(
+            [symbol_list[i] for i in range(start, end)], period="2y", timeout=timeout
+        )
+        print()
+        return batch
+
+    print("Fetching historical price data . . .\n")
+    dfs = []
+    start = 0
+    end = min(batch_size, len(symbol_list))
+    batch_number = 1
+
+    # loop-and-a-half
+    while end < len(symbol_list):
+        dfs.append(download_batch(start, end))
+
+        # increment counters
+        start += batch_size
+        end = min(end + batch_size, len(symbol_list))
+        batch_number += 1
+
+    dfs.append(download_batch(start, end))
+
+    # concatenate the 'Adjusted Price' columns in each DataFrame
+    price_dfs = map(lambda df: df["Adj Close"], dfs)
+    return pd.concat(price_dfs)
