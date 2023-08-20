@@ -46,7 +46,10 @@ def fetch_exchange(symbol: str) -> str:
 
     for exchange in exchanges:
         url = f"https://www.marketbeat.com/stocks/{exchange}/{symbol}/"
-        response = requests.get(url, allow_redirects=False)
+        try:
+            response = requests.get(url, allow_redirects=False, timeout=timeout)
+        except Exception:
+            continue
 
         if response.status_code == 200:
             return exchange
