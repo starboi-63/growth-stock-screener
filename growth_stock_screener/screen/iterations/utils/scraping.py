@@ -107,7 +107,10 @@ class WaitForAll:
 def yf_download_batches(
     batch_size: int, symbol_list: List[str], timeout: int
 ) -> pd.DataFrame:
+    """Download historical stock price data in batches using yfinance."""
+
     def download_batch(start: int, end: int) -> pd.DataFrame:
+        """Download a batch of historical stock price data from start to end - 1."""
         print(
             f"Batch {batch_number}: Symbols {start + 1} to {end} ({symbol_list[start]} — {symbol_list[end - 1]})"
         )
