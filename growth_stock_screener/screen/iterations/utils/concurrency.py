@@ -12,6 +12,7 @@ import os
 
 # disable webdriver-manager logs``
 os.environ["WDM_LOG"] = str(logging.NOTSET)
+# configure webdriver-manager to install webdrivers in project root directory
 os.environ['WDM_LOCAL'] = '1'
 
 # install GeckoDriver if needed
