@@ -3,6 +3,7 @@ import pandas as pd
 from termcolor import colored, cprint
 import time
 import logging
+import platform
 from .utils import *
 from ..settings import min_rs
 
@@ -34,7 +35,12 @@ symbol_list = df["Symbol"].values.tolist()
 
 # download all historical price data at once
 print("Fetching historical price data . . .\n")
-tickers = yf.download(symbol_list, period="2y", timeout=timeout)
+# if on Mac OS, split download into chunks to prevent yfinance thread errors
+if platform.system() == "Darwin":
+    tickers = ...
+else:
+    tickers = yf.download(symbol_list, period="2y", timeout=timeout)
+
 price_df = tickers["Adj Close"]
 
 # populate these lists while iterating through symbols
