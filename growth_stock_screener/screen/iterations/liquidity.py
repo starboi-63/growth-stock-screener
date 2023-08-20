@@ -9,7 +9,7 @@ from .utils import *
 from ..settings import min_market_cap, min_price, min_volume
 
 # constants
-volume_xpath = "/html/body/main/div/div[2]/div[2]/div/div[2]/div/div/div/div[2]/div/div[1]/div/div/ng-transclude/table/tbody/tr[3]/td[5]"
+volume_xpath = "/html/body/main/div/div[2]/div[2]/div/div[2]/div/div/div/div[2]/div/div[1]/barchart-table-scroll/table/tbody/tr[3]/td[5]"
 
 # print header message to terminal
 process_name = "Liquidity"
