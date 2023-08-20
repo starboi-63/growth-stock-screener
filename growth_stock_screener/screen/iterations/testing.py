@@ -19,7 +19,7 @@ df = open_outfile("nasdaq_listings")
 
 # extract symbols from dataframe
 symbol_list = df["Symbol"].values.tolist()
-symbol_list = [symbol_list[i] for i in range(100)]
+symbol_list = [symbol_list[i] for i in range(10)]
 
 # download all historical price data at once
 
@@ -54,7 +54,9 @@ def yf_download_batches(
 
     dfs.append(download_batch(start, end))
 
-    print(dfs)
+    # concatenate the 'Adjusted Price' columns in each DataFrame
+    price_dfs = map(lambda df: df["Adj Close"], dfs)
+    return pd.concat(price_dfs)
 
 
-yf_download_batches(33, symbol_list, 30)
+yf_download_batches(3, symbol_list, 30)
