@@ -32,6 +32,7 @@ df_index = 0
 
 # extract symbols from dataframe
 symbol_list = df["Symbol"].values.tolist()
+symbol_list = [symbol_list[i] for i in range(100)]
 
 # download all historical price data at once
 # if on Mac OS, split download into chunks to prevent runtime thread creation errors
@@ -41,6 +42,8 @@ if platform.system() == "Darwin":
 else:
     tickers = yf.download(symbol_list, period="2y", timeout=timeout)
     price_df = tickers["Adj Close"]
+
+print(price_df)
 
 # populate these lists while iterating through symbols
 successful_symbols = []
