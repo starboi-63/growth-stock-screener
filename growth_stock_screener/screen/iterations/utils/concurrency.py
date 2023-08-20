@@ -12,6 +12,7 @@ import os
 
 # disable webdriver-manager logs``
 os.environ["WDM_LOG"] = str(logging.NOTSET)
+os.environ['WDM_LOCAL'] = '1'
 
 # install GeckoDriver if needed
 gecko_driver_path = GeckoDriverManager().install()
