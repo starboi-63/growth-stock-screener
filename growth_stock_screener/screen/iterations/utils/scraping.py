@@ -120,7 +120,6 @@ def yf_download_batches(
         print()
         return batch
 
-    print("Fetching historical price data . . .\n")
     dfs = []
     start = 0
     end = min(batch_size, len(symbol_list))
