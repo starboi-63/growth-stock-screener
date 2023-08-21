@@ -60,16 +60,14 @@ def fetch_exchange(symbol: str) -> str:
 
 def fetch_institutional_holdings(symbol: str) -> Dict[str, float]:
     "Fetch institutional holdings data for a stock symbol from marketbeat.com."
-    # perform get request and stop loading page when data is detected in DOM
+    # fetch the exchange the current symbol is associated with
     exchange = fetch_exchange(symbol)
 
     if exchange is None:
         return None
-
+    
+    # configure request url and dynamic wait methods
     url = f"https://www.marketbeat.com/stocks/{exchange}/{symbol}/institutional-ownership/"
-
-    driver = get_driver(thread_local, drivers)
-    driver.get(url)
 
     wait_methods = [
         element_is_float_css(inflows_css),
@@ -79,10 +77,13 @@ def fetch_institutional_holdings(symbol: str) -> Dict[str, float]:
     combined_wait_method = WaitForAll(wait_methods)
 
     try:
+        # perform get request and stop loading page when data is detected in DOM
+        driver = get_driver(thread_local, drivers)
+        driver.get(url)
         WebDriverWait(driver, timeout).until(combined_wait_method)
         driver.execute_script("window.stop();")
-    except TimeoutException:
-        logs.append(skip_message(symbol, "request timed out"))
+    except Exception as e:
+        logs.append(skip_message(symbol, e))
         return None
 
     # extract institutional holdings information from DOM
