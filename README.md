@@ -58,9 +58,7 @@ pip3 install -r requirements.txt
 python3 growth_stock_screener/run_screen.py
 ```
 
-> **_Note:_** _this command must be executed from the repository's root directory._
-
-#### Modifying Screen Settings:
+#### Modifying Settings:
 
 To customize screen settings, modify values in [settings.py](growth_stock_screener/screen/settings.py).
 
