@@ -1,3 +1,5 @@
+import multiprocessing
+
 # modify these values as desired
 
 # Iteration 1: Relative Strength
@@ -24,3 +26,6 @@ protected_rs = 97  # minimum RS rating to bypass revenue screen iteration (see R
 
 # Iteration 5: Institutional Accumulation
 # (no parameters to modify)
+
+# Thread Pool Size (the number of concurrent browser instances to fetch dynamic data)
+threads = multiprocessing.cpu_count() // 1.25 # must be a positive integer
