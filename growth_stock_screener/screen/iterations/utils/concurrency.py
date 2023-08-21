@@ -29,7 +29,6 @@ def get_driver(thread_local: local, drivers: List[WebDriver]) -> WebDriver:
         options = Options()
         service = Service(executable_path=gecko_driver_path)
         options.add_argument("--headless")
-        options.add_argument("--disable-gpu")
         options.page_load_strategy = "eager"
         driver = webdriver.Firefox(options=options, service=service)
         setattr(thread_local, "driver", driver)
