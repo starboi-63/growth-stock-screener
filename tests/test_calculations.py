@@ -57,7 +57,9 @@ class TestRelativeStrength(unittest.TestCase):
     def test_relative_strength_negatives(self):
         result = relative_strength(100, 50, 25, 20, 15, 10, 5, 0)
         expected = -60.66666666
+        self.assertAlmostEqual(result, expected, places=3)
 
     def test_relative_strength_pos_and_neg(self):
         result = relative_strength(100, 50, 25, 30, 15, 20, 5, 0)
         expected = -39.33333333
+        self.assertAlmostEqual(result, expected, places=3)
