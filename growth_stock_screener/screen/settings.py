@@ -27,7 +27,7 @@ protected_rs: int = 97  # minimum RS rating to bypass revenue screen iteration (
 # Iteration 5: Institutional Accumulation
 # (no parameters to modify)
 
-# THREADS (manually set the following value if the screener crashes during the "Trend" or "Institutional Accumulation" iterations. 
+# THREADS (manually set the following value if the screener reports errors during the "Trend" or "Institutional Accumulation" iterations. 
 # Recommended values are 1-10.
 
 # Thread Pool Size
