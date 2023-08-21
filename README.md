@@ -1,6 +1,6 @@
 ![Growth Stock Screener](screenshots/startup.png)
 
-# Growth-Stock-Screener
+# Growth Stock Screener
 
 An automated stock screening system which isolates and ranks top-tier growth companies based on relative strength, liquidity, trend, revenue growth, and institutional demand.
 
@@ -12,17 +12,21 @@ An automated stock screening system which isolates and ranks top-tier growth com
   - Revenue growth sourced directly from the SEC's EDGAR [XBRL data APIs](https://www.sec.gov/edgar/sec-api-documentation).
 - **Customizable** screen [settings](growth_stock_screener/screen/settings.py) for fine-tuning.
 - **Rapid** web scraping using asynchronous requests.
-  - Utilize [aiohttp](https://docs.aiohttp.org/en/stable/) and [asyncio](https://docs.python.org/3/library/asyncio.html) when desired data is present in a website's initial HTML structure.
+  - Utilize [aiohttp](https://docs.aiohttp.org/en/stable/) and [asyncio](https://docs.python.org/3/library/asyncio.html) when desired data is present in a website's static HTML structure.
   - Deploy a thread pool to launch concurrent [Selenium](https://www.selenium.dev/) browser instances when desired data is dynamically added to the DOM by JavaScript.
 - **Parsable** [JSON outfiles](growth_stock_screener/json/README.md) for evaluation of screen criteria.
 - **Colorful** logging in the terminal.
 - **Easy-to-access** .csv outfiles storing [screen results](#viewing-results).
+- **Support** for Linux, Mac, and Windows.
+  - Tested on Ubuntu 22.04.3, macOS Ventura 13.5, and Windows 11 22H2.
 
 ## Installation
 
 #### Prerequisites
 
 First, ensure that you have [Python 3.11+](https://www.python.org/) and [Firefox](https://www.mozilla.org/en-US/firefox/new/) installed.
+
+> **_Note for Mac users:_** _Python now includes its own private copy of OpenSSL and no longer uses Apple-supplied OpenSSL libraries. After installing Python, navigate to your `Applications/Python X.XX/` folder and double-click `Install Certificates.command`._
 
 > **_Note for Linux users:_** _the 'snap' version of Firefox that comes pre-installed may cause issues when running Selenium. To troubleshoot, follow [these instructions](https://www.omgubuntu.co.uk/2022/04/how-to-install-firefox-deb-apt-ubuntu-22-04) to install Firefox via 'apt' (not snap)._
 
@@ -54,9 +58,7 @@ pip3 install -r requirements.txt
 python3 growth_stock_screener/run_screen.py
 ```
 
-> **_Note:_** _this command must be executed from the repository's root directory._
-
-#### Modifying Screen Settings:
+#### Modifying Settings:
 
 To customize screen settings, modify values in [settings.py](growth_stock_screener/screen/settings.py).
 
@@ -65,6 +67,12 @@ To customize screen settings, modify values in [settings.py](growth_stock_screen
 Screen results are saved in .csv format in the project root directory, and can be opened with software like Excel.
 
 ![Screen Results](screenshots/done.png)
+
+#### Troubleshooting Errors:
+
+By default, the screener attempts to calculate an ideal number of concurrent broswer instances to create based on the number of CPU cores present on your machine. In rare cases, this number may be too high. If you notice failed stock symbols with errors such as `Browsing context has been discarded`, `Tried to run command without establishing a connection`, `WebDriver session does not exist`, or `Failed to decode response from marionette` during the [trend](#iteration-3-trend) or [institutional accumulation](#iteration-5-institutional-accumulation) iterations, you are likely creating *too many* browser instances at once.
+
+Consider _decreasing_ the value of `threads` in [settings.py](growth_stock_screener/screen/settings.py) to 1-3 if you are experiencing this.
 
 ## Screen Iterations
 
