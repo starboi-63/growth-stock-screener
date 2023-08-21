@@ -70,6 +70,12 @@ Screen results are saved in .csv format in the project root directory, and can b
 
 ![Screen Results](screenshots/done.png)
 
+#### Troubleshooting Errors:
+
+By default, the screener attempts to calculate an ideal number of concurrent broswer instances to create based on the number of CPU cores present on your machine. In rare cases, this number may be too high. If you notice failed stock symbols with errors such as `Browsing context has been discarded`, `Tried to run command without establishing a connection`, `WebDriver session does not exist`, or `Failed to decode response from marionette` during the [trend](#iteration-3-trend) or [institutional accumulation](#iteration-5-institutional-accumulation) iterations, you are likely creating *too many* browser instances at once.
+
+Consider _decreasing_ the value of `threads` in [settings.py](growth_stock_screener/screen/settings.py) to 1-3 if you are experiencing this.
+
 ## Screen Iterations
 
 An initial list of stocks from which to screen is sourced from _NASDAQ_.
