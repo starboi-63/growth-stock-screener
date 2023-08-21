@@ -8,9 +8,9 @@ from typing import Dict
 import time
 from termcolor import colored, cprint
 from .utils import *
+from ..settings import threads
 
 # constants
-threads = 5  # number of concurrent Selenium browser instances to fetch data
 timeout = 60
 exchange_xpath = "/html/body/div[3]/div[2]/div[2]/div/div[1]/div[2]/span[2]"
 inflows_css = ".info-slider-bought-text > tspan:nth-child(2)"
