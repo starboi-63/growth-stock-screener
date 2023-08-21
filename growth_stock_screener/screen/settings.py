@@ -1,6 +1,6 @@
 import multiprocessing
 
-# modify these values as desired
+# ITERATIONS (modify these values as desired)
 
 # Iteration 1: Relative Strength
 min_rs: int = 90  # minimum RS rating to pass (must be an integer from 0-100)
@@ -27,6 +27,9 @@ protected_rs: int = 97  # minimum RS rating to bypass revenue screen iteration (
 # Iteration 5: Institutional Accumulation
 # (no parameters to modify)
 
-# Thread Pool Size (used by Iterations 3 & 5)
-threads: int = int(multiprocessing.cpu_count() * 0.75) # the number of concurrent browser instances to fetch dynamic data (must be a positive integer)
-# ^ currently set to 3/4 the number of CPU cores on the system
+# THREADS (manually set the following value if the screener crashes during the "Trend" or "Institutional Accumulation" iterations. 
+# Recommended values are 1-10.
+
+# Thread Pool Size
+threads: int = min(int(multiprocessing.cpu_count() * 0.75), 10) # the number of concurrent browser instances to fetch dynamic data (must be a positive integer)
+# ^ currently set to 3/4 the number of CPU cores on the system (with a max of 10)
