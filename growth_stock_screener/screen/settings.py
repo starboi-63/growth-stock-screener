@@ -28,4 +28,4 @@ protected_rs = 97  # minimum RS rating to bypass revenue screen iteration (see R
 # (no parameters to modify)
 
 # Thread Pool Size (the number of concurrent browser instances to fetch dynamic data)
-threads = multiprocessing.cpu_count() // 1.25 # must be a positive integer
+threads = multiprocessing.cpu_count() // 1.25 # must be a positive integer (currently set to 3/4 the number of CPU cores on the system)
