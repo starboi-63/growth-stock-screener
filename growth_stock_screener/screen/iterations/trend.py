@@ -77,10 +77,8 @@ thread_local = threading.local()
 
 def fetch_moving_averages(symbol: str) -> Dict[str, float]:
     """Fetch moving average data for the given stock symbol from tradingview.com"""
+    # configure request url and dynamic wait methods
     url = f"https://www.tradingview.com/symbols/{symbol}/technicals/"
-    # perform get request and stop loading page when data is detected in DOM
-    driver = get_driver(thread_local, drivers)
-    driver.get(url)
 
     wait_methods = [
         element_is_float_xpath(sma_10_xpath),
@@ -92,10 +90,13 @@ def fetch_moving_averages(symbol: str) -> Dict[str, float]:
     combined_wait_method = WaitForAll(wait_methods)
 
     try:
+        # perform get request and stop loading page when data is detected in DOM
+        driver = get_driver(thread_local, drivers)
+        driver.get(url)
         WebDriverWait(driver, timeout).until(combined_wait_method)
         driver.execute_script("window.stop();")
-    except TimeoutException:
-        logs.append(skip_message(symbol, "request timed out"))
+    except Exception as e:
+        logs.append(skip_message(symbol, e))
         return None
 
     # extract moving averages from DOM
