@@ -17,6 +17,8 @@ An automated stock screening system which isolates and ranks top-tier growth com
 - **Parsable** [JSON outfiles](growth_stock_screener/json/README.md) for evaluation of screen criteria.
 - **Colorful** logging in the terminal.
 - **Easy-to-access** .csv outfiles storing [screen results](#viewing-results).
+- **Support** for Linux, Mac, and Windows.
+  - Tested on Ubuntu 22.04.3, macOS Ventura 13.5, and Windows 11 22H2.
 
 ## Installation
 
