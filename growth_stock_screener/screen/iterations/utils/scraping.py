@@ -136,6 +136,6 @@ def yf_download_batches(
 
     dfs.append(download_batch(start, end))
 
-    # concatenate the 'Adjusted Price' columns in each DataFrame
-    price_dfs = map(lambda df: df["Adj Close"], dfs)
+    # concatenate the 'Close' columns in each DataFrame
+    price_dfs = map(lambda df: df["Close"], dfs)
     return pd.concat(price_dfs, axis=1)
