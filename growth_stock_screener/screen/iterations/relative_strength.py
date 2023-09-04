@@ -40,7 +40,7 @@ if platform.system() == "Darwin":
     price_df = yf_download_batches(1000, symbol_list, timeout)
 else:
     tickers = yf.download(symbol_list, period="2y", timeout=timeout)
-    price_df = tickers["Adj Close"]
+    price_df = tickers["Close"]
 
 # populate these lists while iterating through symbols
 successful_symbols = []
