@@ -57,7 +57,7 @@ for symbol in price_df:
     first_valid_index = 0
 
     for i in range(len(col)):
-        if not pd.isna(col[i]):
+        if not pd.isna(col.iloc[i]):
             first_valid_index = i
             break
 
