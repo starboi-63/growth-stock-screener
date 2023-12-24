@@ -51,7 +51,7 @@ df = df.drop(
 df.columns = ["Symbol", "Company Name", "Market Cap", "Industry"]
 
 # remove any symbols containing a '/' or '^'
-df = df[~(df["Symbol"].str.contains("/") | df["Symbol"].str.contains("\^"))]
+df = df[~(df["Symbol"].str.contains("/") | df["Symbol"].str.contains(r"\^"))]
 
 # serialize data in JSON format and save on machine
 create_outfile(df, "nasdaq_listings")

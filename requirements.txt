@@ -1,8 +1,4 @@
-Flask
-flask-cors
-pyinstaller
 selenium
-webdriver-manager
 requests
 lxml
 tqdm

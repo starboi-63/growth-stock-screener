@@ -18,7 +18,7 @@ An automated stock screening system which isolates and ranks top-tier growth com
 - **Colorful** logging in the terminal.
 - **Easy-to-access** .csv outfiles storing [screen results](#viewing-results).
 - **Support** for Linux, Mac, and Windows.
-  - Tested on Ubuntu 22.04.3, macOS Ventura 13.5, and Windows 11 22H2.
+  - Tested on Ubuntu 22.04.3, macOS Sonoma 14.2.1 (23C71), and Windows 11 22H2.
 
 ## Installation
 
@@ -70,7 +70,7 @@ Screen results are saved in .csv format in the project root directory, and can b
 
 #### Troubleshooting Errors:
 
-By default, the screener attempts to calculate an ideal number of concurrent broswer instances to create based on the number of CPU cores present on your machine. In rare cases, this number may be too high. If you notice failed stock symbols with errors such as `Browsing context has been discarded`, `Tried to run command without establishing a connection`, `WebDriver session does not exist`, or `Failed to decode response from marionette` during the [trend](#iteration-3-trend) or [institutional accumulation](#iteration-5-institutional-accumulation) iterations, you are likely creating *too many* browser instances at once.
+By default, the screener attempts to calculate an ideal number of concurrent broswer instances to create based on the number of CPU cores present on your machine. In rare cases, this number may be too high. If you notice failed stock symbols with errors such as `Browsing context has been discarded`, `Tried to run command without establishing a connection`, `WebDriver session does not exist`, or `Failed to decode response from marionette` during the [trend](#iteration-3-trend) or [institutional accumulation](#iteration-5-institutional-accumulation) iterations, you are likely creating _too many_ browser instances at once.
 
 Consider _decreasing_ the value of `threads` in [settings.py](growth_stock_screener/screen/settings.py) to 1-3 if you are experiencing this.
 

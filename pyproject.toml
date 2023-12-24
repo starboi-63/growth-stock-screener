@@ -4,11 +4,7 @@ version = "1.0"
 description = "An automated stock screening system which isolates and ranks top-tier growth companies based on relative strength, liquidity, trend, revenue growth, and institutional demand."
 authors = [{ name = "Tanish Makadia" }]
 dependencies = [
-    "Flask",
-    "flask-cors",
-    "pyinstaller",
     "selenium",
-    "webdriver-manager",
     "requests",
     "lxml",
     "tqdm",
