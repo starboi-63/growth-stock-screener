@@ -96,9 +96,9 @@ All _micro-cap_ companies and _thinly traded_ stocks are filtered out based on t
 
 $$
 \begin{aligned}
-\text{Market Cap} &>= \$1\ \text{Billion}\\
-\text{Price} &>= \$10\\
-50\ \text{day Average Volume} &>= 100,000\ \text{Shares}
+\text{Market Cap} &\geq \$1\ \text{Billion}\\
+\text{Price} &\geq \$10\\
+50\ \text{day Average Volume} &\geq 100,000\ \text{Shares}
 \end{aligned}
 $$
 
@@ -108,10 +108,10 @@ All stocks which are not in a _stage-two_ uptrend are filtered out. A stage-two 
 
 $$
 \begin{aligned}
-\text{Price} &>= 50\ \text{Day SMA}\\
-\text{Price} &>= 200\ \text{Day SMA}\\
-10\ \text{Day SMA} &>= 20\ \text{Day SMA} >= 50\ \text{Day SMA}\\
-\text{Price} &>= 50\\%\ \text{of}\ 52\ \text{Week High}
+\text{Price} &\geq 50\ \text{Day SMA}\\
+\text{Price} &\geq 200\ \text{Day SMA}\\
+10\ \text{Day SMA} &\geq 20\ \text{Day SMA} \geq 50\ \text{Day SMA}\\
+\text{Price} &\geq 50\\%\ \text{of}\ 52\ \text{Week High}
 \end{aligned}
 $$
 
