@@ -18,7 +18,7 @@ An automated stock screening system which isolates and ranks top-tier growth com
 - **Colorful** logging in the terminal.
 - **Easy-to-access** .csv outfiles storing [screen results](#viewing-results).
 - **Support** for Linux, Mac, and Windows.
-  - Tested on Ubuntu 22.04.3, macOS Sonoma 14.2.1 (23C71), and Windows 11 22H2.
+  - Tested on Ubuntu 22.04.3, macOS Sonoma 14.5 (23F79), and Windows 11 22H2.
 
 ## Installation
 
