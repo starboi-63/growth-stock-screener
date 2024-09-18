@@ -1,6 +1,7 @@
 ![Growth Stock Screener](screenshots/startup.png)
 
-# Growth Stock Screener
+# Growth Stock Screener 
+[![Official Website](https://img.shields.io/badge/Official%20Website-tanishmakadia.com-1e1e2e?style=for-the-badge&labelColor=6c7086&color=1e1e2e)](https://tanishmakadia.com/projects/stock-screener)
 
 An automated stock screening system which isolates and ranks top-tier growth companies based on relative strength, liquidity, trend, revenue growth, and institutional demand.
 
