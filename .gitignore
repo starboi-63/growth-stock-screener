@@ -7,3 +7,4 @@ __pycache__/
 geckodriver.log
 .wdm/
 screener-env/
+.DS_Store
